@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="list_item_margin">16dp</dimen>
+    <dimen name="list_item_height">100dp</dimen>
+    <dimen name="survey_status_icon_size">50dp</dimen>
+</resources>
