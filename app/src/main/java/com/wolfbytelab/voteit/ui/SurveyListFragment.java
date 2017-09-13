@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.adapter.SurveyAdapter;
 import com.wolfbytelab.voteit.model.Survey;
@@ -33,13 +35,21 @@ public class SurveyListFragment extends Fragment {
         ArrayList<Survey> surveys = new ArrayList<>();
 
         //START DUMMY DATA
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         User user = new User();
-        user.name = "Name";
-        user.email = "name@provider.com";
+
+        if (firebaseUser != null) {
+            user.name = firebaseUser.getDisplayName();
+            user.email = firebaseUser.getEmail();
+        } else {
+            user.name = "Name";
+            user.email = "name@provider.com";
+        }
 
         Survey survey = new Survey();
         survey.owner = user;
-        survey.startDate = System.currentTimeMillis() - (1000 * 60 * 60 * 24);
+        survey.startDate = System.currentTimeMillis();
         survey.title = "My Survey";
         survey.description = "This is a sample survey";
 
