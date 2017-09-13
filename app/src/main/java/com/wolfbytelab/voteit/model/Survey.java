@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 public class Survey {
 
-    private User owner;
-    private ArrayList<User> members;
+    public String title;
+    public String description;
 
-    private long startDate;
-    private long endDate = Long.MAX_VALUE;
+    public User owner;
+    public ArrayList<User> members;
+
+    public long startDate;
+    public long endDate = Long.MAX_VALUE;
 
 }

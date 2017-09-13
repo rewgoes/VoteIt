@@ -11,20 +11,32 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/list_item_margin"
         android:layout_marginStart="@dimen/list_item_margin"
         android:layout_marginTop="@dimen/list_item_margin"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textAppearance="?textAppearanceListItem"
+        android:textColor="@color/primaryText"
+        app:layout_constraintEnd_toStartOf="@+id/date"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Survey Title"/>
 
     <TextView
         android:id="@+id/description"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textAppearance="?textAppearanceListItemSecondary"
+        android:textColor="@color/secondaryText"
+        app:layout_constraintEnd_toEndOf="@+id/title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title"
         tools:text="Survey description"/>
@@ -34,9 +46,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/list_item_margin"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textAppearance="?textAppearanceListItemSmall"
+        android:textColor="@color/secondaryText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/description"
         tools:text="Owner"/>
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/list_item_margin"
+        android:layout_marginTop="@dimen/list_item_margin"
+        android:textColor="@color/secondaryText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/title"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="12 Sep"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/divider_thickness"
+        android:background="@color/divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1"/>
 
 </android.support.constraint.ConstraintLayout>

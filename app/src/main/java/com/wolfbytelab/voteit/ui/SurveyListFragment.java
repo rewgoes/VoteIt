@@ -3,17 +3,61 @@ package com.wolfbytelab.voteit.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.wolfbytelab.voteit.R;
+import com.wolfbytelab.voteit.adapter.SurveyAdapter;
+import com.wolfbytelab.voteit.model.Survey;
+import com.wolfbytelab.voteit.model.User;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SurveyListFragment extends Fragment {
+
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_survey_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_survey_list, container, false);
+        ButterKnife.bind(this, view);
+
+        ArrayList<Survey> surveys = new ArrayList<>();
+
+        //START DUMMY DATA
+        User user = new User();
+        user.name = "Name";
+        user.email = "name@provider.com";
+
+        Survey survey = new Survey();
+        survey.owner = user;
+        survey.startDate = System.currentTimeMillis() - (1000 * 60 * 60 * 24);
+        survey.title = "My Survey";
+        survey.description = "This is a sample survey";
+
+        surveys.add(survey);
+        surveys.add(survey);
+        surveys.add(survey);
+        surveys.add(survey);
+        surveys.add(survey);
+        surveys.add(survey);
+        surveys.add(survey);
+        //END DUMMY DATA
+
+        SurveyAdapter surveyAdapter = new SurveyAdapter(surveys, getContext());
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(surveyAdapter);
+
+        return view;
     }
 }

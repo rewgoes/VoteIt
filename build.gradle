@@ -15,6 +15,7 @@ buildscript {
 allprojects {
     ext {
         support_version = '26.0.2'
+        butter_knife_version = '8.8.1'
     }
 
     repositories {
