@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 
 public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyViewHolder> {
 
-    private ArrayList<Survey> mSurveys = new ArrayList<>();
+    private ArrayList<Survey> mSurveys;
     private Context mContext;
 
     public SurveyAdapter(ArrayList<Survey> surveys, Context context) {
@@ -37,13 +37,28 @@ public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyView
         Survey survey = mSurveys.get(position);
         holder.title.setText(survey.title);
         holder.description.setText(survey.description);
-        holder.owner.setText(survey.owner.name);
-        holder.date.setText(DateUtils.getFormattedDate(mContext, survey.startDate));
+//        holder.owner.setText(survey.owner.name);
+//        holder.date.setText(DateUtils.getFormattedDate(mContext, survey.startDate));
     }
 
     @Override
     public int getItemCount() {
         return mSurveys == null ? 0 : mSurveys.size();
+    }
+
+    public void addSurvey(Survey survey) {
+        if (mSurveys == null) {
+            mSurveys = new ArrayList<>();
+        }
+        mSurveys.add(survey);
+        notifyItemInserted(mSurveys.size() - 1);
+    }
+
+    public void clear() {
+        if (mSurveys != null) {
+            mSurveys.clear();
+            notifyDataSetChanged();
+        }
     }
 
     class SurveyViewHolder extends RecyclerView.ViewHolder {

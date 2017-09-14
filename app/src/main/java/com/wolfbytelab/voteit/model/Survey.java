@@ -7,7 +7,7 @@ public class Survey {
     public String title;
     public String description;
 
-    public User owner;
+    public String owner;
     public ArrayList<User> members;
 
     public long startDate;

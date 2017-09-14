@@ -75,14 +75,14 @@ public class AddSurveyActivity extends AppCompatActivity {
 
     private void createSurvey() {
         if (isDataValid()) {
-            Survey survey = new Survey();
-            survey.title = mTitle.getText().toString();
-            survey.description = mDescription.getText().toString();
-
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-            // user is logged in
             if (firebaseUser != null) {
+                Survey survey = new Survey();
+                survey.title = mTitle.getText().toString();
+                survey.description = mDescription.getText().toString();
+                survey.owner = firebaseUser.getUid();
+
+                // user is logged in
                 mSurveyDatabaseReference.push().setValue(survey);
                 finish();
             }

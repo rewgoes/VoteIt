@@ -10,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.adapter.SurveyAdapter;
 import com.wolfbytelab.voteit.model.Survey;
-import com.wolfbytelab.voteit.model.User;
 
 import java.util.ArrayList;
 
@@ -28,47 +30,49 @@ public class SurveyListFragment extends Fragment {
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mSurveyDatabaseReference;
+    private SurveyAdapter mSurveyAdapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_survey_list, container, false);
         ButterKnife.bind(this, view);
 
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mSurveyDatabaseReference = mFirebaseDatabase.getReference().child("surveys");
+
         ArrayList<Survey> surveys = new ArrayList<>();
 
-        //START DUMMY DATA
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        User user = new User();
-
-        if (firebaseUser != null) {
-            user.name = firebaseUser.getDisplayName();
-            user.email = firebaseUser.getEmail();
-        } else {
-            user.name = "Name";
-            user.email = "name@provider.com";
-        }
-
-        Survey survey = new Survey();
-        survey.owner = user;
-        survey.startDate = System.currentTimeMillis();
-        survey.title = "My Survey";
-        survey.description = "This is a sample survey";
-
-        surveys.add(survey);
-        surveys.add(survey);
-        surveys.add(survey);
-        surveys.add(survey);
-        surveys.add(survey);
-        surveys.add(survey);
-        surveys.add(survey);
-        //END DUMMY DATA
-
-        SurveyAdapter surveyAdapter = new SurveyAdapter(surveys, getContext());
+        mSurveyAdapter = new SurveyAdapter(surveys, getContext());
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(surveyAdapter);
+        mRecyclerView.setAdapter(mSurveyAdapter);
+
+        mSurveyDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                mSurveyAdapter.addSurvey(dataSnapshot.getValue(Survey.class));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
         return view;
     }
@@ -78,5 +82,6 @@ public class SurveyListFragment extends Fragment {
         Intent intent = new Intent(getContext(), AddSurveyActivity.class);
         startActivity(intent);
     }
+
 
 }
