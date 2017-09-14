@@ -10,4 +10,5 @@
     <string name="new_survey">New Survey</string>
     <string name="end_date">End Date</string>
     <string name="end_time">End Time</string>
+    <string name="create">Create</string>
 </resources>

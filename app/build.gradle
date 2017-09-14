@@ -37,6 +37,7 @@ dependencies {
 
     compile "com.google.firebase:firebase-auth:$firebase_version"
     compile "com.google.android.gms:play-services-auth:$firebase_version"
+    compile "com.google.firebase:firebase-database:$firebase_version"
 
     compile "com.firebaseui:firebase-ui-auth:$firebase_ui_version"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
