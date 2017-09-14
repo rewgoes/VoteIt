@@ -1,5 +1,6 @@
 package com.wolfbytelab.voteit.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SurveyListFragment extends Fragment {
 
@@ -70,4 +72,11 @@ public class SurveyListFragment extends Fragment {
 
         return view;
     }
+
+    @OnClick(R.id.add_survey)
+    public void addSurvey() {
+        Intent intent = new Intent(getContext(), AddSurveyActivity.class);
+        startActivity(intent);
+    }
+
 }

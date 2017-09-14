@@ -5,4 +5,9 @@
     <string name="sign_out">Sign Out</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="unknown_sign_in_error">Unable to sign in</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="new_survey">New Survey</string>
+    <string name="end_date">End Date</string>
+    <string name="end_time">End Time</string>
 </resources>
