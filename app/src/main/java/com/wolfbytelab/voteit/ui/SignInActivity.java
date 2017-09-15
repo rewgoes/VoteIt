@@ -12,10 +12,14 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.wolfbytelab.voteit.BuildConfig;
 import com.wolfbytelab.voteit.R;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -80,6 +84,8 @@ public class SignInActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (resultCode == RESULT_OK) {
+                writeUser();
+
                 Toast.makeText(this, R.string.signed_in, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -103,5 +109,16 @@ public class SignInActivity extends AppCompatActivity {
 
             Toast.makeText(this, R.string.unknown_sign_in_error, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void writeUser() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        Map<String, String> user = new HashMap<>();
+        user.put("name", firebaseUser.getDisplayName());
+        user.put("email", firebaseUser.getEmail());
+
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        database.child("users").child(firebaseUser.getUid()).setValue(user);
     }
 }

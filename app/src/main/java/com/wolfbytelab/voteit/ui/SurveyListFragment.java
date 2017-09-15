@@ -10,11 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.adapter.SurveyAdapter;
 import com.wolfbytelab.voteit.model.Survey;
@@ -40,8 +43,10 @@ public class SurveyListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_survey_list, container, false);
         ButterKnife.bind(this, view);
 
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mSurveyDatabaseReference = mFirebaseDatabase.getReference().child("surveys");
+        mSurveyDatabaseReference = mFirebaseDatabase.getReference();
 
         ArrayList<Survey> surveys = new ArrayList<>();
 
@@ -51,10 +56,19 @@ public class SurveyListFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mSurveyAdapter);
 
-        mSurveyDatabaseReference.addChildEventListener(new ChildEventListener() {
+        mSurveyDatabaseReference.child("surveys_per_user").child(firebaseUser.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                mSurveyAdapter.addSurvey(dataSnapshot.getValue(Survey.class));
+                mSurveyDatabaseReference.child("surveys").child(dataSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mSurveyAdapter.addSurvey(dataSnapshot.getValue(Survey.class));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
             }
 
             @Override

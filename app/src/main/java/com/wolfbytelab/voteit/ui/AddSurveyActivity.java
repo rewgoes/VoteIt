@@ -29,9 +29,6 @@ public class AddSurveyActivity extends AppCompatActivity {
     @BindView(R.id.description)
     EditText mDescription;
 
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mSurveyDatabaseReference;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,9 +37,6 @@ public class AddSurveyActivity extends AppCompatActivity {
 
         mTitle.addTextChangedListener(new RequiredFieldTextWatcher(mTitleInputLayout));
         mTitle.setOnFocusChangeListener(new RequiredFieldFocusChangeListener(mTitleInputLayout));
-
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mSurveyDatabaseReference = mFirebaseDatabase.getReference().child("surveys");
     }
 
     @Override
@@ -76,14 +70,23 @@ public class AddSurveyActivity extends AppCompatActivity {
     private void createSurvey() {
         if (isDataValid()) {
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            if (firebaseUser != null) {
+            if (firebaseUser != null) { //user is logged in
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference surveyDatabaseReference = firebaseDatabase.getReference().child("surveys");
+                DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child("surveys_per_user").child(firebaseUser.getUid());
+
                 Survey survey = new Survey();
                 survey.title = mTitle.getText().toString();
                 survey.description = mDescription.getText().toString();
                 survey.owner = firebaseUser.getUid();
 
-                // user is logged in
-                mSurveyDatabaseReference.push().setValue(survey);
+                String surveyKey = surveyDatabaseReference.push().getKey();
+
+                DatabaseReference memberDatabaseReference = firebaseDatabase.getReference().child("members").child(surveyKey);
+
+                surveyDatabaseReference.child(surveyKey).setValue(survey);
+                userDatabaseReference.child(surveyKey).setValue(true);
+                memberDatabaseReference.child(firebaseUser.getUid()).setValue(true);
                 finish();
             }
         }
