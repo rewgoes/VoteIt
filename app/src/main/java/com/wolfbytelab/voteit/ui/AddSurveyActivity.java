@@ -1,9 +1,11 @@
 package com.wolfbytelab.voteit.ui;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.model.Survey;
+import com.wolfbytelab.voteit.util.FirebaseUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +31,8 @@ public class AddSurveyActivity extends AppCompatActivity {
     TextInputLayout mTitleInputLayout;
     @BindView(R.id.description)
     EditText mDescription;
+    @BindView(R.id.member)
+    EditText mMember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +92,16 @@ public class AddSurveyActivity extends AppCompatActivity {
                 surveyDatabaseReference.child(surveyKey).setValue(survey);
                 userDatabaseReference.child(surveyKey).setValue(true);
                 memberDatabaseReference.child(firebaseUser.getUid()).setValue(true);
+
+                //invite members
+                String inviteEmail = mMember.getText().toString();
+                if (!TextUtils.isEmpty(inviteEmail)) {
+                    String encodedEmail = FirebaseUtils.encodeAsFirebaseKey(inviteEmail);
+                    //TODO: use Uri.decode(encodedEmail) in order to present this value
+                    DatabaseReference inviteDatabaseReference = firebaseDatabase.getReference().child("invites").child(surveyKey);
+                    inviteDatabaseReference.child(encodedEmail).setValue(inviteEmail);
+                }
+
                 finish();
             }
         }

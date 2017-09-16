@@ -11,4 +11,5 @@
     <string name="end_date">End Date</string>
     <string name="end_time">End Time</string>
     <string name="create">Create</string>
+    <string name="members">Members</string>
 </resources>

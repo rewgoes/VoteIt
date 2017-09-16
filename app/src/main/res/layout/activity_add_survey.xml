@@ -83,5 +83,40 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
     </android.support.design.widget.TextInputLayout>
 
+    <TextView
+        android:id="@+id/members_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/members"
+        app:layout_constraintStart_toStartOf="@+id/end_date_input_layout"
+        app:layout_constraintTop_toBottomOf="@+id/end_date_input_layout"/>
+
+    <EditText
+        android:id="@+id/member"
+        android:inputType="textEmailAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Member email"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintEnd_toEndOf="@+id/end_time_input_layout"
+        app:layout_constraintEnd_toStartOf="@+id/remove_member"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="@+id/members_header"
+        app:layout_constraintTop_toBottomOf="@+id/members_header"/>
+
+    <ImageView
+        android:id="@+id/remove_member"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="@dimen/list_item_margin"
+        android:src="@drawable/ic_clear_black_24px"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/member"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/member"
+        app:layout_constraintTop_toTopOf="@+id/member"
+        tools:visibility="visible"/>
+
 
 </android.support.constraint.ConstraintLayout>

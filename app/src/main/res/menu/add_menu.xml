@@ -5,6 +5,6 @@
     <item
         android:id="@+id/create_menu"
         android:title="@string/create"
-        android:icon="@drawable/ic_add_black_24px"
+        android:icon="@drawable/ic_add_white_24px"
         app:showAsAction="always"/>
 </menu>
