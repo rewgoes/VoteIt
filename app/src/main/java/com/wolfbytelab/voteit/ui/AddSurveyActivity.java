@@ -1,6 +1,5 @@
 package com.wolfbytelab.voteit.ui;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +21,12 @@ import com.wolfbytelab.voteit.util.FirebaseUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.wolfbytelab.voteit.util.FirebaseUtils.INVITES_KEY;
+import static com.wolfbytelab.voteit.util.FirebaseUtils.INVITES_PER_USER_KEY;
+import static com.wolfbytelab.voteit.util.FirebaseUtils.MEMBERS_KEY;
+import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
+import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
 
 public class AddSurveyActivity extends AppCompatActivity {
 
@@ -77,8 +82,8 @@ public class AddSurveyActivity extends AppCompatActivity {
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             if (firebaseUser != null) { //user is logged in
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                DatabaseReference surveyDatabaseReference = firebaseDatabase.getReference().child("surveys");
-                DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child("surveys_per_user").child(firebaseUser.getUid());
+                DatabaseReference surveyDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_KEY);
+                DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(firebaseUser.getUid());
 
                 Survey survey = new Survey();
                 survey.title = mTitle.getText().toString();
@@ -87,7 +92,7 @@ public class AddSurveyActivity extends AppCompatActivity {
 
                 String surveyKey = surveyDatabaseReference.push().getKey();
 
-                DatabaseReference memberDatabaseReference = firebaseDatabase.getReference().child("members").child(surveyKey);
+                DatabaseReference memberDatabaseReference = firebaseDatabase.getReference().child(MEMBERS_KEY).child(surveyKey);
 
                 surveyDatabaseReference.child(surveyKey).setValue(survey);
                 userDatabaseReference.child(surveyKey).setValue(true);
@@ -98,8 +103,11 @@ public class AddSurveyActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(inviteEmail)) {
                     String encodedEmail = FirebaseUtils.encodeAsFirebaseKey(inviteEmail);
                     //TODO: use Uri.decode(encodedEmail) in order to present this value
-                    DatabaseReference inviteDatabaseReference = firebaseDatabase.getReference().child("invites").child(surveyKey);
+                    DatabaseReference inviteDatabaseReference = firebaseDatabase.getReference().child(INVITES_KEY).child(surveyKey);
                     inviteDatabaseReference.child(encodedEmail).setValue(inviteEmail);
+
+                    DatabaseReference invitePerUserDatabaseReference = firebaseDatabase.getReference().child(INVITES_PER_USER_KEY).child(encodedEmail);
+                    invitePerUserDatabaseReference.child(surveyKey).setValue(true);
                 }
 
                 finish();

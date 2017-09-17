@@ -16,12 +16,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wolfbytelab.voteit.BuildConfig;
 import com.wolfbytelab.voteit.R;
+import com.wolfbytelab.voteit.util.FirebaseUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import timber.log.Timber;
+
+import static com.wolfbytelab.voteit.util.FirebaseUtils.EMAIL_KEY;
+import static com.wolfbytelab.voteit.util.FirebaseUtils.ENCODED_EMAIL_KEY;
+import static com.wolfbytelab.voteit.util.FirebaseUtils.NAME_KEY;
+import static com.wolfbytelab.voteit.util.FirebaseUtils.USERS_KEY;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -115,10 +121,11 @@ public class SignInActivity extends AppCompatActivity {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Map<String, String> user = new HashMap<>();
-        user.put("name", firebaseUser.getDisplayName());
-        user.put("email", firebaseUser.getEmail());
+        user.put(NAME_KEY, firebaseUser.getDisplayName());
+        user.put(EMAIL_KEY, firebaseUser.getEmail());
+        user.put(ENCODED_EMAIL_KEY, FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail()));
 
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        database.child("users").child(firebaseUser.getUid()).setValue(user);
+        database.child(USERS_KEY).child(firebaseUser.getUid()).setValue(user);
     }
 }

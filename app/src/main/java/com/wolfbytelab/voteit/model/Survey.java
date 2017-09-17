@@ -13,4 +13,12 @@ public class Survey {
     public long startDate;
     public long endDate = Long.MAX_VALUE;
 
+    public Type type;
+
+    public enum Type {
+        OWNER,
+        INVITE,
+        MEMBER
+    }
+
 }
