@@ -51,7 +51,7 @@ public class SurveyListFragment extends Fragment {
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseDatabase = FirebaseUtils.getDatabase();
         mSurveyDatabaseReference = mFirebaseDatabase.getReference();
 
         ArrayList<Survey> surveys = new ArrayList<>();

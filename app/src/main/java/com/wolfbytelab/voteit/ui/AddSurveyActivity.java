@@ -121,7 +121,7 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
         if (isDataValid()) {
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             if (firebaseUser != null) { //user is logged in
-                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
                 DatabaseReference surveyDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_KEY);
                 DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(firebaseUser.getUid());
 

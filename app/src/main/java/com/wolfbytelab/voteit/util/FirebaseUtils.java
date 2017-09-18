@@ -1,6 +1,10 @@
 package com.wolfbytelab.voteit.util;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 public class FirebaseUtils {
+
+    private static FirebaseDatabase mDatabase;
 
     public static final String SURVEYS_PER_USER_KEY = "surveys_per_user";
     public static final String SURVEYS_KEY = "surveys";
@@ -11,6 +15,14 @@ public class FirebaseUtils {
     public static final String EMAIL_KEY = "email";
     public static final String NAME_KEY = "name";
     public static final String USERS_KEY = "users";
+
+    public static FirebaseDatabase getDatabase() {
+        if (mDatabase == null) {
+            mDatabase = FirebaseDatabase.getInstance();
+            mDatabase.setPersistenceEnabled(true);
+        }
+        return mDatabase;
+    }
 
     //Firebase Database paths must not contain '.', '#', '$', '[', or ']'
     public static String encodeAsFirebaseKey(String string) {
