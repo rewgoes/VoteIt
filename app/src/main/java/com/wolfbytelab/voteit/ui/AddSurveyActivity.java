@@ -1,8 +1,11 @@
 package com.wolfbytelab.voteit.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -10,14 +13,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wolfbytelab.voteit.R;
+import com.wolfbytelab.voteit.adapter.MemberAdapter;
 import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +35,9 @@ import static com.wolfbytelab.voteit.util.FirebaseUtils.MEMBERS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
 
-public class AddSurveyActivity extends AppCompatActivity {
+public class AddSurveyActivity extends AppCompatActivity implements MemberAdapter.RemoveItemListener {
+
+    private static final String STATE_MEMBERS = "state_members";
 
     @BindView(R.id.title)
     EditText mTitle;
@@ -36,8 +45,10 @@ public class AddSurveyActivity extends AppCompatActivity {
     TextInputLayout mTitleInputLayout;
     @BindView(R.id.description)
     EditText mDescription;
-    @BindView(R.id.member)
-    EditText mMember;
+    @BindView(R.id.members_view)
+    RecyclerView mMembersView;
+
+    private ArrayList<String> mMembers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +58,25 @@ public class AddSurveyActivity extends AppCompatActivity {
 
         mTitle.addTextChangedListener(new RequiredFieldTextWatcher(mTitleInputLayout));
         mTitle.setOnFocusChangeListener(new RequiredFieldFocusChangeListener(mTitleInputLayout));
+
+        if (savedInstanceState != null) {
+            mMembers = savedInstanceState.getStringArrayList(STATE_MEMBERS);
+        } else {
+            mMembers = new ArrayList<>();
+            mMembers.add("");
+        }
+
+        MemberAdapter memberAdapter = new MemberAdapter(mMembers, this);
+
+        mMembersView.setLayoutManager(new LinearLayoutManager(this));
+        mMembersView.setHasFixedSize(true);
+        mMembersView.setAdapter(memberAdapter);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(STATE_MEMBERS, mMembers);
     }
 
     @Override
@@ -74,6 +104,16 @@ public class AddSurveyActivity extends AppCompatActivity {
             isDataValid = false;
         }
 
+        for (String member : mMembers) {
+            if (!TextUtils.isEmpty(member)) {
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(member).matches()) {
+                    //TODO: show error message
+                    Toast.makeText(this, member, Toast.LENGTH_SHORT).show();
+                    isDataValid = false;
+                }
+            }
+        }
+
         return isDataValid;
     }
 
@@ -99,20 +139,32 @@ public class AddSurveyActivity extends AppCompatActivity {
                 memberDatabaseReference.child(firebaseUser.getUid()).setValue(true);
 
                 //invite members
-                String inviteEmail = mMember.getText().toString();
-                if (!TextUtils.isEmpty(inviteEmail)) {
-                    String encodedEmail = FirebaseUtils.encodeAsFirebaseKey(inviteEmail);
-                    //TODO: use Uri.decode(encodedEmail) in order to present this value
-                    DatabaseReference inviteDatabaseReference = firebaseDatabase.getReference().child(INVITES_KEY).child(surveyKey);
-                    inviteDatabaseReference.child(encodedEmail).setValue(inviteEmail);
+                for (String member : mMembers) {
+                    if (!TextUtils.isEmpty(member)) {
+                        String encodedEmail = FirebaseUtils.encodeAsFirebaseKey(member);
+                        //TODO: use Uri.decode(encodedEmail) in order to present this value
+                        DatabaseReference inviteDatabaseReference = firebaseDatabase.getReference().child(INVITES_KEY).child(surveyKey);
+                        inviteDatabaseReference.child(encodedEmail).setValue(member);
 
-                    DatabaseReference invitePerUserDatabaseReference = firebaseDatabase.getReference().child(INVITES_PER_USER_KEY).child(encodedEmail);
-                    invitePerUserDatabaseReference.child(surveyKey).setValue(true);
+                        DatabaseReference invitePerUserDatabaseReference = firebaseDatabase.getReference().child(INVITES_PER_USER_KEY).child(encodedEmail);
+                        invitePerUserDatabaseReference.child(surveyKey).setValue(true);
+                    }
                 }
 
                 finish();
             }
         }
+    }
+
+    @Override
+    public void onRemoveItemClicked(int position) {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMembersView.requestLayout();
+            }
+        }, 100);
     }
 
     private class RequiredFieldTextWatcher implements TextWatcher {
