@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.adapter.SurveyAdapter;
+import com.wolfbytelab.voteit.listener.SimpleChildEventListener;
 import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
 
@@ -30,18 +31,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.wolfbytelab.voteit.util.FirebaseUtils.INVITES_PER_USER_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
 
 public class SurveyListFragment extends Fragment {
 
+    private static final String STATE_SURVEYS = "state_surveys";
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mSurveyDatabaseReference;
     private SurveyAdapter mSurveyAdapter;
+    private ArrayList<Survey> mSurveys;
+    private ChildEventListener mSurveyChildEventListener;
 
     @Nullable
     @Override
@@ -54,87 +57,56 @@ public class SurveyListFragment extends Fragment {
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         mSurveyDatabaseReference = mFirebaseDatabase.getReference();
 
-        ArrayList<Survey> surveys = new ArrayList<>();
+        if (savedInstanceState != null) {
+            mSurveys = savedInstanceState.getParcelableArrayList(STATE_SURVEYS);
+        } else {
+            mSurveys = new ArrayList<>();
+        }
 
-        mSurveyAdapter = new SurveyAdapter(surveys, getContext());
+        mSurveyAdapter = new SurveyAdapter(mSurveys, getContext());
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mSurveyAdapter);
 
-        mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(firebaseUser.getUid()).addChildEventListener(new ChildEventListener() {
+        mSurveyChildEventListener = mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(firebaseUser.getUid()).addChildEventListener(new SimpleChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                // TODO: addValueEventListener for the items in the adapter
+                // Instead of creating a new survey in the list, update the one already in the list
                 mSurveyDatabaseReference.child(SURVEYS_KEY).child(dataSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Survey survey = dataSnapshot.getValue(Survey.class);
+                        survey.key = dataSnapshot.getKey();
                         if (TextUtils.equals(survey.owner, firebaseUser.getUid())) {
                             survey.type = Survey.Type.OWNER;
                         } else {
                             survey.type = Survey.Type.MEMBER;
                         }
-                        mSurveyAdapter.addSurvey(survey);
+
+                        int position = mSurveys.indexOf(survey);
+                        if (position == -1) { // does not contain item
+                            mSurveyAdapter.addSurvey(survey);
+                        }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        mSurveyDatabaseReference.child(INVITES_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                mSurveyDatabaseReference.child(SURVEYS_KEY).child(dataSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Survey survey = dataSnapshot.getValue(Survey.class);
-                        survey.type = Survey.Type.INVITE;
-                        mSurveyAdapter.addSurvey(survey);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mSurveyChildEventListener != null) {
+            mSurveyDatabaseReference.removeEventListener(mSurveyChildEventListener);
+        }
     }
 
     @OnClick(R.id.add_survey)
@@ -143,5 +115,9 @@ public class SurveyListFragment extends Fragment {
         startActivity(intent);
     }
 
-
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STATE_SURVEYS, mSurveys);
+    }
 }
