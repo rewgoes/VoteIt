@@ -116,16 +116,19 @@ public class SurveyListFragment extends Fragment {
         if (firebaseUser != null) {
             mSurveysListener = new ArrayList<>();
 
-            mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(firebaseUser.getUid()).addValueEventListener(new SimpleValueEventListener() {
+            mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addValueEventListener(new SimpleValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     surveyCount = dataSnapshot.getChildrenCount();
                 }
             });
-            mSurveyPerUserListener = mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(firebaseUser.getUid()).addChildEventListener(new SimpleChildEventListener() {
+            mSurveyPerUserListener = mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addChildEventListener(new SimpleChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot surveyKeySnapshot, String s) {
-                    SimpleValueEventListener simpleValueEventListener = new SimpleValueEventListener() {
+                    Bundle extras = new Bundle();
+                    extras.putBoolean("isMember", (boolean) surveyKeySnapshot.getValue());
+
+                    SimpleValueEventListener simpleValueEventListener = new SimpleValueEventListener(extras) {
                         @Override
                         public void onDataChange(DataSnapshot surveySnapshot) {
                             surveyCount--;
@@ -133,10 +136,20 @@ public class SurveyListFragment extends Fragment {
 
                             if (survey != null) {
                                 survey.key = surveySnapshot.getKey();
-                                if (TextUtils.equals(survey.owner, firebaseUser.getUid())) {
-                                    survey.type = Survey.Type.OWNER;
+
+                                boolean isMember = false;
+                                if (mExtras != null) {
+                                    isMember = mExtras.getBoolean("isMember");
+                                }
+
+                                if (isMember) {
+                                    if (TextUtils.equals(survey.owner, firebaseUser.getUid())) {
+                                        survey.type = Survey.Type.OWNER;
+                                    } else {
+                                        survey.type = Survey.Type.MEMBER;
+                                    }
                                 } else {
-                                    survey.type = Survey.Type.MEMBER;
+                                    survey.type = Survey.Type.INVITE;
                                 }
 
                                 int position = mSurveys.indexOf(survey);

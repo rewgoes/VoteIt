@@ -123,7 +123,7 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
             if (firebaseUser != null) { //user is logged in
                 FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
                 DatabaseReference surveyDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_KEY);
-                DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(firebaseUser.getUid());
+                DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail()));
 
                 Survey survey = new Survey();
                 survey.title = mTitle.getText().toString();
@@ -136,18 +136,17 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
 
                 surveyDatabaseReference.child(surveyKey).setValue(survey);
                 userDatabaseReference.child(surveyKey).setValue(true);
-                memberDatabaseReference.child(firebaseUser.getUid()).setValue(true);
+                memberDatabaseReference.child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).setValue(true);
 
                 //invite members
                 for (String member : mMembers) {
                     if (!TextUtils.isEmpty(member)) {
                         String encodedEmail = FirebaseUtils.encodeAsFirebaseKey(member);
                         //TODO: use Uri.decode(encodedEmail) in order to present this value
-                        DatabaseReference inviteDatabaseReference = firebaseDatabase.getReference().child(INVITES_KEY).child(surveyKey);
-                        inviteDatabaseReference.child(encodedEmail).setValue(member);
+                        memberDatabaseReference.child(encodedEmail).setValue(false);
 
-                        DatabaseReference invitePerUserDatabaseReference = firebaseDatabase.getReference().child(INVITES_PER_USER_KEY).child(encodedEmail);
-                        invitePerUserDatabaseReference.child(surveyKey).setValue(true);
+                        DatabaseReference invitePerUserDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(encodedEmail);
+                        invitePerUserDatabaseReference.child(surveyKey).setValue(false);
                     }
                 }
 
