@@ -125,7 +125,7 @@ public class SignInActivity extends AppCompatActivity {
         user.put(EMAIL_KEY, firebaseUser.getEmail());
         user.put(ENCODED_EMAIL_KEY, FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail()));
 
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference database = FirebaseUtils.getDatabase().getReference();
         database.child(USERS_KEY).child(firebaseUser.getUid()).setValue(user);
     }
 }
