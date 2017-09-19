@@ -69,14 +69,18 @@ public class MainActivity extends AppCompatActivity {
             fm.beginTransaction().add(mRetainedFragment, TAG_RETAINED_FRAGMENT).commit();
         }
 
+        if (savedInstanceState == null) {
+            fm.beginTransaction()
+                    .add(R.id.survey_list_container, new SurveyListFragment())
+                    .commit();
+        }
+
         if (findViewById(R.id.survey_detail_container) != null) {
             mTwoPane = true;
 
             if (savedInstanceState == null) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-
                 SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
-                fragmentManager.beginTransaction()
+                fm.beginTransaction()
                         .add(R.id.survey_detail_container, surveyDetailFragment)
                         .commit();
             }
