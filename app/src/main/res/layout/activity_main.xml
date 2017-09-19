@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/survey_list_fragment"
-    android:name="com.wolfbytelab.voteit.ui.SurveyListFragment"
+    android:id="@+id/survey_list_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.wolfbytelab.voteit.ui.MainActivity"/>

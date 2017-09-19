@@ -1,6 +1,5 @@
 package com.wolfbytelab.voteit.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.widget.TextView;
 
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.model.Survey;
-import com.wolfbytelab.voteit.util.DateUtils;
 
 import java.util.ArrayList;
 
@@ -19,11 +17,9 @@ import butterknife.ButterKnife;
 public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyViewHolder> {
 
     private ArrayList<Survey> mSurveys;
-    private Context mContext;
 
-    public SurveyAdapter(ArrayList<Survey> surveys, Context context) {
+    public SurveyAdapter(ArrayList<Survey> surveys) {
         mSurveys = surveys;
-        mContext = context;
     }
 
     @Override
@@ -44,21 +40,6 @@ public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyView
     @Override
     public int getItemCount() {
         return mSurveys == null ? 0 : mSurveys.size();
-    }
-
-    public void addSurvey(Survey survey) {
-        if (mSurveys == null) {
-            mSurveys = new ArrayList<>();
-        }
-        mSurveys.add(survey);
-        notifyItemInserted(mSurveys.size() - 1);
-    }
-
-    public void clear() {
-        if (mSurveys != null) {
-            mSurveys.clear();
-            notifyDataSetChanged();
-        }
     }
 
     class SurveyViewHolder extends RecyclerView.ViewHolder {

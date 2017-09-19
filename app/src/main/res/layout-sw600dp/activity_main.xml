@@ -7,9 +7,8 @@
     android:orientation="horizontal"
     tools:context="com.wolfbytelab.voteit.ui.MainActivity">
 
-    <fragment
-        android:id="@+id/survey_list_fragment"
-        android:name="com.wolfbytelab.voteit.ui.SurveyListFragment"
+    <FrameLayout
+        android:id="@+id/survey_list_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"/>
