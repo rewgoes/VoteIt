@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:fillViewport="true"
     android:layout_height="wrap_content"
+    android:fillViewport="true"
     tools:context="com.wolfbytelab.voteit.ui.AddSurveyActivity">
 
     <android.support.constraint.ConstraintLayout
@@ -29,6 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title"
+                android:inputType="text"
+                android:maxLength="@integer/title_max_length"
                 android:maxLines="1"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -46,7 +48,9 @@
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/description"/>
+                android:hint="@string/description"
+                android:inputType="text"
+                android:maxLength="@integer/description_max_length"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
