@@ -1,11 +1,8 @@
 package com.wolfbytelab.voteit.ui;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,8 +17,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wolfbytelab.voteit.R;
-import com.wolfbytelab.voteit.adapter.MemberAdapter;
+import com.wolfbytelab.voteit.model.Member;
 import com.wolfbytelab.voteit.model.Survey;
+import com.wolfbytelab.voteit.ui.editor.SectionView;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
 
 import java.util.ArrayList;
@@ -29,13 +27,11 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.wolfbytelab.voteit.util.FirebaseUtils.INVITES_KEY;
-import static com.wolfbytelab.voteit.util.FirebaseUtils.INVITES_PER_USER_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.MEMBERS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
 
-public class AddSurveyActivity extends AppCompatActivity implements MemberAdapter.RemoveItemListener {
+public class AddSurveyActivity extends AppCompatActivity {
 
     private static final String STATE_MEMBERS = "state_members";
 
@@ -45,8 +41,8 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
     TextInputLayout mTitleInputLayout;
     @BindView(R.id.description)
     EditText mDescription;
-    @BindView(R.id.members_view)
-    RecyclerView mMembersView;
+    @BindView(R.id.members)
+    SectionView mMembersLayout;
 
     private ArrayList<String> mMembers;
 
@@ -59,18 +55,16 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
         mTitle.addTextChangedListener(new RequiredFieldTextWatcher(mTitleInputLayout));
         mTitle.setOnFocusChangeListener(new RequiredFieldFocusChangeListener(mTitleInputLayout));
 
+//        if (savedInstanceState == null) {
+            mMembersLayout.addEditorView(new Member());
+//        }
+
         if (savedInstanceState != null) {
             mMembers = savedInstanceState.getStringArrayList(STATE_MEMBERS);
         } else {
             mMembers = new ArrayList<>();
             mMembers.add("");
         }
-
-        MemberAdapter memberAdapter = new MemberAdapter(mMembers, this);
-
-        mMembersView.setLayoutManager(new LinearLayoutManager(this));
-        mMembersView.setHasFixedSize(true);
-        mMembersView.setAdapter(memberAdapter);
     }
 
     @Override
@@ -153,17 +147,6 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
                 finish();
             }
         }
-    }
-
-    @Override
-    public void onRemoveItemClicked(int position) {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mMembersView.requestLayout();
-            }
-        }, 100);
     }
 
     private class RequiredFieldTextWatcher implements TextWatcher {

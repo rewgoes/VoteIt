@@ -75,7 +75,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     }
 
     class MemberViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.member_email)
+//        @BindView(R.id.member_email)
         TextView memberEmail;
         @BindView(R.id.remove_member)
         ImageView removeMember;
