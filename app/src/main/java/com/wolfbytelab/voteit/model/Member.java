@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.ui.editor.Editable;
 import com.wolfbytelab.voteit.ui.editor.SectionView;
@@ -28,6 +30,11 @@ public class Member implements Editable {
         email = in.readString();
         isValid = in.readInt() == 1;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
 
     @Override
     public int describeContents() {
@@ -111,12 +118,17 @@ public class Member implements Editable {
 
     @Override
     public boolean isValid() {
-        email = ((EditText) mView.findViewWithTag(mView.getContext().getString(R.string.tag_email))).getText().toString();
-        if (!TextUtils.isEmpty(email)) {
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                isValid = false;
-                ((TextInputLayout) mView.findViewWithTag(mView.getContext().getString(R.string.email_text_input))).setError(mView.getContext().getString(R.string.invalid_email));
-                return false;
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser == null) {
+            return false;
+        } else {
+            email = ((EditText) mView.findViewWithTag(mView.getContext().getString(R.string.tag_email))).getText().toString();
+            if (!TextUtils.isEmpty(email)) {
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() || TextUtils.equals(firebaseUser.getEmail(), email)) {
+                    isValid = false;
+                    ((TextInputLayout) mView.findViewWithTag(mView.getContext().getString(R.string.email_text_input))).setError(mView.getContext().getString(R.string.invalid_email));
+                    return false;
+                }
             }
         }
         return true;

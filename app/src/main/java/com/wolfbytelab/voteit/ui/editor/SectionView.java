@@ -145,7 +145,7 @@ public class SectionView extends LinearLayout {
                 };
     }
 
-    public ArrayList<Editable> getData() {
+    public ArrayList<? extends Editable> getData() {
         if (isDataValid()) {
             return mChildren;
         } else {
@@ -156,7 +156,9 @@ public class SectionView extends LinearLayout {
     private boolean isDataValid() {
         boolean isValid = true;
         for (int i = 0; i < mChildren.size(); i++) {
-            isValid = mChildren.get(i).isValid();
+            if (!mChildren.get(i).isValid()) {
+                isValid = false;
+            }
         }
         return isValid;
     }
