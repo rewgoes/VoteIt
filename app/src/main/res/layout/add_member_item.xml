@@ -9,7 +9,7 @@
     android:layout_marginTop="@dimen/list_item_margin">
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/member_email_textinput"
+        android:tag="@string/email_text_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:hintEnabled="false"

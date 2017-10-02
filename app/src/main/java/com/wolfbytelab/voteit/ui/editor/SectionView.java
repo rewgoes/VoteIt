@@ -144,4 +144,20 @@ public class SectionView extends LinearLayout {
                     }
                 };
     }
+
+    public ArrayList<Editable> getData() {
+        if (isDataValid()) {
+            return mChildren;
+        } else {
+            return null;
+        }
+    }
+
+    private boolean isDataValid() {
+        boolean isValid = true;
+        for (int i = 0; i < mChildren.size(); i++) {
+            isValid = mChildren.get(i).isValid();
+        }
+        return isValid;
+    }
 }

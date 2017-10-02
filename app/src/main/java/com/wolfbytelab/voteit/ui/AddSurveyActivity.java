@@ -44,7 +44,7 @@ public class AddSurveyActivity extends AppCompatActivity {
     @BindView(R.id.members)
     SectionView mMembersLayout;
 
-    private ArrayList<String> mMembers;
+    private ArrayList<com.wolfbytelab.voteit.ui.editor.Editable> mMembers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,19 +58,12 @@ public class AddSurveyActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             mMembersLayout.addEditorView(new Member(mMembersLayout));
         }
-
-        if (savedInstanceState != null) {
-            mMembers = savedInstanceState.getStringArrayList(STATE_MEMBERS);
-        } else {
-            mMembers = new ArrayList<>();
-            mMembers.add("");
-        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList(STATE_MEMBERS, mMembers);
+        outState.putString(STATE_MEMBERS, "");
     }
 
     @Override
@@ -98,14 +91,9 @@ public class AddSurveyActivity extends AppCompatActivity {
             isDataValid = false;
         }
 
-        for (String member : mMembers) {
-            if (!TextUtils.isEmpty(member)) {
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(member).matches()) {
-                    //TODO: show error message
-                    Toast.makeText(this, member, Toast.LENGTH_SHORT).show();
-                    isDataValid = false;
-                }
-            }
+        mMembers = mMembersLayout.getData();
+        if (mMembers == null) {
+            isDataValid = false;
         }
 
         return isDataValid;
@@ -132,17 +120,7 @@ public class AddSurveyActivity extends AppCompatActivity {
                 userDatabaseReference.child(surveyKey).setValue(true);
                 memberDatabaseReference.child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).setValue(true);
 
-                //invite members
-                for (String member : mMembers) {
-                    if (!TextUtils.isEmpty(member)) {
-                        String encodedEmail = FirebaseUtils.encodeAsFirebaseKey(member);
-                        //TODO: use Uri.decode(encodedEmail) in order to present this value
-                        memberDatabaseReference.child(encodedEmail).setValue(false);
 
-                        DatabaseReference invitePerUserDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(encodedEmail);
-                        invitePerUserDatabaseReference.child(surveyKey).setValue(false);
-                    }
-                }
 
                 finish();
             }

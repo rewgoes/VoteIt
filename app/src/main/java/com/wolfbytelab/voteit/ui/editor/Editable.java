@@ -9,4 +9,6 @@ public interface Editable extends Parcelable {
     void saveState();
 
     void setParent(SectionView sectionView);
+
+    boolean isValid();
 }
