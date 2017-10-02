@@ -4,9 +4,9 @@ import android.os.Parcelable;
 import android.view.ViewGroup;
 
 public interface Editable extends Parcelable {
-    void fillView(ViewGroup view, boolean isLatest);
+    void fillView(ViewGroup view, int position);
 
     void saveState();
 
-    void setParent(OnUpdateViewListener sectionView);
+    void setParent(SectionView sectionView);
 }

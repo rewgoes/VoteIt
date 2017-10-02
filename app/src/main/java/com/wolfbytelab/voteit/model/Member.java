@@ -10,15 +10,16 @@ import android.widget.ImageView;
 
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.ui.editor.Editable;
-import com.wolfbytelab.voteit.ui.editor.OnUpdateViewListener;
+import com.wolfbytelab.voteit.ui.editor.SectionView;
 
 public class Member implements Editable {
 
     private ViewGroup mView;
     private String email;
-    private OnUpdateViewListener mParent;
+    private SectionView mParent;
+    private int mPosition;
 
-    public Member(OnUpdateViewListener parent) {
+    public Member(SectionView parent) {
         mParent = parent;
     }
 
@@ -49,13 +50,14 @@ public class Member implements Editable {
     };
 
     @Override
-    public void fillView(ViewGroup view, boolean isLatest) {
+    public void fillView(ViewGroup view, int position) {
         mView = view;
+        mPosition = position;
 
-        final EditText emailView = mView.findViewWithTag(view.getContext().getString(R.string.tag_email));
+        EditText emailView = mView.findViewWithTag(view.getContext().getString(R.string.tag_email));
         emailView.setText(email);
 
-        if (isLatest) {
+        if (position == mParent.getSize() - 1) {
             emailView.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -63,10 +65,9 @@ public class Member implements Editable {
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    if (!TextUtils.isEmpty(charSequence)) {
-                        mParent.addView(new Member(mParent));
+                    if (mPosition == mParent.getSize() - 1 && !TextUtils.isEmpty(charSequence)) {
+                        mParent.addEditorView(new Member(mParent));
                         mView.findViewById(R.id.remove_member).setVisibility(View.VISIBLE);
-                        emailView.removeTextChangedListener(this);
                     }
                 }
 
@@ -84,7 +85,7 @@ public class Member implements Editable {
             }
         });
 
-        if (!isLatest) {
+        if (position != mParent.getSize() - 1) {
             deleteView.setVisibility(View.VISIBLE);
         }
     }
@@ -96,7 +97,7 @@ public class Member implements Editable {
     }
 
     @Override
-    public void setParent(OnUpdateViewListener parent) {
+    public void setParent(SectionView parent) {
         mParent = parent;
     }
 }

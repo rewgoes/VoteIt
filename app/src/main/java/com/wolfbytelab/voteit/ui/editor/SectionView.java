@@ -3,11 +3,9 @@ package com.wolfbytelab.voteit.ui.editor;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -17,7 +15,7 @@ import com.wolfbytelab.voteit.R;
 
 import java.util.ArrayList;
 
-public class SectionView extends LinearLayout implements OnUpdateViewListener {
+public class SectionView extends LinearLayout {
     private int mLayout;
     private ArrayList<Editable> mChildren = new ArrayList<>();
     private boolean isRestoring = false;
@@ -35,12 +33,6 @@ public class SectionView extends LinearLayout implements OnUpdateViewListener {
     public SectionView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         loadLayout(context, attrs, defStyleAttr, 0);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public SectionView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        loadLayout(context, attrs, defStyleAttr, defStyleRes);
     }
 
     private void loadLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -98,7 +90,7 @@ public class SectionView extends LinearLayout implements OnUpdateViewListener {
         for (int i = 0; i < mChildren.size(); i++) {
             ViewGroup view = addEditorView(mChildren.get(i));
             mChildren.get(i).setParent(this);
-            mChildren.get(i).fillView(view, mChildren.size() - 1 == i);
+            mChildren.get(i).fillView(view, i);
         }
 
         isRestoring = false;
@@ -109,17 +101,15 @@ public class SectionView extends LinearLayout implements OnUpdateViewListener {
         addView(view);
         if (!isRestoring) {
             mChildren.add(child);
-            child.fillView(view, true);
+            child.fillView(view, mChildren.size() - 1);
         }
         return view;
     }
 
-    @Override
-    public void addView(Editable editable) {
-        addEditorView(editable);
+    public int getSize() {
+        return mChildren.size();
     }
 
-    @Override
     public void removeViewGroup(Editable child, ViewGroup viewGroup) {
         mChildren.remove(child);
         removeView(viewGroup);

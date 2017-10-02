@@ -149,10 +149,6 @@ public class AddSurveyActivity extends AppCompatActivity {
         }
     }
 
-    public void addView(View view) {
-        mMembersLayout.addEditorView(new Member(mMembersLayout));
-    }
-
     private class RequiredFieldTextWatcher implements TextWatcher {
 
         TextInputLayout mTextInputLayout;
