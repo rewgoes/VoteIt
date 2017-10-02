@@ -41,6 +41,9 @@ dependencies {
 
     compile "com.firebaseui:firebase-ui-auth:$firebase_ui_version"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
 }
 
 

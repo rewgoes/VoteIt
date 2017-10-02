@@ -21,6 +21,7 @@ allprojects {
         timber_version = '4.5.1'
         firebase_version = '11.2.2'
         firebase_ui_version = '2.3.0'
+        leakcanary_version = '1.5.4'
     }
 
     repositories {

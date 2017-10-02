@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fillViewport="true"
     tools:context="com.wolfbytelab.voteit.ui.AddSurveyActivity">
 
     <android.support.constraint.ConstraintLayout
@@ -102,14 +101,15 @@
             app:layout_constraintStart_toStartOf="@+id/end_date_input_layout"
             app:layout_constraintTop_toBottomOf="@+id/end_date_input_layout"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/members_view"
+        <com.wolfbytelab.voteit.ui.editor.SectionView
+            android:id="@+id/members"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/end_time_input_layout"
-            app:layout_constraintHorizontal_weight="1"
+            android:orientation="vertical"
+            app:childrenLayout="@layout/add_member_item"
+            app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
             app:layout_constraintStart_toStartOf="@+id/members_header"
             app:layout_constraintTop_toBottomOf="@+id/members_header"/>
 
     </android.support.constraint.ConstraintLayout>
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>

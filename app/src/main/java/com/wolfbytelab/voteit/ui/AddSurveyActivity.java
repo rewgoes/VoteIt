@@ -1,11 +1,8 @@
 package com.wolfbytelab.voteit.ui;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -13,15 +10,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wolfbytelab.voteit.R;
-import com.wolfbytelab.voteit.adapter.MemberAdapter;
+import com.wolfbytelab.voteit.model.Member;
 import com.wolfbytelab.voteit.model.Survey;
+import com.wolfbytelab.voteit.ui.editor.SectionView;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
 
 import java.util.ArrayList;
@@ -29,15 +26,11 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.wolfbytelab.voteit.util.FirebaseUtils.INVITES_KEY;
-import static com.wolfbytelab.voteit.util.FirebaseUtils.INVITES_PER_USER_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.MEMBERS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
 
-public class AddSurveyActivity extends AppCompatActivity implements MemberAdapter.RemoveItemListener {
-
-    private static final String STATE_MEMBERS = "state_members";
+public class AddSurveyActivity extends AppCompatActivity {
 
     @BindView(R.id.title)
     EditText mTitle;
@@ -45,10 +38,10 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
     TextInputLayout mTitleInputLayout;
     @BindView(R.id.description)
     EditText mDescription;
-    @BindView(R.id.members_view)
-    RecyclerView mMembersView;
+    @BindView(R.id.members)
+    SectionView mMembersLayout;
 
-    private ArrayList<String> mMembers;
+    private ArrayList<Member> mMembers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,24 +52,9 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
         mTitle.addTextChangedListener(new RequiredFieldTextWatcher(mTitleInputLayout));
         mTitle.setOnFocusChangeListener(new RequiredFieldFocusChangeListener(mTitleInputLayout));
 
-        if (savedInstanceState != null) {
-            mMembers = savedInstanceState.getStringArrayList(STATE_MEMBERS);
-        } else {
-            mMembers = new ArrayList<>();
-            mMembers.add("");
+        if (savedInstanceState == null) {
+            mMembersLayout.addEditorView(new Member());
         }
-
-        MemberAdapter memberAdapter = new MemberAdapter(mMembers, this);
-
-        mMembersView.setLayoutManager(new LinearLayoutManager(this));
-        mMembersView.setHasFixedSize(true);
-        mMembersView.setAdapter(memberAdapter);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putStringArrayList(STATE_MEMBERS, mMembers);
     }
 
     @Override
@@ -104,14 +82,10 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
             isDataValid = false;
         }
 
-        for (String member : mMembers) {
-            if (!TextUtils.isEmpty(member)) {
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(member).matches()) {
-                    //TODO: show error message
-                    Toast.makeText(this, member, Toast.LENGTH_SHORT).show();
-                    isDataValid = false;
-                }
-            }
+        //noinspection unchecked
+        mMembers = (ArrayList<Member>) mMembersLayout.getData();
+        if (mMembers == null) {
+            isDataValid = false;
         }
 
         return isDataValid;
@@ -138,10 +112,9 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
                 userDatabaseReference.child(surveyKey).setValue(true);
                 memberDatabaseReference.child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).setValue(true);
 
-                //invite members
-                for (String member : mMembers) {
-                    if (!TextUtils.isEmpty(member)) {
-                        String encodedEmail = FirebaseUtils.encodeAsFirebaseKey(member);
+                for (Member member : mMembers) {
+                    if (!TextUtils.isEmpty(member.getEmail())) {
+                        String encodedEmail = FirebaseUtils.encodeAsFirebaseKey(member.getEmail());
                         //TODO: use Uri.decode(encodedEmail) in order to present this value
                         memberDatabaseReference.child(encodedEmail).setValue(false);
 
@@ -153,17 +126,6 @@ public class AddSurveyActivity extends AppCompatActivity implements MemberAdapte
                 finish();
             }
         }
-    }
-
-    @Override
-    public void onRemoveItemClicked(int position) {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mMembersView.requestLayout();
-            }
-        }, 100);
     }
 
     private class RequiredFieldTextWatcher implements TextWatcher {
