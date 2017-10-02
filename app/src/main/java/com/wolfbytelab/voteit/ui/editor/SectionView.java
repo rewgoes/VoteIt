@@ -87,13 +87,27 @@ public class SectionView extends LinearLayout {
 
         mChildren = ss.children;
 
+        int focusPos = -1;
+
         for (int i = 0; i < mChildren.size(); i++) {
             ViewGroup view = addEditorView(mChildren.get(i));
             mChildren.get(i).setParent(this);
-            mChildren.get(i).fillView(this, view, i);
+            mChildren.get(i).fillView(this, view);
+            if (mChildren.get(i).hasFocus()) {
+                focusPos = i;
+            }
         }
 
         isRestoring = false;
+
+        if (focusPos != -1) {
+            mChildren.get(focusPos).requestFocus();
+        }
+    }
+
+    @Override
+    public boolean restoreDefaultFocus() {
+        return false;
     }
 
     public ViewGroup addEditorView(Editable child) {
@@ -101,13 +115,17 @@ public class SectionView extends LinearLayout {
         addView(view);
         if (!isRestoring) {
             mChildren.add(child);
-            child.fillView(this, view, mChildren.size() - 1);
+            child.fillView(this, view);
         }
         return view;
     }
 
     public int getSize() {
         return mChildren.size();
+    }
+
+    public int getIndexOf(Editable editable) {
+        return mChildren.indexOf(editable);
     }
 
     public void removeViewGroup(Editable child, ViewGroup viewGroup) {

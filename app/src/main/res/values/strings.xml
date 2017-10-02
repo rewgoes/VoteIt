@@ -15,6 +15,4 @@
     <string name="member_email">Member email</string>
     <string name="remove_member">Remove member</string>
     <string name="invalid_email">Invalid email</string>
-    <string name="tag_email" translatable="false">email</string>
-    <string name="email_text_input" translatable="false">email_text_input</string>
 </resources>

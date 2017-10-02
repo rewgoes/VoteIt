@@ -82,6 +82,7 @@ public class AddSurveyActivity extends AppCompatActivity {
             isDataValid = false;
         }
 
+        //noinspection unchecked
         mMembers = (ArrayList<Member>) mMembersLayout.getData();
         if (mMembers == null) {
             isDataValid = false;

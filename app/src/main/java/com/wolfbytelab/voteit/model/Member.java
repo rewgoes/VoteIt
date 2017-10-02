@@ -20,8 +20,9 @@ public class Member implements Editable {
     private ViewGroup mView;
     private String email;
     private SectionView mParent;
-    private int mPosition;
     private boolean isValid = true;
+    private boolean hasFocus = false;
+    private int selectionPos;
 
     public Member() {
     }
@@ -29,6 +30,8 @@ public class Member implements Editable {
     private Member(Parcel in) {
         email = in.readString();
         isValid = in.readInt() == 1;
+        hasFocus = in.readInt() == 1;
+        selectionPos = in.readInt();
     }
 
     public String getEmail() {
@@ -45,6 +48,8 @@ public class Member implements Editable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(email);
         parcel.writeInt(isValid ? 1 : 0);
+        parcel.writeInt(hasFocus ? 1 : 0);
+        parcel.writeInt(selectionPos);
     }
 
     public static final Creator<Member> CREATOR = new Creator<Member>() {
@@ -60,16 +65,20 @@ public class Member implements Editable {
     };
 
     @Override
-    public void fillView(SectionView parent, ViewGroup view, int position) {
+    public boolean hasFocus() {
+        return hasFocus;
+    }
+
+    @Override
+    public void fillView(SectionView parent, ViewGroup view) {
         mParent = parent;
         mView = view;
-        mPosition = position;
 
         if (!isValid) {
-            ((TextInputLayout) mView.findViewWithTag(mView.getContext().getString(R.string.email_text_input))).setError(mView.getContext().getString(R.string.invalid_email));
+            ((TextInputLayout) mView.findViewById(R.id.member_email_textinput)).setError(mView.getContext().getString(R.string.invalid_email));
         }
 
-        EditText emailView = mView.findViewWithTag(view.getContext().getString(R.string.tag_email));
+        EditText emailView = mView.findViewById(R.id.member_email);
         emailView.setText(email);
 
         emailView.addTextChangedListener(new TextWatcher() {
@@ -79,11 +88,11 @@ public class Member implements Editable {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (mPosition == mParent.getSize() - 1 && !TextUtils.isEmpty(charSequence)) {
+                if (mParent.getIndexOf(Member.this) == mParent.getSize() - 1 && !TextUtils.isEmpty(charSequence)) {
                     mParent.addEditorView(new Member());
                     mView.findViewById(R.id.remove_member).setVisibility(View.VISIBLE);
                 }
-                ((TextInputLayout) mView.findViewWithTag(mView.getContext().getString(R.string.email_text_input))).setErrorEnabled(false);
+                ((TextInputLayout) mView.findViewById(R.id.member_email_textinput)).setErrorEnabled(false);
                 isValid = true;
             }
 
@@ -100,14 +109,17 @@ public class Member implements Editable {
             }
         });
 
-        if (position != mParent.getSize() - 1) {
+        if (mParent.getIndexOf(Member.this) != mParent.getSize() - 1) {
             deleteView.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void saveState() {
-        email = ((EditText) mView.findViewWithTag(mView.getContext().getString(R.string.tag_email))).getText().toString();
+        EditText emailView = mView.findViewById(R.id.member_email);
+        hasFocus = emailView.hasFocus();
+        selectionPos = emailView.getSelectionStart();
+        email = emailView.getText().toString();
         mParent = null;
     }
 
@@ -122,15 +134,27 @@ public class Member implements Editable {
         if (firebaseUser == null) {
             return false;
         } else {
-            email = ((EditText) mView.findViewWithTag(mView.getContext().getString(R.string.tag_email))).getText().toString();
+            email = ((EditText) mView.findViewById(R.id.member_email)).getText().toString();
             if (!TextUtils.isEmpty(email)) {
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() || TextUtils.equals(firebaseUser.getEmail(), email)) {
                     isValid = false;
-                    ((TextInputLayout) mView.findViewWithTag(mView.getContext().getString(R.string.email_text_input))).setError(mView.getContext().getString(R.string.invalid_email));
+                    ((TextInputLayout) mView.findViewById(R.id.member_email_textinput)).setError(mView.getContext().getString(R.string.invalid_email));
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    @Override
+    public void requestFocus() {
+        mView.findViewById(R.id.member_email).post(new Runnable() {
+            @Override
+            public void run() {
+                EditText emailView = mView.findViewById(R.id.member_email);
+                emailView.requestFocus();
+                emailView.setSelection(selectionPos);
+            }
+        });
     }
 }

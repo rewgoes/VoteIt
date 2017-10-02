@@ -9,9 +9,10 @@
     android:layout_marginTop="@dimen/list_item_margin">
 
     <android.support.design.widget.TextInputLayout
-        android:tag="@string/email_text_input"
+        android:id="@+id/member_email_textinput"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:saveEnabled="false"
         app:hintEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/remove_member"
@@ -19,11 +20,12 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <EditText
+            android:id="@+id/member_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/member_email"
             android:inputType="textEmailAddress"
-            android:tag="@string/tag_email"
+            android:saveEnabled="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     </android.support.design.widget.TextInputLayout>
