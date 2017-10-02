@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.wolfbytelab.voteit.R;
@@ -88,25 +88,25 @@ public class SectionView extends LinearLayout {
             return;
         }
 
-        isRestoring = true;
-
         SavedState ss = (SavedState) state;
+
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        isRestoring = true;
 
         mNumChildren = ss.numMemberChildren;
         mChildren = ss.children;
 
         for (int i = 0; i < mNumChildren; i++) {
-            View view = addEditorView(mChildren.get(i));
+            ViewGroup view = addEditorView(mChildren.get(i));
             mChildren.get(i).fillView(view);
         }
 
         isRestoring = false;
-
-        super.onRestoreInstanceState(ss.getSuperState());
     }
 
-    public View addEditorView(Editable child) {
-        final View view = mLayoutInflater.inflate(mLayout, this, false);
+    public ViewGroup addEditorView(Editable child) {
+        final ViewGroup view = (ViewGroup) mLayoutInflater.inflate(mLayout, this, false);
         addView(view);
         if (!isRestoring) {
             mNumChildren++;

@@ -15,7 +15,6 @@ import com.wolfbytelab.voteit.R;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberViewHolder> {
@@ -75,9 +74,9 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     }
 
     class MemberViewHolder extends RecyclerView.ViewHolder {
-//        @BindView(R.id.member_email)
+        //        @BindView(R.id.member_email)
         TextView memberEmail;
-        @BindView(R.id.remove_member)
+        //        @BindView(R.id.remove_member)
         ImageView removeMember;
         EditTextListener textListener;
         ViewHolderClickListener clickListener;

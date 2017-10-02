@@ -112,5 +112,13 @@
             app:layout_constraintStart_toStartOf="@+id/members_header"
             app:layout_constraintTop_toBottomOf="@+id/members_header"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="addView"
+            android:text="Add view"
+            app:layout_constraintStart_toStartOf="@id/members"
+            app:layout_constraintTop_toBottomOf="@id/members"/>
+
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

@@ -1,14 +1,14 @@
 package com.wolfbytelab.voteit.model;
 
 import android.os.Parcel;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.wolfbytelab.voteit.R;
 
 public class Member implements Editable {
 
-    private View mView;
+    private ViewGroup mView;
     private String email;
 
     public Member() {
@@ -42,13 +42,13 @@ public class Member implements Editable {
     };
 
     @Override
-    public void fillView(View view) {
+    public void fillView(ViewGroup view) {
         mView = view;
-        ((EditText) mView.findViewById(R.id.member_email)).setText(email);
+        ((EditText) mView.findViewWithTag(view.getContext().getString(R.string.tag_email))).setText(email);
     }
 
     @Override
     public void saveState() {
-        email = ((EditText) mView.findViewById(R.id.member_email)).getText().toString();
+        email = ((EditText) mView.findViewWithTag(mView.getContext().getString(R.string.tag_email))).getText().toString();
     }
 }

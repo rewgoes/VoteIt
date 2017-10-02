@@ -1,10 +1,10 @@
 package com.wolfbytelab.voteit.model;
 
 import android.os.Parcelable;
-import android.view.View;
+import android.view.ViewGroup;
 
 public interface Editable extends Parcelable {
-    void fillView(View view);
+    void fillView(ViewGroup view);
 
     void saveState();
 }
