@@ -1,5 +1,6 @@
 package com.wolfbytelab.voteit.ui.editor;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
@@ -13,13 +14,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.wolfbytelab.voteit.R;
-import com.wolfbytelab.voteit.model.Editable;
 
 import java.util.ArrayList;
 
-public class SectionView extends LinearLayout {
+public class SectionView extends LinearLayout implements OnUpdateViewListener {
     private int mLayout;
-    private int mNumChildren;
     private ArrayList<Editable> mChildren = new ArrayList<>();
     private boolean isRestoring = false;
     private LayoutInflater mLayoutInflater;
@@ -62,6 +61,8 @@ public class SectionView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mLayoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutTransition transition = new LayoutTransition();
+        setLayoutTransition(transition);
     }
 
     @Override
@@ -70,9 +71,7 @@ public class SectionView extends LinearLayout {
 
         SavedState ss = new SavedState(superState);
 
-        ss.numMemberChildren = mNumChildren;
-
-        for (int i = 0; i < mNumChildren; i++) {
+        for (int i = 0; i < mChildren.size(); i++) {
             mChildren.get(i).saveState();
         }
 
@@ -94,12 +93,12 @@ public class SectionView extends LinearLayout {
 
         isRestoring = true;
 
-        mNumChildren = ss.numMemberChildren;
         mChildren = ss.children;
 
-        for (int i = 0; i < mNumChildren; i++) {
+        for (int i = 0; i < mChildren.size(); i++) {
             ViewGroup view = addEditorView(mChildren.get(i));
-            mChildren.get(i).fillView(view);
+            mChildren.get(i).setParent(this);
+            mChildren.get(i).fillView(view, mChildren.size() - 1 == i);
         }
 
         isRestoring = false;
@@ -109,15 +108,24 @@ public class SectionView extends LinearLayout {
         final ViewGroup view = (ViewGroup) mLayoutInflater.inflate(mLayout, this, false);
         addView(view);
         if (!isRestoring) {
-            mNumChildren++;
             mChildren.add(child);
-            child.fillView(view);
+            child.fillView(view, true);
         }
         return view;
     }
 
+    @Override
+    public void addView(Editable editable) {
+        addEditorView(editable);
+    }
+
+    @Override
+    public void removeViewGroup(Editable child, ViewGroup viewGroup) {
+        mChildren.remove(child);
+        removeView(viewGroup);
+    }
+
     private static class SavedState extends BaseSavedState {
-        int numMemberChildren;
         ArrayList<Editable> children;
 
         SavedState(Parcelable superState) {
@@ -126,14 +134,12 @@ public class SectionView extends LinearLayout {
 
         private SavedState(Parcel in) {
             super(in);
-            numMemberChildren = in.readInt();
             in.readList(children, null);
         }
 
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            out.writeInt(numMemberChildren);
             out.writeTypedList(children);
         }
 

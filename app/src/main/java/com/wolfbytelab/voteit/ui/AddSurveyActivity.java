@@ -56,7 +56,7 @@ public class AddSurveyActivity extends AppCompatActivity {
         mTitle.setOnFocusChangeListener(new RequiredFieldFocusChangeListener(mTitleInputLayout));
 
         if (savedInstanceState == null) {
-            mMembersLayout.addEditorView(new Member());
+            mMembersLayout.addEditorView(new Member(mMembersLayout));
         }
 
         if (savedInstanceState != null) {
@@ -150,7 +150,7 @@ public class AddSurveyActivity extends AppCompatActivity {
     }
 
     public void addView(View view) {
-        mMembersLayout.addEditorView(new Member());
+        mMembersLayout.addEditorView(new Member(mMembersLayout));
     }
 
     private class RequiredFieldTextWatcher implements TextWatcher {
