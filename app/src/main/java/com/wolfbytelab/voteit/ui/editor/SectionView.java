@@ -90,7 +90,7 @@ public class SectionView extends LinearLayout {
         for (int i = 0; i < mChildren.size(); i++) {
             ViewGroup view = addEditorView(mChildren.get(i));
             mChildren.get(i).setParent(this);
-            mChildren.get(i).fillView(view, i);
+            mChildren.get(i).fillView(this, view, i);
         }
 
         isRestoring = false;
@@ -101,7 +101,7 @@ public class SectionView extends LinearLayout {
         addView(view);
         if (!isRestoring) {
             mChildren.add(child);
-            child.fillView(view, mChildren.size() - 1);
+            child.fillView(this, view, mChildren.size() - 1);
         }
         return view;
     }

@@ -4,7 +4,7 @@ import android.os.Parcelable;
 import android.view.ViewGroup;
 
 public interface Editable extends Parcelable {
-    void fillView(ViewGroup view, int position);
+    void fillView(SectionView parent, ViewGroup view, int position);
 
     void saveState();
 

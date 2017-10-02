@@ -56,7 +56,7 @@ public class AddSurveyActivity extends AppCompatActivity {
         mTitle.setOnFocusChangeListener(new RequiredFieldFocusChangeListener(mTitleInputLayout));
 
         if (savedInstanceState == null) {
-            mMembersLayout.addEditorView(new Member(mMembersLayout));
+            mMembersLayout.addEditorView(new Member());
         }
     }
 

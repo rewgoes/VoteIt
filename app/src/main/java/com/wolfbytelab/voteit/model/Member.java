@@ -21,8 +21,7 @@ public class Member implements Editable {
     private int mPosition;
     private boolean isValid = true;
 
-    public Member(SectionView parent) {
-        mParent = parent;
+    public Member() {
     }
 
     private Member(Parcel in) {
@@ -54,7 +53,8 @@ public class Member implements Editable {
     };
 
     @Override
-    public void fillView(ViewGroup view, int position) {
+    public void fillView(SectionView parent, ViewGroup view, int position) {
+        mParent = parent;
         mView = view;
         mPosition = position;
 
@@ -73,7 +73,7 @@ public class Member implements Editable {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (mPosition == mParent.getSize() - 1 && !TextUtils.isEmpty(charSequence)) {
-                    mParent.addEditorView(new Member(mParent));
+                    mParent.addEditorView(new Member());
                     mView.findViewById(R.id.remove_member).setVisibility(View.VISIBLE);
                 }
                 ((TextInputLayout) mView.findViewWithTag(mView.getContext().getString(R.string.email_text_input))).setErrorEnabled(false);
