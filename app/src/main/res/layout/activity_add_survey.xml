@@ -21,7 +21,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/title_max_length">
 
             <EditText
                 android:id="@+id/title"
@@ -41,7 +43,9 @@
             app:layout_constraintEnd_toEndOf="@+id/title_input_layout"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="@+id/title_input_layout"
-            app:layout_constraintTop_toBottomOf="@+id/title_input_layout">
+            app:layout_constraintTop_toBottomOf="@+id/title_input_layout"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/description_max_length">
 
             <EditText
                 android:id="@+id/description"
