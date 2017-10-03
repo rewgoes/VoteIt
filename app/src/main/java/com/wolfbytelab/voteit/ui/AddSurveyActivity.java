@@ -1,5 +1,7 @@
 package com.wolfbytelab.voteit.ui;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +11,9 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,12 +29,13 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.wolfbytelab.voteit.util.FirebaseUtils.MEMBERS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
 
-public class AddSurveyActivity extends AppCompatActivity {
+public class AddSurveyActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     @BindView(R.id.title)
     EditText mTitle;
@@ -40,8 +45,18 @@ public class AddSurveyActivity extends AppCompatActivity {
     EditText mDescription;
     @BindView(R.id.members)
     SectionView mMembersLayout;
+    @BindView(R.id.end_date_picker)
+    EditText mDatePickerView;
+    @BindView(R.id.end_time_picker)
+    EditText mTimePickerView;
 
     private ArrayList<Member> mMembers;
+    private int mEndDay;
+    private int mEndMonth;
+    private int mEndYear;
+    private int mEndHour;
+    private int mEndMinute;
+    private boolean mHasTimePickerShown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +70,8 @@ public class AddSurveyActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             mMembersLayout.addEditorView(new Member());
         }
+
+
     }
 
     @Override
@@ -72,6 +89,38 @@ public class AddSurveyActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @OnClick(R.id.end_date_picker)
+    private void showDatePicker() {
+        DatePickerDialog datePickerDialog =
+                new DatePickerDialog(this, this, mEndYear, mEndMonth, mEndDay);
+        datePickerDialog.show();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        mEndYear = year;
+        mEndMonth = month;
+        mEndDay = dayOfMonth;
+
+        if (!mHasTimePickerShown) {
+            showTimePicker();
+        }
+    }
+
+    @OnClick(R.id.end_time_picker)
+    private void showTimePicker() {
+        TimePickerDialog timePickerDialog =
+                new TimePickerDialog(this, this, mEndHour, mEndMinute, false);
+        timePickerDialog .show();
+        mHasTimePickerShown = true;
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        mEndHour = hourOfDay;
+        mEndMinute = minute;
     }
 
     private boolean isDataValid() {
