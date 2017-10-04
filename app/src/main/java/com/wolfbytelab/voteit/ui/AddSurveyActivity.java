@@ -62,6 +62,8 @@ public class AddSurveyActivity extends AppCompatActivity implements DatePickerDi
     EditText mTimePickerView;
     @BindView(R.id.clear_date)
     TextView mClearDateView;
+    @BindView(R.id.focus_holder)
+    View mFocusHolder;
 
     private ArrayList<Member> mMembers;
 
@@ -127,6 +129,7 @@ public class AddSurveyActivity extends AppCompatActivity implements DatePickerDi
     @OnClick(R.id.end_date_picker)
     protected void showDatePicker() {
         mDatePickerDialog.show();
+        mFocusHolder.requestFocus();
     }
 
     @Override
@@ -150,6 +153,7 @@ public class AddSurveyActivity extends AppCompatActivity implements DatePickerDi
     @OnClick(R.id.end_time_picker)
     protected void showTimePicker() {
         mTimePickerDialog.show();
+        mFocusHolder.requestFocus();
     }
 
     @Override
@@ -170,11 +174,11 @@ public class AddSurveyActivity extends AppCompatActivity implements DatePickerDi
     protected void clearDate() {
         mEndDate = DateUtils.DATE_NOT_SET;
         mHasTimePickerShown = false;
-        mDatePickerView.setText("");
-        mTimePickerView.setText("");
         mClearDateView.setVisibility(View.INVISIBLE);
         mDateInputLayout.setErrorEnabled(false);
         mTimeInputLayout.setErrorEnabled(false);
+        mDatePickerView.setText("");
+        mTimePickerView.setText("");
 
         Calendar calendar = Calendar.getInstance();
         DateUtils.startCalendar(calendar, mEndDate);
