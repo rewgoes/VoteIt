@@ -15,4 +15,6 @@
     <string name="member_email">Member email</string>
     <string name="remove_member">Remove member</string>
     <string name="invalid_email">Invalid email</string>
+    <string name="clear_date">Clear date</string>
+    <string name="invalid_date">Invalid date</string>
 </resources>
