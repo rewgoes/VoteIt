@@ -11,10 +11,15 @@ import com.wolfbytelab.voteit.R;
 
 public class SurveyDetailFragment extends Fragment {
 
+    private String mKey;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_survey_detail, container, false);
     }
 
+    public void setKey(String key) {
+        mKey = key;
+    }
 }

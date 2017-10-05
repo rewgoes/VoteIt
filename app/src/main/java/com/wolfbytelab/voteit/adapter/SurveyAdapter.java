@@ -16,10 +16,19 @@ import butterknife.ButterKnife;
 
 public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    private OnItemClickListener mOnItemClickListener;
     private ArrayList<Survey> mSurveys;
 
     public SurveyAdapter(ArrayList<Survey> surveys) {
         mSurveys = surveys;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mOnItemClickListener = listener;
     }
 
     @Override
@@ -42,7 +51,21 @@ public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyView
         return mSurveys == null ? 0 : mSurveys.size();
     }
 
-    class SurveyViewHolder extends RecyclerView.ViewHolder {
+    public Survey getItem(int position) {
+        if (mSurveys == null || position >= mSurveys.size()) {
+            throw new IllegalStateException("Invalid item position requested");
+        }
+
+        return mSurveys.get(position);
+    }
+
+    private void surveyItemClick(SurveyViewHolder holder) {
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onItemClick(holder.getAdapterPosition());
+        }
+    }
+
+    class SurveyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.title)
         TextView title;
         @BindView(R.id.description)
@@ -55,6 +78,13 @@ public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyView
         SurveyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            surveyItemClick(this);
         }
     }
 

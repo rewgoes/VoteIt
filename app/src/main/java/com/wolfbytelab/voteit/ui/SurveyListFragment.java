@@ -1,5 +1,6 @@
 package com.wolfbytelab.voteit.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -35,7 +36,13 @@ import butterknife.OnClick;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
 
-public class SurveyListFragment extends Fragment {
+public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItemClickListener {
+
+    OnSurveyClickListener mCallback;
+
+    public interface OnSurveyClickListener {
+        void onSurveySelected(String surveyKey);
+    }
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "bundle_recycler_layout";
 
@@ -62,12 +69,24 @@ public class SurveyListFragment extends Fragment {
         mSurveys = new ArrayList<>();
 
         mSurveyAdapter = new SurveyAdapter(mSurveys);
+        mSurveyAdapter.setOnItemClickListener(this);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mSurveyAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCallback = (OnSurveyClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnImageClickListener");
+        }
     }
 
     @Override
@@ -196,5 +215,11 @@ public class SurveyListFragment extends Fragment {
                 }
             });
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Survey survey = mSurveyAdapter.getItem(position);
+        mCallback.onSurveySelected(survey.key);
     }
 }

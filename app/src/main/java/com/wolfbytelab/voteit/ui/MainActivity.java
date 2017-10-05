@@ -13,10 +13,11 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.wolfbytelab.voteit.R;
+import com.wolfbytelab.voteit.util.Constants;
 
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SurveyListFragment.OnSurveyClickListener {
 
     private boolean mTwoPane;
 
@@ -106,6 +107,24 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onSurveySelected(String surveyKey) {
+        if (mTwoPane) {
+            FragmentManager fm = getSupportFragmentManager();
+
+            SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
+            surveyDetailFragment.setKey(surveyKey);
+
+            fm.beginTransaction()
+                    .replace(R.id.survey_detail_container, surveyDetailFragment)
+                    .commit();
+        } else {
+            final Intent intent = new Intent(this, SurveyDetailActivity.class);
+            intent.putExtra(Constants.EXTRA_SURVEY_KEY, surveyKey);
+            startActivity(intent);
         }
     }
 }
