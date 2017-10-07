@@ -127,4 +127,20 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
             startActivity(intent);
         }
     }
+
+    @Override
+    public void addSurvey() {
+        if (mTwoPane) {
+            FragmentManager fm = getSupportFragmentManager();
+
+            SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
+
+            fm.beginTransaction()
+                    .replace(R.id.survey_detail_container, surveyDetailFragment)
+                    .commit();
+        } else {
+            final Intent intent = new Intent(this, SurveyDetailActivity.class);
+            startActivity(intent);
+        }
+    }
 }

@@ -17,10 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SurveyDetailActivity"/>
-        <activity
-            android:name=".ui.AddSurveyActivity"
-            android:label="@string/new_survey"
+        <activity android:name=".ui.SurveyDetailActivity"
             android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

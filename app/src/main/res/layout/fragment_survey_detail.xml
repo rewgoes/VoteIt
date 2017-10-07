@@ -1,7 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    tools:context="com.wolfbytelab.voteit.ui.SurveyDetailActivity">
 
-</FrameLayout>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/title_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/title_max_length"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/title"
+                android:inputType="text"
+                android:maxLength="@integer/title_max_length"
+                android:maxLines="1"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/description_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/description_max_length"
+            app:layout_constraintEnd_toEndOf="@+id/title_input_layout"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/title_input_layout"
+            app:layout_constraintTop_toBottomOf="@+id/title_input_layout">
+
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/description"
+                android:inputType="text"
+                android:maxLength="@integer/description_max_length"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/end_date_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/end_time_input_layout"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/description_input_layout"
+            app:layout_constraintTop_toBottomOf="@+id/description_input_layout">
+
+            <EditText
+                android:id="@+id/end_date_picker"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/end_date"
+                android:inputType="date"
+                android:longClickable="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/end_time_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/end_date_input_layout"
+            app:layout_constraintTop_toBottomOf="@+id/description_input_layout">
+
+            <EditText
+                android:id="@+id/end_time_picker"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/end_time"
+                android:inputType="time"
+                android:longClickable="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <View
+            android:id="@+id/focus_holder"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
+
+        <TextView
+            android:id="@+id/clear_date"
+            style="@style/FlatButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:text="@string/clear_date"
+            android:textAllCaps="true"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/end_time_input_layout"
+            app:layout_constraintTop_toBottomOf="@id/end_time_input_layout"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/members_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/members"
+            app:layout_constraintStart_toStartOf="@+id/end_date_input_layout"
+            app:layout_constraintTop_toBottomOf="@+id/clear_date"/>
+
+        <com.wolfbytelab.voteit.ui.editor.SectionView
+            android:id="@+id/members"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:childrenLayout="@layout/add_member_item"
+            app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
+            app:layout_constraintStart_toStartOf="@+id/members_header"
+            app:layout_constraintTop_toBottomOf="@+id/members_header"/>
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

@@ -1,7 +1,6 @@
 package com.wolfbytelab.voteit.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -32,6 +31,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
@@ -39,9 +39,12 @@ import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
 public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItemClickListener {
 
     OnSurveyClickListener mCallback;
+    private Unbinder mUnbinder;
 
-    public interface OnSurveyClickListener {
+    interface OnSurveyClickListener {
         void onSurveySelected(String surveyKey);
+
+        void addSurvey();
     }
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "bundle_recycler_layout";
@@ -61,7 +64,7 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_survey_list, container, false);
-        ButterKnife.bind(this, view);
+        mUnbinder = ButterKnife.bind(this, view);
 
         FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
         mSurveyDatabaseReference = firebaseDatabase.getReference();
@@ -79,6 +82,12 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
@@ -87,6 +96,12 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
             throw new ClassCastException(context.toString()
                     + " must implement OnImageClickListener");
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
     }
 
     @Override
@@ -125,8 +140,7 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
 
     @OnClick(R.id.add_survey)
     public void addSurvey() {
-        Intent intent = new Intent(getContext(), AddSurveyActivity.class);
-        startActivity(intent);
+        mCallback.addSurvey();
     }
 
     private void fetchSurvey() {
