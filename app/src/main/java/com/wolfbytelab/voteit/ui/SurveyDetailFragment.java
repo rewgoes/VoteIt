@@ -16,7 +16,7 @@ public class SurveyDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_survey_detail, container, false);
+        return inflater.inflate(R.layout.activity_add_survey, container, false);
     }
 
     public void setKey(String key) {
