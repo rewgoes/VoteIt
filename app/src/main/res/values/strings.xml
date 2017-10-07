@@ -17,4 +17,5 @@
     <string name="invalid_email">Invalid email</string>
     <string name="clear_date">Clear date</string>
     <string name="invalid_date">Invalid date</string>
+    <string name="survey_created">Survey created</string>
 </resources>

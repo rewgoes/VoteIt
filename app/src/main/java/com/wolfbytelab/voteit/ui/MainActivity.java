@@ -17,7 +17,8 @@ import com.wolfbytelab.voteit.util.Constants;
 
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity implements SurveyListFragment.OnSurveyClickListener {
+public class MainActivity extends AppCompatActivity implements SurveyListFragment.OnSurveyClickListener,
+        SurveyDetailFragment.OnSurveyCreatedListener {
 
     private boolean mTwoPane;
 
@@ -67,7 +68,10 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
             mTwoPane = true;
 
             if (savedInstanceState == null) {
+                //TODO: show first survey or empty screen
                 SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
+                surveyDetailFragment.setOnSurveyCreateListener(this);
+
                 fm.beginTransaction()
                         .add(R.id.survey_detail_container, surveyDetailFragment)
                         .commit();
@@ -134,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
             FragmentManager fm = getSupportFragmentManager();
 
             SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
+            surveyDetailFragment.setOnSurveyCreateListener(this);
 
             fm.beginTransaction()
                     .replace(R.id.survey_detail_container, surveyDetailFragment)
@@ -141,6 +146,20 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
         } else {
             final Intent intent = new Intent(this, SurveyDetailActivity.class);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onSurveyCreated(String surveyKey) {
+        if (mTwoPane) {
+            FragmentManager fm = getSupportFragmentManager();
+
+            SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
+            surveyDetailFragment.setKey(surveyKey);
+
+            fm.beginTransaction()
+                    .replace(R.id.survey_detail_container, surveyDetailFragment)
+                    .commit();
         }
     }
 }

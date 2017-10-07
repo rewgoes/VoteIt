@@ -149,7 +149,7 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
         if (firebaseUser != null) {
             mSurveysListener = new ArrayList<>();
 
-            mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addValueEventListener(new SimpleValueEventListener() {
+            mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addListenerForSingleValueEvent(new SimpleValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     surveyCount = dataSnapshot.getChildrenCount();
@@ -199,6 +199,8 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                                             mRecyclerView.getLayoutManager().onRestoreInstanceState(mSavedRecyclerLayoutState);
                                             mSavedRecyclerLayoutState = null;
                                         }
+                                    } else if (surveyCount < 0) {
+                                        mSurveyAdapter.notifyItemInserted(mSurveys.size() - 1);
                                     }
                                 }
                             } else {

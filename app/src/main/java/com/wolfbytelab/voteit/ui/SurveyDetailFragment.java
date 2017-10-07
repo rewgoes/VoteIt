@@ -20,12 +20,16 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.wolfbytelab.voteit.R;
+import com.wolfbytelab.voteit.listener.SimpleValueEventListener;
 import com.wolfbytelab.voteit.model.Member;
 import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.ui.editor.SectionView;
@@ -51,6 +55,11 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private static final String STATE_TIME_PICKER_SHOWN = "state_time_picker_shown";
     private static final String STATE_END_DATE = "state_end_date";
 
+    interface OnSurveyCreatedListener {
+        void onSurveyCreated(String surveyKey);
+    }
+
+    private OnSurveyCreatedListener mSurveyCreatedListener;
     private String mKey;
 
     @BindView(R.id.title)
@@ -73,6 +82,10 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     TextView mClearDateView;
     @BindView(R.id.focus_holder)
     View mFocusHolder;
+    @BindView(R.id.date_time_layout)
+    View mDateTimeLayoutGroup;
+    @BindView(R.id.description_input_layout)
+    TextInputLayout mDescriptionInputLayout;
 
     private ArrayList<Member> mMembers;
 
@@ -81,6 +94,10 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private DatePickerDialog mDatePickerDialog;
     private TimePickerDialog mTimePickerDialog;
     private Unbinder mUnbinder;
+    private DatabaseReference mSurveyDatabaseReference;
+    private ValueEventListener mSurveyEventListener;
+
+    private Survey mSurvey;
 
     @Nullable
     @Override
@@ -93,38 +110,104 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
         if (savedInstanceState == null) {
             mMembersLayout.addEditorView(new Member());
+
+            if (!isAddMode()) {
+                mFocusHolder.requestFocus();
+            }
         } else {
             mKey = savedInstanceState.getString(STATE_SURVEY_KEY);
             mHasTimePickerShown = savedInstanceState.getBoolean(STATE_TIME_PICKER_SHOWN, false);
             mEndDate = savedInstanceState.getLong(STATE_END_DATE, DateUtils.DATE_NOT_SET);
         }
 
-        initView();
-
         mTitle.addTextChangedListener(new RequiredFieldTextWatcher(mTitleInputLayout));
         mTitle.setOnFocusChangeListener(new RequiredFieldFocusChangeListener(mTitleInputLayout));
 
-        Calendar calendar = Calendar.getInstance();
-        DateUtils.startCalendar(calendar, mEndDate);
-
-        if (mEndDate != DateUtils.DATE_NOT_SET) {
-            mClearDateView.setVisibility(View.VISIBLE);
+        if (isAddMode()) {
+            initView();
+        } else {
+            disableInputLayoutAnimation();
         }
-
-        mDatePickerDialog =
-                new DatePickerDialog(getContext(), this, calendar.get(Calendar.DAY_OF_MONTH),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
-        mDatePickerDialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
-        mTimePickerDialog =
-                new TimePickerDialog(getContext(), this, calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getContext()));
 
         return rootView;
     }
 
+    private void disableInputLayoutAnimation() {
+        mTitleInputLayout.setHintAnimationEnabled(false);
+        mDateInputLayout.setHintAnimationEnabled(false);
+        mTimeInputLayout.setHintAnimationEnabled(false);
+        mDescriptionInputLayout.setHintAnimationEnabled(false);
+    }
+
+    private void enableEditableInputLayoutAnimation() {
+        mDescriptionInputLayout.setHintAnimationEnabled(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isAddMode()) {
+            FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
+            mSurveyDatabaseReference = firebaseDatabase.getReference();
+            mSurveyEventListener = mSurveyDatabaseReference.child(SURVEYS_KEY).child(mKey).addValueEventListener(new SimpleValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot surveySnapshot) {
+                    mSurvey = surveySnapshot.getValue(Survey.class);
+                    mSurvey.key = surveySnapshot.getKey();
+                    initView();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mSurveyEventListener != null) {
+            mSurveyDatabaseReference.removeEventListener(mSurveyEventListener);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mSurveyCreatedListener = null;
+    }
+
+    public void setOnSurveyCreateListener(OnSurveyCreatedListener listener) {
+        mSurveyCreatedListener = listener;
+    }
+
     private void initView() {
-        if (isEditMode()) {
+        if (!isAddMode()) {
             mTitle.setEnabled(false);
+            mTitle.setFocusable(false);
+            mTitle.setText(mSurvey.title);
+            mDescription.setText(mSurvey.description);
+
+            if (mSurvey.endDate == DateUtils.DATE_NOT_SET) {
+                mDateTimeLayoutGroup.setVisibility(View.GONE);
+            } else {
+                mEndDate = mSurvey.endDate;
+                fillDate();
+            }
+
+            enableEditableInputLayoutAnimation();
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            DateUtils.startCalendar(calendar, mEndDate);
+
+            if (mEndDate != DateUtils.DATE_NOT_SET) {
+                mClearDateView.setVisibility(View.VISIBLE);
+            }
+
+            mDatePickerDialog =
+                    new DatePickerDialog(getContext(), this, calendar.get(Calendar.DAY_OF_MONTH),
+                            calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
+            mDatePickerDialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+            mTimePickerDialog =
+                    new TimePickerDialog(getContext(), this, calendar.get(Calendar.HOUR_OF_DAY),
+                            calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getContext()));
         }
     }
 
@@ -144,7 +227,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (!isEditMode()) {
+        if (isAddMode()) {
             inflater.inflate(R.menu.add_menu, menu);
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -165,8 +248,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
         mKey = key;
     }
 
-    private boolean isEditMode() {
-        return !TextUtils.isEmpty(mKey);
+    private boolean isAddMode() {
+        return TextUtils.isEmpty(mKey);
     }
 
     @OnClick(R.id.end_date_picker)
@@ -232,9 +315,17 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private void fillDate() {
         mDatePickerView.setText(DateUtils.getFormattedDate(getContext(), mEndDate, false));
         mTimePickerView.setText(DateUtils.getFormattedTime(getContext(), mEndDate));
-        mClearDateView.setVisibility(View.VISIBLE);
         mDateInputLayout.setErrorEnabled(false);
         mTimeInputLayout.setErrorEnabled(false);
+        if (!isAddMode()) {
+            mDatePickerView.setClickable(false);
+            mDatePickerView.setEnabled(false);
+            mTimePickerView.setClickable(false);
+            mTimePickerView.setEnabled(false);
+            mClearDateView.setVisibility(View.GONE);
+        } else {
+            mClearDateView.setVisibility(View.VISIBLE);
+        }
     }
 
     private boolean isDataValid() {
@@ -299,11 +390,12 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                     }
                 }
 
-                //noinspection StatementWithEmptyBody
-                if (getActivity() instanceof SurveyDetailActivity) {
+                Toast.makeText(getContext(), R.string.survey_created, Toast.LENGTH_SHORT).show();
+
+                if (mSurveyCreatedListener == null) {
                     getActivity().finish();
                 } else {
-                    //TODO: switch to edit mode
+                    mSurveyCreatedListener.onSurveyCreated(surveyKey);
                 }
             }
         }

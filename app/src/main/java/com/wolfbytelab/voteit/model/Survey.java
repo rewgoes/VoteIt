@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.wolfbytelab.voteit.util.DateUtils;
+
 import java.util.ArrayList;
 
 public class Survey implements Parcelable {
@@ -16,7 +18,7 @@ public class Survey implements Parcelable {
     public ArrayList<User> members;
 
     public long startDate;
-    public long endDate = Long.MAX_VALUE;
+    public long endDate = DateUtils.DATE_NOT_SET;
 
     public Type type;
 
