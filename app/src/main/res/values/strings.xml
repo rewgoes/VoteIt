@@ -18,4 +18,8 @@
     <string name="clear_date">Clear date</string>
     <string name="invalid_date">Invalid date</string>
     <string name="survey_created">Survey created</string>
+    <string name="join">Join</string>
+    <string name="edit">Edit</string>
+    <string name="vote">Vote</string>
+    <string name="delete">Delete</string>
 </resources>

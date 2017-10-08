@@ -42,7 +42,7 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
     private Unbinder mUnbinder;
 
     interface OnSurveyClickListener {
-        void onSurveySelected(String surveyKey);
+        void onSurveySelected(String surveyKey, Survey.Type surveyType);
 
         void addSurvey();
     }
@@ -236,6 +236,6 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
     @Override
     public void onItemClick(int position) {
         Survey survey = mSurveyAdapter.getItem(position);
-        mCallback.onSurveySelected(survey.key);
+        mCallback.onSurveySelected(survey.key, survey.type);
     }
 }

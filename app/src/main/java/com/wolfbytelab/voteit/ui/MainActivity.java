@@ -13,6 +13,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.wolfbytelab.voteit.R;
+import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.util.Constants;
 
 import timber.log.Timber;
@@ -115,12 +116,12 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
     }
 
     @Override
-    public void onSurveySelected(String surveyKey) {
+    public void onSurveySelected(String surveyKey, Survey.Type surveyType) {
         if (mTwoPane) {
             FragmentManager fm = getSupportFragmentManager();
 
             SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
-            surveyDetailFragment.setKey(surveyKey);
+            surveyDetailFragment.setSurveyKeyType(surveyKey, surveyType);
 
             fm.beginTransaction()
                     .replace(R.id.survey_detail_container, surveyDetailFragment)
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
             FragmentManager fm = getSupportFragmentManager();
 
             SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
-            surveyDetailFragment.setKey(surveyKey);
+            surveyDetailFragment.setSurveyKeyType(surveyKey, Survey.Type.OWNER);
 
             fm.beginTransaction()
                     .replace(R.id.survey_detail_container, surveyDetailFragment)

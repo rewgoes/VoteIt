@@ -54,13 +54,15 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private static final String STATE_SURVEY_KEY = "state_survey_key";
     private static final String STATE_TIME_PICKER_SHOWN = "state_time_picker_shown";
     private static final String STATE_END_DATE = "state_end_date";
+    private static final String STATE_SURVEY_TYPE = "state_survey_type";
 
     interface OnSurveyCreatedListener {
         void onSurveyCreated(String surveyKey);
     }
 
     private OnSurveyCreatedListener mSurveyCreatedListener;
-    private String mKey;
+    private String mSurveyKey;
+    private Survey.Type mSurveyType;
 
     @BindView(R.id.title)
     EditText mTitle;
@@ -115,7 +117,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 mFocusHolder.requestFocus();
             }
         } else {
-            mKey = savedInstanceState.getString(STATE_SURVEY_KEY);
+            mSurveyKey = savedInstanceState.getString(STATE_SURVEY_KEY);
+            mSurveyType = (Survey.Type) savedInstanceState.getSerializable(STATE_SURVEY_TYPE);
             mHasTimePickerShown = savedInstanceState.getBoolean(STATE_TIME_PICKER_SHOWN, false);
             mEndDate = savedInstanceState.getLong(STATE_END_DATE, DateUtils.DATE_NOT_SET);
         }
@@ -149,7 +152,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
         if (!isAddMode()) {
             FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
             mSurveyDatabaseReference = firebaseDatabase.getReference();
-            mSurveyEventListener = mSurveyDatabaseReference.child(SURVEYS_KEY).child(mKey).addValueEventListener(new SimpleValueEventListener() {
+            mSurveyEventListener = mSurveyDatabaseReference.child(SURVEYS_KEY).child(mSurveyKey).addValueEventListener(new SimpleValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot surveySnapshot) {
                     mSurvey = surveySnapshot.getValue(Survey.class);
@@ -220,7 +223,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(STATE_SURVEY_KEY, mKey);
+        outState.putString(STATE_SURVEY_KEY, mSurveyKey);
+        outState.putSerializable(STATE_SURVEY_TYPE, mSurveyType);
         outState.putBoolean(STATE_TIME_PICKER_SHOWN, mHasTimePickerShown);
         outState.putLong(STATE_END_DATE, mEndDate);
     }
@@ -229,6 +233,18 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (isAddMode()) {
             inflater.inflate(R.menu.add_menu, menu);
+        } else {
+            switch (mSurveyType) {
+                case INVITE:
+                    inflater.inflate(R.menu.join_menu, menu);
+                    break;
+                case MEMBER:
+                    inflater.inflate(R.menu.vote_menu, menu);
+                    break;
+                case OWNER:
+                    inflater.inflate(R.menu.edit_menu, menu);
+                    break;
+            }
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -239,17 +255,23 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             case R.id.create_menu:
                 createSurvey();
                 return true;
+            case R.id.edit_menu:
+            case R.id.vote_menu:
+            case R.id.delete_menu:
+            case R.id.join_menu:
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public void setKey(String key) {
-        mKey = key;
+    public void setSurveyKeyType(String key, Survey.Type surveyType) {
+        mSurveyKey = key;
+        mSurveyType = surveyType;
     }
 
     private boolean isAddMode() {
-        return TextUtils.isEmpty(mKey);
+        return TextUtils.isEmpty(mSurveyKey);
     }
 
     @OnClick(R.id.end_date_picker)

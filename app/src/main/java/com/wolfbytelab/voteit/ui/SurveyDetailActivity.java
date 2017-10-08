@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.wolfbytelab.voteit.R;
+import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.util.Constants;
 
 public class SurveyDetailActivity extends AppCompatActivity {
@@ -21,7 +22,7 @@ public class SurveyDetailActivity extends AppCompatActivity {
             FragmentManager fm = getSupportFragmentManager();
 
             SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
-            surveyDetailFragment.setKey(surveyKey);
+            surveyDetailFragment.setSurveyKeyType(surveyKey, Survey.Type.OWNER);
 
             fm.beginTransaction()
                     .add(R.id.survey_detail_container, surveyDetailFragment)
