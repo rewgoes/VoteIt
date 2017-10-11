@@ -35,4 +35,14 @@ public class FirebaseUtils {
                 .replaceAll("\\]", "%5D");
     }
 
+    public static String decodeFirebaseKey(String string) {
+        return string.replaceAll("%2E", "\\.")
+                .replaceAll("%23", "#")
+                .replaceAll("%24", "\\$")
+                .replaceAll("%2F", "/")
+                .replaceAll("%5B", "\\[")
+                .replaceAll("%5D", "\\]")
+                .replaceAll("%25", "%");
+    }
+
 }

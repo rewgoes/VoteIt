@@ -3,17 +3,27 @@ package com.wolfbytelab.voteit.ui.editor;
 import android.os.Parcelable;
 import android.view.ViewGroup;
 
-public interface Editable extends Parcelable {
+public abstract class Editable implements Parcelable {
 
-    void fillView(SectionView parent, ViewGroup view);
+    private boolean mIsEditable = true;
 
-    void saveState();
+    public abstract void fillView(SectionView parent, ViewGroup view);
 
-    void setParent(SectionView sectionView);
+    public abstract void saveState();
 
-    boolean isValid();
+    public abstract void setParent(SectionView sectionView);
 
-    boolean hasFocus();
+    public abstract boolean isValid();
 
-    void requestFocus();
+    public abstract boolean hasFocus();
+
+    public abstract void requestFocus();
+
+    public boolean isEditable() {
+        return mIsEditable;
+    }
+
+    public void setEditable(boolean editable) {
+        mIsEditable = editable;
+    }
 }

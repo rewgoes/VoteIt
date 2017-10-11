@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wolfbytelab.voteit.R;
+import com.wolfbytelab.voteit.listener.SimpleChildEventListener;
 import com.wolfbytelab.voteit.listener.SimpleValueEventListener;
 import com.wolfbytelab.voteit.model.Member;
 import com.wolfbytelab.voteit.model.Survey;
@@ -38,6 +39,9 @@ import com.wolfbytelab.voteit.util.FirebaseUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +59,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private static final String STATE_TIME_PICKER_SHOWN = "state_time_picker_shown";
     private static final String STATE_END_DATE = "state_end_date";
     private static final String STATE_SURVEY_TYPE = "state_survey_type";
+    private static final String STATE_SURVEY_MEMBERS = "state_survey_members";
+    private long membersCount;
 
     interface OnSurveyCreatedListener {
         void onSurveyCreated(String surveyKey);
@@ -70,6 +76,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     TextInputLayout mTitleInputLayout;
     @BindView(R.id.description)
     EditText mDescription;
+    @BindView(R.id.not_editable_members)
+    SectionView mNotEditableMembersLayout;
     @BindView(R.id.members)
     SectionView mMembersLayout;
     @BindView(R.id.end_date_input_layout)
@@ -101,6 +109,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
     private Survey mSurvey;
 
+    private HashMap<String, Boolean> mSurveyMembers = new HashMap<>();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,7 +122,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
         if (savedInstanceState == null) {
             mMembersLayout.addEditorView(new Member());
-
             if (!isAddMode()) {
                 mFocusHolder.requestFocus();
             }
@@ -121,6 +130,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             mSurveyType = (Survey.Type) savedInstanceState.getSerializable(STATE_SURVEY_TYPE);
             mHasTimePickerShown = savedInstanceState.getBoolean(STATE_TIME_PICKER_SHOWN, false);
             mEndDate = savedInstanceState.getLong(STATE_END_DATE, DateUtils.DATE_NOT_SET);
+            mSurveyMembers = (HashMap<String, Boolean>) savedInstanceState.getSerializable(STATE_SURVEY_MEMBERS);
         }
 
         mTitle.addTextChangedListener(new RequiredFieldTextWatcher(mTitleInputLayout));
@@ -130,6 +140,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             initView();
         } else {
             disableInputLayoutAnimation();
+            mNotEditableMembersLayout.setVisibility(View.VISIBLE);
         }
 
         return rootView;
@@ -157,7 +168,29 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 public void onDataChange(DataSnapshot surveySnapshot) {
                     mSurvey = surveySnapshot.getValue(Survey.class);
                     mSurvey.key = surveySnapshot.getKey();
+
                     initView();
+                }
+            });
+
+            mSurveyDatabaseReference.child(MEMBERS_KEY).child(mSurveyKey).addListenerForSingleValueEvent(new SimpleValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    membersCount = dataSnapshot.getChildrenCount();
+
+                    mNotEditableMembersLayout.enableLayoutTransition(false);
+
+                    for (Map.Entry<String, Boolean> entry : ((HashMap<String, Boolean>) dataSnapshot.getValue()).entrySet()) {
+                        if (!mSurveyMembers.containsKey(entry.getKey())) {
+                            mSurveyMembers.put(entry.getKey(), entry.getValue());
+
+                            Member member = new Member();
+                            member.setEmail(FirebaseUtils.decodeFirebaseKey(entry.getKey()));
+                            member.setEditable(false);
+
+                            mNotEditableMembersLayout.addEditorView(member);
+                        }
+                    }
                 }
             });
         }
@@ -227,6 +260,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
         outState.putSerializable(STATE_SURVEY_TYPE, mSurveyType);
         outState.putBoolean(STATE_TIME_PICKER_SHOWN, mHasTimePickerShown);
         outState.putLong(STATE_END_DATE, mEndDate);
+        outState.putSerializable(STATE_SURVEY_MEMBERS, mSurveyMembers);
     }
 
     @Override

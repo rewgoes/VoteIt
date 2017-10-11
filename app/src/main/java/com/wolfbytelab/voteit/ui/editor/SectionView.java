@@ -49,12 +49,20 @@ public class SectionView extends LinearLayout {
         }
     }
 
+    public void enableLayoutTransition(boolean enable) {
+        if (enable) {
+            LayoutTransition transition = new LayoutTransition();
+            setLayoutTransition(transition);
+        } else {
+            setLayoutTransition(null);
+        }
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mLayoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LayoutTransition transition = new LayoutTransition();
-        setLayoutTransition(transition);
+        enableLayoutTransition(true);
     }
 
     @Override
