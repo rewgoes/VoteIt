@@ -25,11 +25,11 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wolfbytelab.voteit.R;
-import com.wolfbytelab.voteit.listener.SimpleChildEventListener;
 import com.wolfbytelab.voteit.listener.SimpleValueEventListener;
 import com.wolfbytelab.voteit.model.Member;
 import com.wolfbytelab.voteit.model.Survey;
@@ -40,13 +40,13 @@ import com.wolfbytelab.voteit.util.FirebaseUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 import static com.wolfbytelab.voteit.util.FirebaseUtils.MEMBERS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
@@ -167,9 +167,12 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 @Override
                 public void onDataChange(DataSnapshot surveySnapshot) {
                     mSurvey = surveySnapshot.getValue(Survey.class);
-                    mSurvey.key = surveySnapshot.getKey();
 
-                    initView();
+                    if (mSurvey != null) {
+                        mSurvey.key = surveySnapshot.getKey();
+
+                        initView();
+                    }
                 }
             });
 
@@ -292,11 +295,36 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             case R.id.edit_menu:
             case R.id.vote_menu:
             case R.id.delete_menu:
+                deleteSurvey();
             case R.id.join_menu:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void deleteSurvey() {
+        Map<String, Object> map = new HashMap<>();
+
+        for (String user : mSurveyMembers.keySet()) {
+            map.put(SURVEYS_PER_USER_KEY + "/" + user + "/" + mSurveyKey, new HashMap<>().put(mSurveyKey, null));
+        }
+
+        map.put(MEMBERS_KEY + "/" + mSurveyKey, null);
+        map.put(SURVEYS_KEY + "/" + mSurveyKey, null);
+
+        mSurveyDatabaseReference.updateChildren(map, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError == null) {
+                    Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                    //TODO: finish activity
+                } else {
+                    Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
+                    Timber.d(databaseError.getMessage());
+                }
+            }
+        });
     }
 
     public void setSurveyKeyType(String key, Survey.Type surveyType) {
