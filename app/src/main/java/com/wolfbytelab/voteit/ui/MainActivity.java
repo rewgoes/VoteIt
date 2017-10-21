@@ -19,7 +19,7 @@ import com.wolfbytelab.voteit.util.Constants;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements SurveyListFragment.OnSurveyClickListener,
-        SurveyDetailFragment.OnSurveyCreatedListener {
+        SurveyDetailFragment.OnSurveyChangedListener {
 
     private boolean mTwoPane;
 
@@ -157,6 +157,19 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
 
             SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
             surveyDetailFragment.setSurveyKeyType(surveyKey, Survey.Type.OWNER);
+
+            fm.beginTransaction()
+                    .replace(R.id.survey_detail_container, surveyDetailFragment)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onSurveyDeleted() {
+        if (mTwoPane) {
+            FragmentManager fm = getSupportFragmentManager();
+
+            SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
 
             fm.beginTransaction()
                     .replace(R.id.survey_detail_container, surveyDetailFragment)

@@ -62,11 +62,12 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private static final String STATE_SURVEY_MEMBERS = "state_survey_members";
     private long membersCount;
 
-    interface OnSurveyCreatedListener {
+    interface OnSurveyChangedListener {
         void onSurveyCreated(String surveyKey);
+        void onSurveyDeleted();
     }
 
-    private OnSurveyCreatedListener mSurveyCreatedListener;
+    private OnSurveyChangedListener mOnSurveyChangedListener;
     private String mSurveyKey;
     private Survey.Type mSurveyType;
 
@@ -210,11 +211,11 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     @Override
     public void onDetach() {
         super.onDetach();
-        mSurveyCreatedListener = null;
+        mOnSurveyChangedListener = null;
     }
 
-    public void setOnSurveyCreateListener(OnSurveyCreatedListener listener) {
-        mSurveyCreatedListener = listener;
+    public void setOnSurveyCreateListener(OnSurveyChangedListener listener) {
+        mOnSurveyChangedListener = listener;
     }
 
     private void initView() {
@@ -318,7 +319,11 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError == null) {
                     Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
-                    //TODO: finish activity
+                    if (mOnSurveyChangedListener == null) {
+                        getActivity().finish();
+                    } else {
+                        mOnSurveyChangedListener.onSurveyDeleted();
+                    }
                 } else {
                     Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
                     Timber.d(databaseError.getMessage());
@@ -333,6 +338,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     }
 
     private boolean isAddMode() {
+        //TODO: create an empty mode
         return TextUtils.isEmpty(mSurveyKey);
     }
 
@@ -466,7 +472,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 for (Member member : mMembers) {
                     if (!TextUtils.isEmpty(member.getEmail())) {
                         String encodedEmail = FirebaseUtils.encodeAsFirebaseKey(member.getEmail());
-                        //TODO: use Uri.decode(encodedEmail) in order to present this value
                         memberDatabaseReference.child(encodedEmail).setValue(false);
 
                         DatabaseReference invitePerUserDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(encodedEmail);
@@ -476,10 +481,10 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
                 Toast.makeText(getContext(), R.string.survey_created, Toast.LENGTH_SHORT).show();
 
-                if (mSurveyCreatedListener == null) {
+                if (mOnSurveyChangedListener == null) {
                     getActivity().finish();
                 } else {
-                    mSurveyCreatedListener.onSurveyCreated(surveyKey);
+                    mOnSurveyChangedListener.onSurveyCreated(surveyKey);
                 }
             }
         }
