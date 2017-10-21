@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,12 +13,18 @@
         android:paddingBottom="@dimen/recycler_view_last_item_bottom_padding"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_survey"
+        android:visibility="gone"
+        android:id="@+id/add_survey_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:clickable="true"
         android:src="@drawable/ic_add_white_24px"/>
+
+    <include
+        android:visibility="gone"
+        android:id="@+id/empty_layout"
+        layout="@layout/empty_survey_list_layout" />
 
 </FrameLayout>

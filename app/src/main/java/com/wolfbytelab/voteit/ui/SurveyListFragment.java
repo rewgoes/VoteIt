@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 import butterknife.Unbinder;
 
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
@@ -51,6 +53,10 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @BindView(R.id.add_survey_fab)
+    FloatingActionButton mAddSurveyFab;
+    @BindView(R.id.empty_layout)
+    View mEmptyLayout;
 
     private DatabaseReference mSurveyDatabaseReference;
     private SurveyAdapter mSurveyAdapter;
@@ -138,7 +144,8 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
         }
     }
 
-    @OnClick(R.id.add_survey)
+    @Optional
+    @OnClick({R.id.add_survey_fab, R.id.add_survey_button})
     public void addSurvey() {
         mCallback.addSurvey();
     }
@@ -153,6 +160,7 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     surveyCount = dataSnapshot.getChildrenCount();
+                    initView();
                 }
             });
             mSurveyPerUserListener = mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addChildEventListener(new SimpleChildEventListener() {
@@ -230,6 +238,18 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                     }
                 }
             });
+        }
+    }
+
+    private void initView() {
+        if (surveyCount == 0) {
+            mRecyclerView.setVisibility(View.GONE);
+            mAddSurveyFab.setVisibility(View.GONE);
+            mEmptyLayout.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mAddSurveyFab.setVisibility(View.VISIBLE);
+            mEmptyLayout.setVisibility(View.GONE);
         }
     }
 
