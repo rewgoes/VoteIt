@@ -28,17 +28,14 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
         if (firebaseUser == null) {
             Intent intent = new Intent(this, SignInActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            return;
+            finish();
         }
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -49,13 +46,16 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
                     // User is signed out
                     Timber.d("onAuthStateChanged:signed_out");
                     Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
+                    finish();
                 }
             }
         };
 
+        setTheme(R.style.AppTheme);
+
         setContentView(R.layout.activity_main);
+        super.onCreate(savedInstanceState);
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
 
             SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
             surveyDetailFragment.setSurveyKeyType(surveyKey, surveyType);
+            surveyDetailFragment.setOnSurveyCreateListener(this);
 
             fm.beginTransaction()
                     .replace(R.id.survey_detail_container, surveyDetailFragment)
@@ -157,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
 
             SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
             surveyDetailFragment.setSurveyKeyType(surveyKey, Survey.Type.OWNER);
+            surveyDetailFragment.setOnSurveyCreateListener(this);
 
             fm.beginTransaction()
                     .replace(R.id.survey_detail_container, surveyDetailFragment)
@@ -170,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
             FragmentManager fm = getSupportFragmentManager();
 
             SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
+            surveyDetailFragment.setOnSurveyCreateListener(this);
 
             fm.beginTransaction()
                     .replace(R.id.survey_detail_container, surveyDetailFragment)
