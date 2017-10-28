@@ -1,6 +1,7 @@
 package com.wolfbytelab.voteit.model;
 
 import android.os.Parcel;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -84,7 +85,7 @@ public class Member extends Editable {
             ((TextInputLayout) mView.findViewById(R.id.member_email_textinput)).setError(mView.getContext().getString(R.string.invalid_email));
         }
 
-        EditText emailView = mView.findViewById(R.id.member_email);
+        TextInputEditText emailView = mView.findViewById(R.id.member_email);
         emailView.setText(email);
 
         if (isEditable()) {

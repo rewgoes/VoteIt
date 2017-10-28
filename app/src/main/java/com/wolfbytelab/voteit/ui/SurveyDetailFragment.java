@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -64,6 +65,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
     interface OnSurveyChangedListener {
         void onSurveyCreated(String surveyKey);
+
         void onSurveyDeleted();
     }
 
@@ -72,11 +74,11 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private Survey.Type mSurveyType;
 
     @BindView(R.id.title)
-    EditText mTitle;
+    TextInputEditText mTitle;
     @BindView(R.id.title_input_layout)
     TextInputLayout mTitleInputLayout;
     @BindView(R.id.description)
-    EditText mDescription;
+    TextInputEditText mDescription;
     @BindView(R.id.not_editable_members)
     SectionView mNotEditableMembersLayout;
     @BindView(R.id.members)
@@ -84,11 +86,11 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     @BindView(R.id.end_date_input_layout)
     TextInputLayout mDateInputLayout;
     @BindView(R.id.end_date_picker)
-    EditText mDatePickerView;
+    TextInputEditText mDatePickerView;
     @BindView(R.id.end_time_input_layout)
     TextInputLayout mTimeInputLayout;
     @BindView(R.id.end_time_picker)
-    EditText mTimePickerView;
+    TextInputEditText mTimePickerView;
     @BindView(R.id.clear_date)
     TextView mClearDateView;
     @BindView(R.id.focus_holder)
