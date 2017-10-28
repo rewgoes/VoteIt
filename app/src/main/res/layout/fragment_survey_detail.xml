@@ -1,106 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context="com.wolfbytelab.voteit.ui.SurveyDetailActivity">
+    android:layout_height="wrap_content">
 
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
+        android:id="@+id/survey_detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:context="com.wolfbytelab.voteit.ui.SurveyDetailActivity">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/title_input_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="@integer/title_max_length"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/title"
-                android:layout_width="match_parent"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/title_input_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/title"
-                android:inputType="text"
-                android:maxLength="@integer/title_max_length"
-                android:maxLines="1"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/title_max_length"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/description_input_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="@integer/description_max_length"
-            app:layout_constraintEnd_toEndOf="@+id/title_input_layout"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="@+id/title_input_layout"
-            app:layout_constraintTop_toBottomOf="@+id/title_input_layout">
+                <EditText
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title"
+                    android:inputType="text"
+                    android:maxLength="@integer/title_max_length"
+                    android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
 
-            <EditText
-                android:id="@+id/description"
-                android:layout_width="match_parent"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/description_input_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/description"
-                android:inputType="text"
-                android:maxLength="@integer/description_max_length"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/description_max_length"
+                app:layout_constraintEnd_toEndOf="@+id/title_input_layout"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="@+id/title_input_layout"
+                app:layout_constraintTop_toBottomOf="@+id/title_input_layout">
 
-        <include
-            android:id="@+id/date_time_layout"
-            layout="@layout/date_time_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
-            app:layout_constraintStart_toStartOf="@+id/description_input_layout"
-            app:layout_constraintTop_toBottomOf="@+id/description_input_layout"/>
+                <EditText
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/description"
+                    android:inputType="text"
+                    android:maxLength="@integer/description_max_length"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <View
-            android:id="@+id/focus_holder"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"/>
+            <include
+                android:id="@+id/date_time_layout"
+                layout="@layout/date_time_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
+                app:layout_constraintStart_toStartOf="@+id/description_input_layout"
+                app:layout_constraintTop_toBottomOf="@+id/description_input_layout"/>
 
-        <TextView
-            android:id="@+id/members_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/members"
-            app:layout_constraintStart_toStartOf="@+id/description_input_layout"
-            app:layout_constraintTop_toBottomOf="@+id/date_time_layout"/>
+            <View
+                android:id="@+id/focus_holder"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"/>
 
-        <com.wolfbytelab.voteit.ui.editor.SectionView
-            android:id="@+id/not_editable_members"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:childrenLayout="@layout/add_member_item"
-            app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
-            app:layout_constraintStart_toStartOf="@+id/members_header"
-            app:layout_constraintTop_toBottomOf="@+id/members_header"/>
+            <TextView
+                android:id="@+id/members_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/members"
+                app:layout_constraintStart_toStartOf="@+id/description_input_layout"
+                app:layout_constraintTop_toBottomOf="@+id/date_time_layout"/>
 
-        <com.wolfbytelab.voteit.ui.editor.SectionView
-            android:id="@+id/members"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:childrenLayout="@layout/add_member_item"
-            app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
-            app:layout_constraintStart_toStartOf="@+id/members_header"
-            app:layout_constraintTop_toBottomOf="@+id/not_editable_members"/>
+            <com.wolfbytelab.voteit.ui.editor.SectionView
+                android:id="@+id/not_editable_members"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:childrenLayout="@layout/add_member_item"
+                app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
+                app:layout_constraintStart_toStartOf="@+id/members_header"
+                app:layout_constraintTop_toBottomOf="@+id/members_header"/>
 
-    </android.support.constraint.ConstraintLayout>
-</ScrollView>
+            <com.wolfbytelab.voteit.ui.editor.SectionView
+                android:id="@+id/members"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:childrenLayout="@layout/add_member_item"
+                app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
+                app:layout_constraintStart_toStartOf="@+id/members_header"
+                app:layout_constraintTop_toBottomOf="@+id/not_editable_members"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/empty_no_surveys_layout"
+        layout="@layout/empty_survey_list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/empty_no_survey_selected_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/no_survey_selected_layout"
+        android:visibility="gone"/>
+
+</FrameLayout>

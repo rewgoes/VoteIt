@@ -5,8 +5,13 @@
     android:layout_height="match_parent">
 
     <TextView
+        style="@style/Base.TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No surveys yet!"/>
+        android:layout_gravity="center"
+        android:paddingEnd="@dimen/activity_margin"
+        android:paddingStart="@dimen/activity_margin"
+        android:text="Surveys that you participate will be listed here"
+        android:textAlignment="center"/>
 
 </FrameLayout>
