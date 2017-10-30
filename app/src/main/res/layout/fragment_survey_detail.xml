@@ -108,6 +108,25 @@
                 app:layout_constraintStart_toStartOf="@+id/members_header"
                 app:layout_constraintTop_toBottomOf="@+id/not_editable_members"/>
 
+            <TextView
+                android:id="@+id/question_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/questions"
+                app:layout_constraintStart_toStartOf="@+id/members"
+                app:layout_constraintTop_toBottomOf="@+id/members"/>
+
+            <com.wolfbytelab.voteit.ui.editor.SectionView
+                android:id="@+id/questions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:childrenLayout="@layout/question_item"
+                app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
+                app:layout_constraintStart_toStartOf="@+id/question_header"
+                app:layout_constraintTop_toBottomOf="@+id/question_header"/>
+
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 

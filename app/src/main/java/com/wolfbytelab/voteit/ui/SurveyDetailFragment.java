@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.listener.SimpleValueEventListener;
 import com.wolfbytelab.voteit.model.Member;
+import com.wolfbytelab.voteit.model.Question;
 import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.ui.editor.SectionView;
 import com.wolfbytelab.voteit.util.DateUtils;
@@ -99,6 +100,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     View mDateTimeLayoutGroup;
     @BindView(R.id.description_input_layout)
     TextInputLayout mDescriptionInputLayout;
+    @BindView(R.id.questions)
+    SectionView mQuestionsLayout;
 
     private ArrayList<Member> mMembers;
 
@@ -128,6 +131,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             if (!isAddMode()) {
                 mFocusHolder.requestFocus();
             }
+            mQuestionsLayout.addEditorView(new Question());
+            mQuestionsLayout.addEditorView(new Question());
         } else {
             mSurveyKey = savedInstanceState.getString(STATE_SURVEY_KEY);
             mSurveyType = (Survey.Type) savedInstanceState.getSerializable(STATE_SURVEY_TYPE);
