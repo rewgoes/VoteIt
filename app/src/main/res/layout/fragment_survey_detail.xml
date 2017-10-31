@@ -25,7 +25,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 app:counterEnabled="true"
-                app:counterMaxLength="@integer/title_max_length"
+                app:counterMaxLength="@integer/survey_title_max_length"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/title"
                     android:inputType="text"
-                    android:maxLength="@integer/title_max_length"
+                    android:maxLength="@integer/survey_title_max_length"
                     android:maxLines="1"/>
             </android.support.design.widget.TextInputLayout>
 
@@ -84,6 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/members"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 app:layout_constraintStart_toStartOf="@+id/description_input_layout"
                 app:layout_constraintTop_toBottomOf="@+id/date_time_layout"/>
 
@@ -114,6 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/questions"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 app:layout_constraintStart_toStartOf="@+id/members"
                 app:layout_constraintTop_toBottomOf="@+id/members"/>
 
