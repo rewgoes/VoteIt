@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.wolfbytelab.voteit"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         resConfigs "auto"
@@ -40,7 +40,6 @@ dependencies {
     compile "com.google.firebase:firebase-database:$firebase_version"
 
     compile "com.firebaseui:firebase-ui-auth:$firebase_ui_version"
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"

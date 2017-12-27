@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -19,8 +19,8 @@ allprojects {
         butter_knife_version = '8.8.1'
         constraint_layout_version = '1.0.2'
         timber_version = '4.5.1'
-        firebase_version = '11.4.2'
-        firebase_ui_version = '2.3.0'
+        firebase_version = '11.6.2'
+        firebase_ui_version = '3.1.2'
         leakcanary_version = '1.5.4'
     }
 
