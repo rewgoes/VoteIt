@@ -22,12 +22,15 @@ public class Question extends Editable {
     private boolean hasFocus;
     private int selectionPos;
 
+    private boolean isInitialized = false;
+
     public Question() {
     }
 
     public Question(Parcel in) {
         title = in.readString();
         options = in.readArrayList(Option.class.getClassLoader());
+        isInitialized = in.readInt() == 1;
     }
 
     @Override
@@ -39,6 +42,7 @@ public class Question extends Editable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeList(options);
+        dest.writeInt(isInitialized ? 1 : 0);
     }
 
     public static final Creator<Question> CREATOR = new Creator<Question>() {
@@ -70,8 +74,12 @@ public class Question extends Editable {
         titleView.setText(title);
 
         SectionView optionsView = mView.findViewById(R.id.options);
-        optionsView.addEditorView(new Option());
-        optionsView.addEditorView(new Option());
+
+        if (!isInitialized) {
+            isInitialized = true;
+            optionsView.addEditorView(new Option());
+            optionsView.addEditorView(new Option());
+        }
     }
 
     @Override
