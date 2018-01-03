@@ -131,7 +131,6 @@ public class Member extends Editable {
         hasFocus = emailView.hasFocus();
         selectionPos = emailView.getSelectionStart();
         email = emailView.getText().toString();
-        mParent = null;
     }
 
     @Override
