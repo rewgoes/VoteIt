@@ -104,6 +104,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     SectionView mQuestionsLayout;
 
     private ArrayList<Member> mMembers;
+    private ArrayList<Question> mQuestions;
 
     private boolean mHasTimePickerShown = false;
     private long mEndDate = DateUtils.DATE_NOT_SET;
@@ -444,6 +445,12 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
         //noinspection unchecked
         mMembers = (ArrayList<Member>) mMembersLayout.getData();
         if (mMembers == null) {
+            isDataValid = false;
+        }
+
+        //noinspection unchecked
+        mQuestions = (ArrayList<Question>) mQuestionsLayout.getData();
+        if (mQuestions == null) {
             isDataValid = false;
         }
 

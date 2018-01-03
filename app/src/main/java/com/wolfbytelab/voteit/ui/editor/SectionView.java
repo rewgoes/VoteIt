@@ -80,6 +80,7 @@ public class SectionView extends LinearLayout {
         return ss;
     }
 
+
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         if (!(state instanceof SavedState)) {
@@ -139,6 +140,10 @@ public class SectionView extends LinearLayout {
     public void removeViewGroup(Editable child, ViewGroup viewGroup) {
         mChildren.remove(child);
         removeView(viewGroup);
+    }
+
+    public void saveState() {
+        onSaveInstanceState();
     }
 
     private static class SavedState extends BaseSavedState {

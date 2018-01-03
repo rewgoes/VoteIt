@@ -2,6 +2,8 @@ package com.wolfbytelab.voteit.model;
 
 import android.os.Parcel;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
@@ -71,12 +73,17 @@ public class Option extends Editable {
 
     @Override
     public boolean isValid() {
-        return false;
+        title = ((EditText) mView.findViewById(R.id.option_title)).getText().toString();
+        if (TextUtils.isEmpty(title)) {
+            ((TextInputLayout) mView.findViewById(R.id.option_title_textinput)).setError(mView.getContext().getString(R.string.required_field));
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean hasFocus() {
-        return false;
+        return hasFocus;
     }
 
     @Override

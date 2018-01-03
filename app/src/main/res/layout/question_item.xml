@@ -67,6 +67,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:childrenLayout="@layout/option_item"
+            android:saveEnabled="false"
             app:layout_constraintEnd_toEndOf="@+id/remove_question"
             app:layout_constraintStart_toStartOf="@+id/question_title_textinput"
             app:layout_constraintTop_toBottomOf="@+id/question_title_textinput"/>

@@ -2,6 +2,8 @@ package com.wolfbytelab.voteit.model;
 
 import android.os.Parcel;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
@@ -63,6 +65,8 @@ public class Question extends Editable {
         hasFocus = titleView.hasFocus();
         selectionPos = titleView.getSelectionStart();
         title = titleView.getText().toString();
+        SectionView optionsView = mView.findViewById(R.id.options);
+        optionsView.saveState();
     }
 
     @Override
@@ -73,12 +77,16 @@ public class Question extends Editable {
         TextInputEditText titleView = mView.findViewById(R.id.question_title);
         titleView.setText(title);
 
+        if (options == null) {
+            options = new ArrayList<>();
+            options.add(new Option());
+            options.add(new Option());
+        }
+
         SectionView optionsView = mView.findViewById(R.id.options);
 
-        if (!isInitialized) {
-            isInitialized = true;
-            optionsView.addEditorView(new Option());
-            optionsView.addEditorView(new Option());
+        for (Option option : options) {
+            optionsView.addEditorView(option);
         }
     }
 
@@ -89,12 +97,33 @@ public class Question extends Editable {
 
     @Override
     public boolean isValid() {
-        return false;
+        boolean isValid = true;
+
+        title = ((EditText) mView.findViewById(R.id.question_title)).getText().toString();
+        if (TextUtils.isEmpty(title)) {
+            ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setError(mView.getContext().getString(R.string.required_field));
+            isValid = false;
+        }
+        SectionView optionsView = mView.findViewById(R.id.options);
+
+        //noinspection unchecked
+        options = (ArrayList<Option>) optionsView.getData();
+        if (options == null || options.size() < 2) {
+            isValid = false;
+        } else {
+            for (Option option : options) {
+                if (TextUtils.isEmpty(option.title)) {
+                    isValid = false;
+                }
+            }
+        }
+
+        return isValid;
     }
 
     @Override
     public boolean hasFocus() {
-        return false;
+        return hasFocus;
     }
 
     @Override
@@ -102,9 +131,9 @@ public class Question extends Editable {
         mView.findViewById(R.id.question_title).post(new Runnable() {
             @Override
             public void run() {
-                EditText emailView = mView.findViewById(R.id.member_email);
-                emailView.requestFocus();
-                emailView.setSelection(selectionPos);
+                EditText titleView = mView.findViewById(R.id.question_title);
+                titleView.requestFocus();
+                titleView.setSelection(selectionPos);
             }
         });
     }
