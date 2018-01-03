@@ -22,7 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/option"
-            android:inputType="textEmailAddress"
             android:saveEnabled="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
