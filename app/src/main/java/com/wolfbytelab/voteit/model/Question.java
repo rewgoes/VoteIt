@@ -110,12 +110,6 @@ public class Question extends Editable {
         options = (ArrayList<Option>) optionsView.getData();
         if (options == null || options.size() < 2) {
             isValid = false;
-        } else {
-            for (Option option : options) {
-                if (TextUtils.isEmpty(option.title)) {
-                    isValid = false;
-                }
-            }
         }
 
         return isValid;

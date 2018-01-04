@@ -29,17 +29,13 @@
 
     <ImageView
         android:id="@+id/remove_option"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="@dimen/activity_margin"
-        android:layout_marginStart="@dimen/activity_margin"
-        android:contentDescription="@string/remove_member"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:contentDescription="@string/remove_option"
         android:src="@drawable/ic_clear_black_24px"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/option_title_textinput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/option_title_textinput"
-        app:layout_constraintTop_toTopOf="@+id/option_title_textinput"
-        tools:visibility="visible"/>
+        app:layout_constraintTop_toTopOf="@+id/option_title_textinput"/>
 
 </android.support.constraint.ConstraintLayout>

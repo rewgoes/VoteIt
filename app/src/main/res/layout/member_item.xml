@@ -33,8 +33,6 @@
         android:id="@+id/remove_member"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginEnd="@dimen/activity_margin"
-        android:layout_marginStart="@dimen/activity_margin"
         android:contentDescription="@string/remove_member"
         android:src="@drawable/ic_clear_black_24px"
         android:visibility="invisible"

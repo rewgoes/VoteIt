@@ -133,7 +133,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 mFocusHolder.requestFocus();
             }
             mQuestionsLayout.addEditorView(new Question());
-            mQuestionsLayout.addEditorView(new Question());
         } else {
             mSurveyKey = savedInstanceState.getString(STATE_SURVEY_KEY);
             mSurveyType = (Survey.Type) savedInstanceState.getSerializable(STATE_SURVEY_TYPE);

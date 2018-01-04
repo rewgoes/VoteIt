@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/end_date_input_layout"
@@ -26,7 +25,7 @@
             android:hint="@string/end_date"
             android:inputType="date"
             android:longClickable="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -49,7 +48,7 @@
             android:hint="@string/end_time"
             android:inputType="time"
             android:longClickable="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
     </android.support.design.widget.TextInputLayout>
 
     <TextView
@@ -58,12 +57,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:text="@string/clear_date"
         android:textAllCaps="true"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@id/end_time_input_layout"
         app:layout_constraintTop_toBottomOf="@id/end_time_input_layout"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>

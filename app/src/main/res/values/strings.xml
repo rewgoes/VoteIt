@@ -27,4 +27,7 @@
     <string name="option">Option</string>
     <string name="question_title">Question title</string>
     <string name="options">Options</string>
+    <string name="add_option">Add option</string>
+    <string name="add_question">Add question</string>
+    <string name="remove_option">Remove option</string>
 </resources>
