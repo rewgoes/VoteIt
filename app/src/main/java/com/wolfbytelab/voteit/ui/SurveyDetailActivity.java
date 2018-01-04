@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.model.Survey;
@@ -18,6 +19,10 @@ public class SurveyDetailActivity extends AppCompatActivity {
 
         if(savedInstanceState == null) {
             String surveyKey = getIntent().getStringExtra(Constants.EXTRA_SURVEY_KEY);
+
+            if (TextUtils.isEmpty(surveyKey)) {
+                setTitle(R.string.new_survey);
+            }
 
             FragmentManager fm = getSupportFragmentManager();
 
