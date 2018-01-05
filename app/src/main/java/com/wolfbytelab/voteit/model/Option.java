@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
@@ -16,6 +17,7 @@ public class Option extends Editable {
 
     private ViewGroup mView;
     private SectionView mParent;
+    private boolean isValid = true;
 
     private boolean hasFocus;
     private int selectionPos;
@@ -25,6 +27,7 @@ public class Option extends Editable {
 
     public Option(Parcel in) {
         title = in.readString();
+        isValid = in.readInt() == 1;
     }
 
     @Override
@@ -34,7 +37,8 @@ public class Option extends Editable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(title);
+        dest.writeInt(isValid ? 1 : 0);
     }
 
     public static final Creator<Option> CREATOR = new Creator<Option>() {
@@ -62,8 +66,32 @@ public class Option extends Editable {
         mParent = parent;
         mView = view;
 
+        if (!isValid) {
+            ((TextInputLayout) mView.findViewById(R.id.option_title_textinput)).setError(mView.getContext().getString(R.string.required_field));
+        }
+
         TextInputEditText titleView = mView.findViewById(R.id.option_title);
         titleView.setText(title);
+
+        if (isEditable()) {
+            titleView.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    ((TextInputLayout) mView.findViewById(R.id.option_title_textinput)).setErrorEnabled(false);
+                    isValid = true;
+                }
+
+                @Override
+                public void afterTextChanged(android.text.Editable editable) {
+                }
+            });
+        } else {
+            titleView.setEnabled(false);
+        }
     }
 
     @Override
@@ -73,12 +101,13 @@ public class Option extends Editable {
 
     @Override
     public boolean isValid() {
+        isValid = true;
         title = ((EditText) mView.findViewById(R.id.option_title)).getText().toString();
         if (TextUtils.isEmpty(title)) {
             ((TextInputLayout) mView.findViewById(R.id.option_title_textinput)).setError(mView.getContext().getString(R.string.required_field));
-            return false;
+            isValid = false;
         }
-        return true;
+        return isValid;
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
@@ -20,6 +21,7 @@ public class Question extends Editable {
 
     private ViewGroup mView;
     private SectionView mParent;
+    private boolean isValid = true;
 
     private boolean hasFocus;
     private int selectionPos;
@@ -33,6 +35,7 @@ public class Question extends Editable {
         title = in.readString();
         options = in.readArrayList(Option.class.getClassLoader());
         isInitialized = in.readInt() == 1;
+        isValid = in.readInt() == 1;
     }
 
     @Override
@@ -45,6 +48,7 @@ public class Question extends Editable {
         dest.writeString(title);
         dest.writeList(options);
         dest.writeInt(isInitialized ? 1 : 0);
+        dest.writeInt(isValid ? 1 : 0);
     }
 
     public static final Creator<Question> CREATOR = new Creator<Question>() {
@@ -74,8 +78,32 @@ public class Question extends Editable {
         mParent = parent;
         mView = view;
 
+        if (!isValid) {
+            ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setError(mView.getContext().getString(R.string.required_field));
+        }
+
         TextInputEditText titleView = mView.findViewById(R.id.question_title);
         titleView.setText(title);
+
+        if (isEditable()) {
+            titleView.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setErrorEnabled(false);
+                    isValid = true;
+                }
+
+                @Override
+                public void afterTextChanged(android.text.Editable editable) {
+                }
+            });
+        } else {
+            titleView.setEnabled(false);
+        }
 
         if (options == null) {
             options = new ArrayList<>();
@@ -97,8 +125,7 @@ public class Question extends Editable {
 
     @Override
     public boolean isValid() {
-        boolean isValid = true;
-
+        isValid = true;
         title = ((EditText) mView.findViewById(R.id.question_title)).getText().toString();
         if (TextUtils.isEmpty(title)) {
             ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setError(mView.getContext().getString(R.string.required_field));
@@ -107,9 +134,13 @@ public class Question extends Editable {
         SectionView optionsView = mView.findViewById(R.id.options);
 
         //noinspection unchecked
-        options = (ArrayList<Option>) optionsView.getData();
-        if (options == null || options.size() < 2) {
+        ArrayList<Option> newOptions = (ArrayList<Option>) optionsView.getData();
+        if (newOptions == null || newOptions.size() < 2) {
             isValid = false;
+        }
+
+        if (newOptions != null) {
+            options = newOptions;
         }
 
         return isValid;
