@@ -68,8 +68,8 @@
                 layout="@layout/date_time_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
-                app:layout_constraintStart_toStartOf="@+id/description_input_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/description_input_layout" />
 
             <View
@@ -86,29 +86,34 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/members"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                app:layout_constraintStart_toStartOf="@+id/description_input_layout"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/date_time_layout" />
 
-            <com.wolfbytelab.voteit.ui.editor.SectionView
-                android:id="@+id/not_editable_members"
+            <android.support.v7.widget.CardView
+                android:id="@+id/members_card_view"
+                style="@style/CardStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"
-                app:childrenLayout="@layout/member_item"
-                app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/members_header"
-                app:layout_constraintTop_toBottomOf="@+id/members_header" />
+                app:layout_constraintTop_toBottomOf="@+id/members_header">
 
-            <com.wolfbytelab.voteit.ui.editor.SectionView
-                android:id="@+id/members"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:childrenLayout="@layout/member_item"
-                app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
-                app:layout_constraintStart_toStartOf="@+id/members_header"
-                app:layout_constraintTop_toBottomOf="@+id/not_editable_members" />
+                <com.wolfbytelab.voteit.ui.editor.SectionView
+                    android:id="@+id/not_editable_members"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:childrenLayout="@layout/member_item" />
+
+                <com.wolfbytelab.voteit.ui.editor.SectionView
+                    android:id="@+id/members"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:childrenLayout="@layout/member_item" />
+
+            </android.support.v7.widget.CardView>
 
             <TextView
                 android:id="@+id/question_header"
@@ -117,8 +122,8 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/questions"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                app:layout_constraintStart_toStartOf="@+id/members"
-                app:layout_constraintTop_toBottomOf="@+id/members" />
+                app:layout_constraintStart_toStartOf="@+id/members_card_view"
+                app:layout_constraintTop_toBottomOf="@+id/members_card_view" />
 
             <com.wolfbytelab.voteit.ui.editor.SectionView
                 android:id="@+id/questions"
@@ -126,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:childrenLayout="@layout/question_item"
-                app:layout_constraintEnd_toEndOf="@+id/description_input_layout"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/question_header"
                 app:layout_constraintTop_toBottomOf="@+id/question_header" />
 

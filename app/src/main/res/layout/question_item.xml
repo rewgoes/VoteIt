@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/CardStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -26,8 +27,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/question_title"
-                android:inputType="textEmailAddress"
+                android:inputType="text"
                 android:maxLength="@integer/question_title_max_length"
+                android:maxLines="1"
                 android:saveEnabled="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -39,8 +41,10 @@
             android:layout_height="20dp"
             android:contentDescription="@string/remove_question"
             android:src="@drawable/ic_delete_black_24px"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/option_header"
@@ -74,8 +78,10 @@
             android:foreground="?android:attr/selectableItemBackground"
             android:text="@string/add_option"
             android:textAllCaps="true"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@id/options"
-            app:layout_constraintTop_toBottomOf="@id/options" />
+            app:layout_constraintTop_toBottomOf="@id/options"
+            tools:visibility="visible" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

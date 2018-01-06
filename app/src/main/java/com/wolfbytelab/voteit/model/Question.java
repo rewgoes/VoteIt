@@ -124,11 +124,19 @@ public class Question extends Editable {
             });
         } else {
             titleView.setEnabled(false);
+            ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setCounterEnabled(false);
         }
 
         final SectionView optionsView = mView.findViewById(R.id.options);
 
+        if (!isEditable()) {
+            optionsView.enableLayoutTransition(false);
+        }
+
         View addOptionView = mView.findViewById(R.id.add_option);
+        if (isEditable()) {
+            addOptionView.setVisibility(View.VISIBLE);
+        }
         addOptionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,16 +156,20 @@ public class Question extends Editable {
         });
 
         View deleteView = mView.findViewById(R.id.remove_question);
-        deleteView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mParent.getSize() > Constants.MIN_QUESTIONS) {
-                    mParent.removeViewGroup(Question.this, mView);
-                } else {
-                    Toast.makeText(mView.getContext(), String.format(mView.getContext().getString(R.string.min_questions_error_msg), Constants.MIN_QUESTIONS), Toast.LENGTH_SHORT).show();
+        if (isEditable()) {
+            deleteView.setVisibility(View.VISIBLE);
+
+            deleteView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mParent.getSize() > Constants.MIN_QUESTIONS) {
+                        mParent.removeViewGroup(Question.this, mView);
+                    } else {
+                        Toast.makeText(mView.getContext(), String.format(mView.getContext().getString(R.string.min_questions_error_msg), Constants.MIN_QUESTIONS), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
 
         if (options == null) {
             options = new ArrayList<>();
@@ -166,6 +178,9 @@ public class Question extends Editable {
         }
 
         for (Option option : options) {
+            if (!isEditable()) {
+                option.setEditable(false);
+            }
             optionsView.addEditorView(option);
         }
     }

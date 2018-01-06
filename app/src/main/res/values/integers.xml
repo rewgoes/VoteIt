@@ -3,4 +3,5 @@
     <integer name="survey_title_max_length">30</integer>
     <integer name="question_title_max_length">30</integer>
     <integer name="description_max_length">100</integer>
+    <integer name="option_title_max_length">30</integer>
 </resources>

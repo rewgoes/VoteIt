@@ -108,20 +108,24 @@ public class Option extends Editable {
             });
         } else {
             titleView.setEnabled(false);
+            ((TextInputLayout) mView.findViewById(R.id.option_title_textinput)).setCounterEnabled(false);
         }
 
         View deleteView = mView.findViewById(R.id.remove_option);
-        deleteView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mParent.getSize() > Constants.MIN_OPTIONS) {
-                    mParent.getIndexOf(Option.this);
-                    mParent.removeViewGroup(Option.this, mView);
-                } else {
-                    Toast.makeText(mView.getContext(), String.format(mView.getContext().getString(R.string.min_options_error_msg), Constants.MIN_OPTIONS), Toast.LENGTH_SHORT).show();
+        if (isEditable()) {
+            deleteView.setVisibility(View.VISIBLE);
+            deleteView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mParent.getSize() > Constants.MIN_OPTIONS) {
+                        mParent.getIndexOf(Option.this);
+                        mParent.removeViewGroup(Option.this, mView);
+                    } else {
+                        Toast.makeText(mView.getContext(), String.format(mView.getContext().getString(R.string.min_options_error_msg), Constants.MIN_OPTIONS), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
 
     }
 

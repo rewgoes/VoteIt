@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,6 +12,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:saveEnabled="false"
+        app:counterEnabled="true"
+        app:counterMaxLength="@integer/option_title_max_length"
+        app:hintEnabled="false"
         app:layout_constraintEnd_toStartOf="@+id/remove_option"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent">
@@ -22,8 +24,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/option"
+            android:inputType="text"
+            android:maxLines="1"
             android:saveEnabled="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:counterMaxLength="@integer/option_title_max_length" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -33,9 +38,11 @@
         android:layout_height="20dp"
         android:contentDescription="@string/remove_option"
         android:src="@drawable/ic_clear_black_24px"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/option_title_textinput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/option_title_textinput"
-        app:layout_constraintTop_toTopOf="@+id/option_title_textinput"/>
+        app:layout_constraintTop_toTopOf="@+id/option_title_textinput"
+        tools:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>

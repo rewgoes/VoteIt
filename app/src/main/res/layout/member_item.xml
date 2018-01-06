@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,6 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:saveEnabled="false"
+        app:hintEnabled="false"
         app:layout_constraintEnd_toStartOf="@+id/remove_member"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent">
@@ -24,7 +24,7 @@
             android:hint="@string/member_email"
             android:inputType="textEmailAddress"
             android:saveEnabled="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -40,6 +40,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/member_email_textinput"
         app:layout_constraintTop_toTopOf="@+id/member_email_textinput"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>

@@ -131,11 +131,12 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
         mUnbinder = ButterKnife.bind(this, rootView);
 
         if (savedInstanceState == null) {
-            mMembersLayout.addEditorView(new Member());
-            if (!isAddMode()) {
+            if (isAddMode()) {
+                mMembersLayout.addEditorView(new Member());
+                mQuestionsLayout.addEditorView(new Question());
+            } else {
                 mFocusHolder.requestFocus();
             }
-            mQuestionsLayout.addEditorView(new Question());
         } else {
             mSurveyKey = savedInstanceState.getString(STATE_SURVEY_KEY);
             mSurveyType = (Survey.Type) savedInstanceState.getSerializable(STATE_SURVEY_TYPE);
@@ -233,7 +234,13 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             mTitle.setEnabled(false);
             mTitle.setFocusable(false);
             mTitle.setText(mSurvey.title);
-            mDescription.setText(mSurvey.description);
+            if (TextUtils.isEmpty(mSurvey.description)) {
+                mDescriptionInputLayout.setVisibility(View.GONE);
+            } else {
+                mDescription.setText(mSurvey.description);
+                mDescription.setEnabled(false);
+                mDescription.setFocusable(false);
+            }
 
             if (mSurvey.endDate == DateUtils.DATE_NOT_SET) {
                 mDateTimeLayoutGroup.setVisibility(View.GONE);
@@ -241,6 +248,20 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 mEndDate = mSurvey.endDate;
                 fillDate();
             }
+
+            mQuestionsLayout.enableLayoutTransition(false);
+
+            if (mSurvey != null) {
+                if (mQuestionsLayout.getSize() == 0) {
+                    for (Question question : mSurvey.questions) {
+                        question.setEditable(false);
+                        mQuestionsLayout.addEditorView(question);
+                    }
+                }
+            }
+
+            mDescriptionInputLayout.setCounterEnabled(false);
+            mTitleInputLayout.setCounterEnabled(false);
 
             enableEditableInputLayoutAnimation();
         } else {
@@ -356,7 +377,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     }
 
     private boolean isAddMode() {
-        //TODO: create an empty mode
         return TextUtils.isEmpty(mSurveyKey);
     }
 
