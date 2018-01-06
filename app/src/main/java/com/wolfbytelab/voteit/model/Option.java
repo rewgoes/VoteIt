@@ -10,18 +10,24 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.Exclude;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.ui.editor.Editable;
 import com.wolfbytelab.voteit.ui.editor.SectionView;
 
 public class Option extends Editable {
-    public String title;
+    private String title;
 
+    @Exclude
     private ViewGroup mView;
+    @Exclude
     private SectionView mParent;
+    @Exclude
     private boolean isValid = true;
 
+    @Exclude
     private boolean hasFocus;
+    @Exclude
     private int selectionPos;
 
     public Option() {
@@ -30,6 +36,14 @@ public class Option extends Editable {
     public Option(Parcel in) {
         title = in.readString();
         isValid = in.readInt() == 1;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
@@ -115,6 +129,7 @@ public class Option extends Editable {
         mParent = parent;
     }
 
+    @Exclude
     @Override
     public boolean isValid() {
         isValid = true;

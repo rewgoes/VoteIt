@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.Exclude;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.ui.editor.Editable;
 import com.wolfbytelab.voteit.ui.editor.SectionView;
@@ -18,14 +19,19 @@ import java.util.ArrayList;
 
 public class Question extends Editable {
 
-    public String title;
+    private String title;
     private ArrayList<Option> options;
 
+    @Exclude
     private ViewGroup mView;
+    @Exclude
     private SectionView mParent;
+    @Exclude
     private boolean isValid = true;
 
+    @Exclude
     private boolean hasFocus;
+    @Exclude
     private int selectionPos;
 
     public Question() {
@@ -35,6 +41,22 @@ public class Question extends Editable {
         title = in.readString();
         options = in.readArrayList(Option.class.getClassLoader());
         isValid = in.readInt() == 1;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public ArrayList<Option> getOptions() {
+        return options;
+    }
+
+    public void setOptions(ArrayList<Option> options) {
+        this.options = options;
     }
 
     @Override
@@ -152,6 +174,7 @@ public class Question extends Editable {
         mParent = parent;
     }
 
+    @Exclude
     @Override
     public boolean isValid() {
         isValid = true;

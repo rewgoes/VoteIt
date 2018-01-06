@@ -3,8 +3,10 @@ package com.wolfbytelab.voteit.ui.editor;
 import android.os.Parcelable;
 import android.view.ViewGroup;
 
-public abstract class Editable implements Parcelable {
+import com.google.firebase.database.Exclude;
 
+public abstract class Editable implements Parcelable {
+    @Exclude
     private boolean mIsEditable = true;
 
     public abstract void fillView(SectionView parent, ViewGroup view);
@@ -13,12 +15,14 @@ public abstract class Editable implements Parcelable {
 
     public abstract void setParent(SectionView sectionView);
 
+    @Exclude
     public abstract boolean isValid();
 
     public abstract boolean hasFocus();
 
     public abstract void requestFocus();
 
+    @Exclude
     public boolean isEditable() {
         return mIsEditable;
     }

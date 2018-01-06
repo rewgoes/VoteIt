@@ -16,6 +16,7 @@ public class Survey implements Parcelable {
 
     public String owner;
     public ArrayList<User> members;
+    public ArrayList<Question> questions;
 
     public long startDate;
     public long endDate = DateUtils.DATE_NOT_SET;

@@ -483,6 +483,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 if (mEndDate != DateUtils.DATE_NOT_SET) {
                     survey.endDate = mEndDate;
                 }
+                survey.questions = mQuestions;
 
                 String surveyKey = surveyDatabaseReference.push().getKey();
 
