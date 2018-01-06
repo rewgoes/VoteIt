@@ -5,6 +5,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
@@ -105,13 +106,23 @@ public class Question extends Editable {
             titleView.setEnabled(false);
         }
 
+        final SectionView optionsView = mView.findViewById(R.id.options);
+
+        View addOptionView = mView.findViewById(R.id.add_option);
+        addOptionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Option option = new Option();
+                options.add(option);
+                optionsView.addEditorView(option);
+            }
+        });
+
         if (options == null) {
             options = new ArrayList<>();
             options.add(new Option());
             options.add(new Option());
         }
-
-        SectionView optionsView = mView.findViewById(R.id.options);
 
         for (Option option : options) {
             optionsView.addEditorView(option);

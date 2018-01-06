@@ -30,4 +30,5 @@
     <string name="add_option">Add option</string>
     <string name="add_question">Add question</string>
     <string name="remove_option">Remove option</string>
+    <string name="remove_question">Remove question</string>
 </resources>

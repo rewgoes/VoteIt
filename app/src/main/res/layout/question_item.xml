@@ -4,8 +4,7 @@
     style="@style/CardStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardPreventCornerOverlap="false">
+    android:layout_marginBottom="8dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -36,10 +35,10 @@
 
         <ImageView
             android:id="@+id/remove_question"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:contentDescription="@string/remove_member"
-            android:src="@drawable/ic_clear_black_24px"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/remove_question"
+            android:src="@drawable/ic_delete_black_24px"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

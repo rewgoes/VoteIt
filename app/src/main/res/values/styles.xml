@@ -17,13 +17,14 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
-    <style name="CardStyle" parent="Theme.AppCompat.Light">
+    <style name="CardStyle" parent="CardView.Light">
         <item name="cardCornerRadius">2dp</item>
         <item name="cardElevation">2dp</item>
         <item name="contentPaddingBottom">24dp</item>
         <item name="contentPaddingTop">24dp</item>
         <item name="contentPaddingLeft">16dp</item>
         <item name="contentPaddingRight">16dp</item>
+        <item name="cardUseCompatPadding">true</item>
     </style>
 
 </resources>

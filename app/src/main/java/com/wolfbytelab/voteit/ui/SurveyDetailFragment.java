@@ -102,6 +102,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     TextInputLayout mDescriptionInputLayout;
     @BindView(R.id.questions)
     SectionView mQuestionsLayout;
+    @BindView(R.id.add_question)
+    View mAddQuestionView;
 
     private ArrayList<Member> mMembers;
     private ArrayList<Question> mQuestions;
@@ -255,6 +257,14 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             mTimePickerDialog =
                     new TimePickerDialog(getContext(), this, calendar.get(Calendar.HOUR_OF_DAY),
                             calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getContext()));
+
+            mAddQuestionView.setVisibility(View.VISIBLE);
+            mAddQuestionView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mQuestionsLayout.addEditorView(new Question());
+                }
+            });
         }
     }
 
