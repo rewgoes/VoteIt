@@ -5,8 +5,10 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.ui.editor.Editable;
@@ -92,6 +94,20 @@ public class Option extends Editable {
         } else {
             titleView.setEnabled(false);
         }
+
+        View deleteView = mView.findViewById(R.id.remove_option);
+        deleteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mParent.getSize() > 2) {
+                    mParent.getIndexOf(Option.this);
+                    mParent.removeViewGroup(Option.this, mView);
+                } else {
+                    Toast.makeText(mView.getContext(), mView.getContext().getString(R.string.at_least_two_options), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     @Override

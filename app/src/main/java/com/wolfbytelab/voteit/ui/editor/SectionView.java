@@ -20,6 +20,7 @@ public class SectionView extends LinearLayout {
     private ArrayList<Editable> mChildren = new ArrayList<>();
     private boolean isRestoring = false;
     private LayoutInflater mLayoutInflater;
+    private OnRemoveChildListener mOnRemoveChildListener;
 
     public SectionView(Context context) {
         super(context);
@@ -138,6 +139,9 @@ public class SectionView extends LinearLayout {
     }
 
     public void removeViewGroup(Editable child, ViewGroup viewGroup) {
+        if (mOnRemoveChildListener != null) {
+            mOnRemoveChildListener.onChildRemoved(getIndexOf(child));
+        }
         mChildren.remove(child);
         removeView(viewGroup);
     }
@@ -192,5 +196,13 @@ public class SectionView extends LinearLayout {
             }
         }
         return isValid;
+    }
+
+    public void addOnRemoveChildListener(OnRemoveChildListener onRemoveChildListener) {
+        mOnRemoveChildListener = onRemoveChildListener;
+    }
+
+    public interface OnRemoveChildListener {
+        void onChildRemoved(int index);
     }
 }

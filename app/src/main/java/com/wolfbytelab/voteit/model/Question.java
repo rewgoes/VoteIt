@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.ui.editor.Editable;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class Question extends Editable {
 
     public String title;
-    public ArrayList<Option> options;
+    private ArrayList<Option> options;
 
     private ViewGroup mView;
     private SectionView mParent;
@@ -27,15 +28,12 @@ public class Question extends Editable {
     private boolean hasFocus;
     private int selectionPos;
 
-    private boolean isInitialized = false;
-
     public Question() {
     }
 
     public Question(Parcel in) {
         title = in.readString();
         options = in.readArrayList(Option.class.getClassLoader());
-        isInitialized = in.readInt() == 1;
         isValid = in.readInt() == 1;
     }
 
@@ -48,7 +46,6 @@ public class Question extends Editable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeList(options);
-        dest.writeInt(isInitialized ? 1 : 0);
         dest.writeInt(isValid ? 1 : 0);
     }
 
@@ -115,6 +112,27 @@ public class Question extends Editable {
                 Option option = new Option();
                 options.add(option);
                 optionsView.addEditorView(option);
+            }
+        });
+
+        optionsView.addOnRemoveChildListener(new SectionView.OnRemoveChildListener() {
+            @Override
+            public void onChildRemoved(int index) {
+                if (options != null && options.size() > index) {
+                    options.remove(index);
+                }
+            }
+        });
+
+        View deleteView = mView.findViewById(R.id.remove_question);
+        deleteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mParent.getSize() > 1) {
+                    mParent.removeViewGroup(Question.this, mView);
+                } else {
+                    Toast.makeText(mView.getContext(), mView.getContext().getString(R.string.at_least_one_question), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
