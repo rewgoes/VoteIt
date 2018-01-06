@@ -113,12 +113,16 @@ public class Member extends Editable {
         }
 
         ImageView deleteView = mView.findViewById(R.id.remove_member);
-        deleteView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mParent.removeViewGroup(Member.this, mView);
-            }
-        });
+        if (isEditable()) {
+            deleteView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mParent.removeViewGroup(Member.this, mView);
+                }
+            });
+        } else {
+            deleteView.setVisibility(View.GONE);
+        }
 
         if (mParent.getIndexOf(Member.this) != mParent.getSize() - 1 && isEditable()) {
             deleteView.setVisibility(View.VISIBLE);
