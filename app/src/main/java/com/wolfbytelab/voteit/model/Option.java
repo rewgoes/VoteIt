@@ -14,6 +14,7 @@ import com.google.firebase.database.Exclude;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.ui.editor.Editable;
 import com.wolfbytelab.voteit.ui.editor.SectionView;
+import com.wolfbytelab.voteit.util.Constants;
 
 public class Option extends Editable {
     private String title;
@@ -113,11 +114,11 @@ public class Option extends Editable {
         deleteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mParent.getSize() > 2) {
+                if (mParent.getSize() > Constants.MIN_OPTIONS) {
                     mParent.getIndexOf(Option.this);
                     mParent.removeViewGroup(Option.this, mView);
                 } else {
-                    Toast.makeText(mView.getContext(), mView.getContext().getString(R.string.at_least_two_options), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mView.getContext(), String.format(mView.getContext().getString(R.string.min_options_error_msg), Constants.MIN_OPTIONS), Toast.LENGTH_SHORT).show();
                 }
             }
         });

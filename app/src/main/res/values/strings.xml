@@ -31,6 +31,7 @@
     <string name="add_question">Add question</string>
     <string name="remove_option">Remove option</string>
     <string name="remove_question">Remove question</string>
-    <string name="at_least_two_options">There must be at least 2 options</string>
-    <string name="at_least_one_question">There must be at least 1 question</string>
+    <string name="min_options_error_msg">There must be at least %d options</string>
+    <string name="min_questions_error_msg">There must be at least %d question</string>
+    <string name="min_members_error_msg">There must be at least %d member</string>
 </resources>

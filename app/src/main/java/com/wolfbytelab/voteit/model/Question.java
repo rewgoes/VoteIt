@@ -14,6 +14,7 @@ import com.google.firebase.database.Exclude;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.ui.editor.Editable;
 import com.wolfbytelab.voteit.ui.editor.SectionView;
+import com.wolfbytelab.voteit.util.Constants;
 
 import java.util.ArrayList;
 
@@ -150,10 +151,10 @@ public class Question extends Editable {
         deleteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mParent.getSize() > 1) {
+                if (mParent.getSize() > Constants.MIN_QUESTIONS) {
                     mParent.removeViewGroup(Question.this, mView);
                 } else {
-                    Toast.makeText(mView.getContext(), mView.getContext().getString(R.string.at_least_one_question), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mView.getContext(), String.format(mView.getContext().getString(R.string.min_questions_error_msg), Constants.MIN_QUESTIONS), Toast.LENGTH_SHORT).show();
                 }
             }
         });

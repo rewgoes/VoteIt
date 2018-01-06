@@ -36,6 +36,7 @@ import com.wolfbytelab.voteit.model.Member;
 import com.wolfbytelab.voteit.model.Question;
 import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.ui.editor.SectionView;
+import com.wolfbytelab.voteit.util.Constants;
 import com.wolfbytelab.voteit.util.DateUtils;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
 
@@ -455,6 +456,17 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
         mMembers = (ArrayList<Member>) mMembersLayout.getData();
         if (mMembers == null) {
             isDataValid = false;
+        } else {
+            int membersCount = 0;
+            for (Member member : mMembers) {
+                if (!TextUtils.isEmpty(member.getEmail())) {
+                    membersCount++;
+                }
+            }
+            if (membersCount < Constants.MIN_MEMBERS) {
+                isDataValid = false;
+                Toast.makeText(getContext(), String.format(getString(R.string.min_members_error_msg), Constants.MIN_MEMBERS), Toast.LENGTH_SHORT).show();
+            }
         }
 
         //noinspection unchecked
