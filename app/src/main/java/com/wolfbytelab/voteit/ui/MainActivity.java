@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
         } else {
             final Intent intent = new Intent(this, SurveyDetailActivity.class);
             intent.putExtra(Constants.EXTRA_SURVEY_KEY, surveyKey);
+            intent.putExtra(Constants.EXTRA_SURVEY_TYPE, surveyType);
             startActivity(intent);
         }
     }

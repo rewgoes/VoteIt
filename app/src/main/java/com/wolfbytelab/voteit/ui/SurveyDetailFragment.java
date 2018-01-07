@@ -314,14 +314,11 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             inflater.inflate(R.menu.add_menu, menu);
         } else {
             switch (mSurveyType) {
-                case INVITE:
-                    inflater.inflate(R.menu.join_menu, menu);
-                    break;
                 case MEMBER:
-                    inflater.inflate(R.menu.vote_menu, menu);
+                    inflater.inflate(R.menu.member_menu, menu);
                     break;
                 case OWNER:
-                    inflater.inflate(R.menu.edit_menu, menu);
+                    inflater.inflate(R.menu.owner_menu, menu);
                     break;
             }
         }
@@ -334,11 +331,11 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             case R.id.create_menu:
                 createSurvey();
                 return true;
-            case R.id.edit_menu:
             case R.id.vote_menu:
+                //TODO: call vote method
+                return true;
             case R.id.delete_menu:
                 deleteSurvey();
-            case R.id.join_menu:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -512,7 +509,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 survey.title = mTitle.getText().toString();
                 survey.description = mDescription.getText().toString();
                 survey.owner = firebaseUser.getUid();
-                //TODO: get date from firebase server and also change it in isDataValid()
                 survey.startDate = Calendar.getInstance().getTimeInMillis();
                 if (mEndDate != DateUtils.DATE_NOT_SET) {
                     survey.endDate = mEndDate;
@@ -530,10 +526,10 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 for (Member member : mMembers) {
                     if (!TextUtils.isEmpty(member.getEmail())) {
                         String encodedEmail = FirebaseUtils.encodeAsFirebaseKey(member.getEmail());
-                        memberDatabaseReference.child(encodedEmail).setValue(false);
+                        memberDatabaseReference.child(encodedEmail).setValue(true);
 
                         DatabaseReference invitePerUserDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(encodedEmail);
-                        invitePerUserDatabaseReference.child(surveyKey).setValue(false);
+                        invitePerUserDatabaseReference.child(surveyKey).setValue(true);
                     }
                 }
 

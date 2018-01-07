@@ -166,10 +166,7 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
             mSurveyPerUserListener = mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addChildEventListener(new SimpleChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot surveyKeySnapshot, String s) {
-                    Bundle extras = new Bundle();
-                    extras.putBoolean("isMember", (boolean) surveyKeySnapshot.getValue());
-
-                    SimpleValueEventListener simpleValueEventListener = new SimpleValueEventListener(extras) {
+                    SimpleValueEventListener simpleValueEventListener = new SimpleValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot surveySnapshot) {
                             surveyCount--;
@@ -178,19 +175,10 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                             if (survey != null) {
                                 survey.key = surveySnapshot.getKey();
 
-                                boolean isMember = false;
-                                if (mExtras != null) {
-                                    isMember = mExtras.getBoolean("isMember");
-                                }
-
-                                if (isMember) {
-                                    if (TextUtils.equals(survey.owner, firebaseUser.getUid())) {
-                                        survey.type = Survey.Type.OWNER;
-                                    } else {
-                                        survey.type = Survey.Type.MEMBER;
-                                    }
+                                if (TextUtils.equals(survey.owner, firebaseUser.getUid())) {
+                                    survey.type = Survey.Type.OWNER;
                                 } else {
-                                    survey.type = Survey.Type.INVITE;
+                                    survey.type = Survey.Type.MEMBER;
                                 }
 
                                 int position = mSurveys.indexOf(survey);

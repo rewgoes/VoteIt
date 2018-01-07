@@ -8,11 +8,6 @@
         android:title="@string/delete"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/edit_menu"
-        android:icon="@drawable/ic_save_white_24px"
-        android:title="@string/edit"
-        app:showAsAction="always"/>
-    <item
         android:id="@+id/vote_menu"
         android:title="@string/vote"
         app:showAsAction="ifRoom"/>

@@ -19,6 +19,7 @@ public class SurveyDetailActivity extends AppCompatActivity {
 
         if(savedInstanceState == null) {
             String surveyKey = getIntent().getStringExtra(Constants.EXTRA_SURVEY_KEY);
+            Survey.Type surveyType = (Survey.Type) getIntent().getSerializableExtra(Constants.EXTRA_SURVEY_TYPE);
 
             if (TextUtils.isEmpty(surveyKey)) {
                 setTitle(R.string.new_survey);
@@ -27,7 +28,7 @@ public class SurveyDetailActivity extends AppCompatActivity {
             FragmentManager fm = getSupportFragmentManager();
 
             SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
-            surveyDetailFragment.setSurveyKeyType(surveyKey, Survey.Type.OWNER);
+            surveyDetailFragment.setSurveyKeyType(surveyKey, surveyType);
 
             fm.beginTransaction()
                     .add(R.id.survey_detail_container, surveyDetailFragment)

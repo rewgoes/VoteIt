@@ -25,7 +25,6 @@ public class Survey implements Parcelable {
 
     public enum Type {
         OWNER,
-        INVITE,
         MEMBER
     }
 
