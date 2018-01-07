@@ -230,63 +230,65 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     }
 
     private void initView() {
-        if (!isAddMode()) {
-            mTitle.setEnabled(false);
-            mTitle.setFocusable(false);
-            mTitle.setText(mSurvey.title);
-            if (TextUtils.isEmpty(mSurvey.description)) {
-                mDescriptionInputLayout.setVisibility(View.GONE);
-            } else {
-                mDescription.setText(mSurvey.description);
-                mDescription.setEnabled(false);
-                mDescription.setFocusable(false);
-            }
+        if (getActivity() != null) {
+            if (!isAddMode()) {
+                mTitle.setEnabled(false);
+                mTitle.setFocusable(false);
+                mTitle.setText(mSurvey.title);
+                if (TextUtils.isEmpty(mSurvey.description)) {
+                    mDescriptionInputLayout.setVisibility(View.GONE);
+                } else {
+                    mDescription.setText(mSurvey.description);
+                    mDescription.setEnabled(false);
+                    mDescription.setFocusable(false);
+                }
 
-            if (mSurvey.endDate == DateUtils.DATE_NOT_SET) {
-                mDateTimeLayoutGroup.setVisibility(View.GONE);
-            } else {
-                mEndDate = mSurvey.endDate;
-                fillDate();
-            }
+                if (mSurvey.endDate == DateUtils.DATE_NOT_SET) {
+                    mDateTimeLayoutGroup.setVisibility(View.GONE);
+                } else {
+                    mEndDate = mSurvey.endDate;
+                    fillDate();
+                }
 
-            mQuestionsLayout.enableLayoutTransition(false);
+                mQuestionsLayout.enableLayoutTransition(false);
 
-            if (mSurvey != null) {
-                if (mQuestionsLayout.getSize() == 0) {
-                    for (Question question : mSurvey.questions) {
-                        question.setEditable(false);
-                        mQuestionsLayout.addEditorView(question);
+                if (mSurvey != null) {
+                    if (mQuestionsLayout.getSize() == 0) {
+                        for (Question question : mSurvey.questions) {
+                            question.setEditable(false);
+                            mQuestionsLayout.addEditorView(question);
+                        }
                     }
                 }
-            }
 
-            mDescriptionInputLayout.setCounterEnabled(false);
-            mTitleInputLayout.setCounterEnabled(false);
+                mDescriptionInputLayout.setCounterEnabled(false);
+                mTitleInputLayout.setCounterEnabled(false);
 
-            enableEditableInputLayoutAnimation();
-        } else {
-            Calendar calendar = Calendar.getInstance();
-            DateUtils.startCalendar(calendar, mEndDate);
+                enableEditableInputLayoutAnimation();
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                DateUtils.startCalendar(calendar, mEndDate);
 
-            if (mEndDate != DateUtils.DATE_NOT_SET) {
-                mClearDateView.setVisibility(View.VISIBLE);
-            }
-
-            mDatePickerDialog =
-                    new DatePickerDialog(getContext(), this, calendar.get(Calendar.DAY_OF_MONTH),
-                            calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
-            mDatePickerDialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
-            mTimePickerDialog =
-                    new TimePickerDialog(getContext(), this, calendar.get(Calendar.HOUR_OF_DAY),
-                            calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getContext()));
-
-            mAddQuestionView.setVisibility(View.VISIBLE);
-            mAddQuestionView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mQuestionsLayout.addEditorView(new Question());
+                if (mEndDate != DateUtils.DATE_NOT_SET) {
+                    mClearDateView.setVisibility(View.VISIBLE);
                 }
-            });
+
+                mDatePickerDialog =
+                        new DatePickerDialog(getContext(), this, calendar.get(Calendar.DAY_OF_MONTH),
+                                calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
+                mDatePickerDialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+                mTimePickerDialog =
+                        new TimePickerDialog(getContext(), this, calendar.get(Calendar.HOUR_OF_DAY),
+                                calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getContext()));
+
+                mAddQuestionView.setVisibility(View.VISIBLE);
+                mAddQuestionView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mQuestionsLayout.addEditorView(new Question());
+                    }
+                });
+            }
         }
     }
 
