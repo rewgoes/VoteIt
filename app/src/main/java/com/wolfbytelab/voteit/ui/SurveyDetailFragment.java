@@ -294,8 +294,15 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         mUnbinder.unbind();
+        mSurvey = null;
+        if (mMembers != null) {
+            for (Member member : mMembers) {
+                member.setParent(null);
+            }
+        }
+        mMembers = null;
+        super.onDestroyView();
     }
 
     @Override
