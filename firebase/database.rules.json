@@ -1,0 +1,41 @@
+{
+  //Member of a survey: root.child('members/'+$survey_id+'/'+root.child('users/'+auth.uid+'/encoded_email').val()).exists()
+  //Owner invite user and user accept: root.child('surveys/'+$survey_id).exists() && newData.val() == true && root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || newData.val() == false
+  "rules": {
+    "surveys": {
+      "$survey_id": {
+        ".read": "root.child('members/'+$survey_id+'/'+root.child('users/'+auth.uid+'/encoded_email').val()).exists()",
+        ".write": "!data.exists() || (auth != null && data.child('owner').val() == auth.uid)"
+      }
+    },
+      
+    "members": {
+      "$survey_id": {
+        ".read": "root.child('members/'+$survey_id+'/'+root.child('users/'+auth.uid+'/encoded_email').val()).exists()",
+        ".write": "!newData.exists() && root.child('surveys/'+$survey_id+'/owner').val() == auth.uid",
+        "$user_encoded_email": {
+          ".validate": "root.child('surveys/'+$survey_id).exists() && newData.val() == true && root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || newData.val() == false",
+          ".write": "root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || root.child('surveys/'+$survey_id+'/owner').val() == auth.uid" //improve this
+        }
+      }
+    },
+      
+    "users": {
+      "$user_id": {
+        ".validate": "$user_id === auth.uid",
+        ".read": "auth != null",
+      	".write": "$user_id === auth.uid"
+      }
+    },
+    
+    "surveys_per_user": {
+      "$user_encoded_email": {
+        ".read": "root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email",
+        "$survey_id": {
+          ".validate": "root.child('surveys/'+$survey_id).exists() && newData.val() == true && root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || newData.val() == false",
+          ".write": "root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || root.child('surveys/'+$survey_id+'/owner').val() == auth.uid"
+        }
+      }
+    }
+  }
+}
