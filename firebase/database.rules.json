@@ -14,7 +14,7 @@
         ".read": "root.child('members/'+$survey_id+'/'+root.child('users/'+auth.uid+'/encoded_email').val()).exists()",
         ".write": "!newData.exists() && root.child('surveys/'+$survey_id+'/owner').val() == auth.uid",
         "$user_encoded_email": {
-          ".validate": "root.child('surveys/'+$survey_id).exists() && newData.val() == true && root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || newData.val() == false",
+          ".validate": "root.child('surveys/'+$survey_id).exists()",
           ".write": "root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || root.child('surveys/'+$survey_id+'/owner').val() == auth.uid" //improve this
         }
       }
@@ -32,7 +32,7 @@
       "$user_encoded_email": {
         ".read": "root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email",
         "$survey_id": {
-          ".validate": "root.child('surveys/'+$survey_id).exists() && newData.val() == true && root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || newData.val() == false",
+          ".validate": "root.child('surveys/'+$survey_id).exists()",
           ".write": "root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || root.child('surveys/'+$survey_id+'/owner').val() == auth.uid"
         }
       }
