@@ -3,11 +3,14 @@ package com.wolfbytelab.voteit.model;
 import android.os.Parcel;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.firebase.database.Exclude;
@@ -20,6 +23,9 @@ import java.util.ArrayList;
 
 public class Question extends Editable {
 
+    @Exclude
+    public static final int INVALID_OPTION = Integer.MIN_VALUE;
+
     private String title;
     private ArrayList<Option> options;
 
@@ -29,6 +35,10 @@ public class Question extends Editable {
     private SectionView mParent;
     @Exclude
     private boolean isValid = true;
+    @Exclude
+    private int selectedOption = INVALID_OPTION;
+    @Exclude
+    private boolean isAnswered = false;
 
     @Exclude
     private boolean hasFocus;
@@ -42,6 +52,7 @@ public class Question extends Editable {
         title = in.readString();
         options = in.readArrayList(Option.class.getClassLoader());
         isValid = in.readInt() == 1;
+        selectedOption = in.readInt();
     }
 
     public String getTitle() {
@@ -60,6 +71,15 @@ public class Question extends Editable {
         this.options = options;
     }
 
+    @Exclude
+    public boolean isAnswered() {
+        return isAnswered;
+    }
+
+    public void setAnswered(boolean answered) {
+        isAnswered = answered;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -70,6 +90,7 @@ public class Question extends Editable {
         dest.writeString(title);
         dest.writeList(options);
         dest.writeInt(isValid ? 1 : 0);
+        dest.writeInt(selectedOption);
     }
 
     public static final Creator<Question> CREATOR = new Creator<Question>() {
@@ -99,14 +120,14 @@ public class Question extends Editable {
         mParent = parent;
         mView = view;
 
-        if (!isValid) {
-            ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setError(mView.getContext().getString(R.string.required_field));
-        }
-
         TextInputEditText titleView = mView.findViewById(R.id.question_title);
         titleView.setText(title);
 
         if (isEditable()) {
+            if (!isValid) {
+                ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setError(mView.getContext().getString(R.string.required_field));
+            }
+
             titleView.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -122,41 +143,32 @@ public class Question extends Editable {
                 public void afterTextChanged(android.text.Editable editable) {
                 }
             });
-        } else {
-            titleView.setEnabled(false);
-            ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setCounterEnabled(false);
-        }
 
-        final SectionView optionsView = mView.findViewById(R.id.options);
+            final SectionView optionsView = mView.findViewById(R.id.options);
 
-        if (!isEditable()) {
-            optionsView.enableLayoutTransition(false);
-        }
-
-        View addOptionView = mView.findViewById(R.id.add_option);
-        if (isEditable()) {
-            addOptionView.setVisibility(View.VISIBLE);
-        }
-        addOptionView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Option option = new Option();
-                options.add(option);
-                optionsView.addEditorView(option);
+            View addOptionView = mView.findViewById(R.id.add_option);
+            if (isEditable()) {
+                addOptionView.setVisibility(View.VISIBLE);
             }
-        });
-
-        optionsView.addOnRemoveChildListener(new SectionView.OnRemoveChildListener() {
-            @Override
-            public void onChildRemoved(int index) {
-                if (options != null && options.size() > index) {
-                    options.remove(index);
+            addOptionView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Option option = new Option();
+                    options.add(option);
+                    optionsView.addEditorView(option);
                 }
-            }
-        });
+            });
 
-        View deleteView = mView.findViewById(R.id.remove_question);
-        if (isEditable()) {
+            optionsView.addOnRemoveChildListener(new SectionView.OnRemoveChildListener() {
+                @Override
+                public void onChildRemoved(int index) {
+                    if (options != null && options.size() > index) {
+                        options.remove(index);
+                    }
+                }
+            });
+
+            View deleteView = mView.findViewById(R.id.remove_question);
             deleteView.setVisibility(View.VISIBLE);
 
             deleteView.setOnClickListener(new View.OnClickListener() {
@@ -169,19 +181,50 @@ public class Question extends Editable {
                     }
                 }
             });
-        }
 
-        if (options == null) {
-            options = new ArrayList<>();
-            options.add(new Option());
-            options.add(new Option());
-        }
-
-        for (Option option : options) {
-            if (!isEditable()) {
-                option.setEditable(false);
+            if (options == null) {
+                options = new ArrayList<>();
+                options.add(new Option());
+                options.add(new Option());
             }
-            optionsView.addEditorView(option);
+
+            optionsView.enableLayoutTransition(false);
+            for (Option option : options) {
+                optionsView.addEditorView(option);
+            }
+            optionsView.enableLayoutTransition(true);
+
+            optionsView.setVisibility(View.VISIBLE);
+        } else {
+            titleView.setEnabled(false);
+            ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setCounterEnabled(false);
+
+            RadioGroup radioGroup = mView.findViewById(R.id.options_radio_group);
+
+            if (radioGroup.getChildCount() == 0) {
+                for (int index = 0; index < options.size(); index++) {
+                    RadioButton radioButton = new AppCompatRadioButton(mView.getContext());
+                    radioButton.setSaveEnabled(false);
+                    radioButton.setId(index);
+                    if (index == selectedOption) {
+                        radioButton.setChecked(true);
+                    }
+                    radioButton.setText(options.get(index).getTitle());
+                    if (isAnswered) {
+                        radioButton.setEnabled(false);
+                    }
+                    radioGroup.addView(radioButton);
+                }
+            }
+
+            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    selectedOption = checkedId;
+                }
+            });
+
+            radioGroup.setVisibility(View.VISIBLE);
         }
     }
 
@@ -194,21 +237,27 @@ public class Question extends Editable {
     @Override
     public boolean isValid() {
         isValid = true;
-        title = ((EditText) mView.findViewById(R.id.question_title)).getText().toString();
-        if (TextUtils.isEmpty(title)) {
-            ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setError(mView.getContext().getString(R.string.required_field));
-            isValid = false;
-        }
-        SectionView optionsView = mView.findViewById(R.id.options);
+        if (isEditable()) {
+            title = ((EditText) mView.findViewById(R.id.question_title)).getText().toString();
+            if (TextUtils.isEmpty(title)) {
+                ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setError(mView.getContext().getString(R.string.required_field));
+                isValid = false;
+            }
+            SectionView optionsView = mView.findViewById(R.id.options);
 
-        //noinspection unchecked
-        ArrayList<Option> newOptions = (ArrayList<Option>) optionsView.getData();
-        if (newOptions == null || newOptions.size() < 2) {
-            isValid = false;
-        }
+            //noinspection unchecked
+            ArrayList<Option> newOptions = (ArrayList<Option>) optionsView.getData();
+            if (newOptions == null || newOptions.size() < 2) {
+                isValid = false;
+            }
 
-        if (newOptions != null) {
-            options = newOptions;
+            if (newOptions != null) {
+                options = newOptions;
+            }
+        } else {
+            if (selectedOption == INVALID_OPTION) {
+                isValid = false;
+            }
         }
 
         return isValid;
