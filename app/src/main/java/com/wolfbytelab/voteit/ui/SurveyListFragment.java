@@ -91,6 +91,7 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+        mSurveyAdapter = null;
     }
 
     @Override
