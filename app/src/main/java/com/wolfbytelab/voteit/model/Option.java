@@ -37,6 +37,8 @@ public class Option extends Editable {
     public Option(Parcel in) {
         title = in.readString();
         isValid = in.readInt() == 1;
+        hasFocus = in.readInt() == 1;
+        selectionPos = in.readInt();
     }
 
     public String getTitle() {
@@ -56,6 +58,8 @@ public class Option extends Editable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeInt(isValid ? 1 : 0);
+        dest.writeInt(hasFocus ? 1 : 0);
+        dest.writeInt(selectionPos);
     }
 
     public static final Creator<Option> CREATOR = new Creator<Option>() {
@@ -82,6 +86,10 @@ public class Option extends Editable {
     public void fillView(SectionView parent, ViewGroup view) {
         mParent = parent;
         mView = view;
+
+        if (hasFocus) {
+            requestFocus();
+        }
 
         if (!isValid) {
             ((TextInputLayout) mView.findViewById(R.id.option_title_textinput)).setError(mView.getContext().getString(R.string.required_field));

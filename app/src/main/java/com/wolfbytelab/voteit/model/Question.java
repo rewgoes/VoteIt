@@ -53,6 +53,8 @@ public class Question extends Editable {
         options = in.readArrayList(Option.class.getClassLoader());
         isValid = in.readInt() == 1;
         selectedOption = in.readInt();
+        hasFocus = in.readInt() == 1;
+        selectionPos = in.readInt();
     }
 
     public String getTitle() {
@@ -91,6 +93,8 @@ public class Question extends Editable {
         dest.writeList(options);
         dest.writeInt(isValid ? 1 : 0);
         dest.writeInt(selectedOption);
+        dest.writeInt(hasFocus ? 1 : 0);
+        dest.writeInt(selectionPos);
     }
 
     public static final Creator<Question> CREATOR = new Creator<Question>() {
