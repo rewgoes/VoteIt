@@ -180,4 +180,19 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
                     .commit();
         }
     }
+
+    @Override
+    public void onSurveyVoted(String surveyKey, Survey.Type mSurveyType) {
+        if (mTwoPane) {
+            FragmentManager fm = getSupportFragmentManager();
+
+            SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
+            surveyDetailFragment.setSurveyKeyType(surveyKey, mSurveyType);
+            surveyDetailFragment.setOnSurveyCreateListener(this);
+
+            fm.beginTransaction()
+                    .replace(R.id.survey_detail_container, surveyDetailFragment)
+                    .commit();
+        }
+    }
 }

@@ -34,4 +34,5 @@
     <string name="min_options_error_msg">There must be at least %d options</string>
     <string name="min_questions_error_msg">There must be at least %d question</string>
     <string name="min_members_error_msg">There must be at least %d member</string>
+    <string name="voted">Voted</string>
 </resources>

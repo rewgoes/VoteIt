@@ -36,6 +36,16 @@
           ".write": "root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || root.child('surveys/'+$survey_id+'/owner').val() == auth.uid"
         }
       }
+    },
+
+    "answers": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    "answers_per_user": {
+      ".read": "auth != null",
+      ".write": "auth != null"
     }
   }
 }

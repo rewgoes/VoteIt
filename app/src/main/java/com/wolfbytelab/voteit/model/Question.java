@@ -74,6 +74,11 @@ public class Question extends Editable {
     }
 
     @Exclude
+    public int getSelectedOption() {
+        return selectedOption;
+    }
+
+    @Exclude
     public boolean isAnswered() {
         return isAnswered;
     }

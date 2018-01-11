@@ -51,6 +51,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import timber.log.Timber;
 
+import static com.wolfbytelab.voteit.util.FirebaseUtils.ANSWERS_KEY;
+import static com.wolfbytelab.voteit.util.FirebaseUtils.ANSWERS_PER_USER_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.MEMBERS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
@@ -69,6 +71,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
         void onSurveyCreated(String surveyKey);
 
         void onSurveyDeleted();
+
+        void onSurveyVoted(String surveyKey, Survey.Type mSurveyType);
     }
 
     private OnSurveyChangedListener mOnSurveyChangedListener;
@@ -339,7 +343,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 createSurvey();
                 return true;
             case R.id.vote_menu:
-                //TODO: call vote method
+                vote();
                 return true;
             case R.id.delete_menu:
                 deleteSurvey();
@@ -465,40 +469,47 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private boolean isDataValid() {
         boolean isDataValid = true;
 
-        if (mEndDate != DateUtils.DATE_NOT_SET) {
-            if (mEndDate <= Calendar.getInstance().getTimeInMillis()) {
-                mDateInputLayout.setError(getString(R.string.invalid_date));
-                mTimeInputLayout.setError(" ");
-                isDataValid = false;
-            }
-        }
-
-        if (mTitle.length() == 0) {
-            mTitleInputLayout.setError(getString(R.string.fui_required_field));
-            isDataValid = false;
-        }
-
-        //noinspection unchecked
-        mMembers = (ArrayList<Member>) mMembersLayout.getData();
-        if (mMembers == null) {
-            isDataValid = false;
-        } else {
-            int membersCount = 0;
-            for (Member member : mMembers) {
-                if (!TextUtils.isEmpty(member.getEmail())) {
-                    membersCount++;
+        if (isAddMode()) { //survey creation
+            if (mEndDate != DateUtils.DATE_NOT_SET) {
+                if (mEndDate <= Calendar.getInstance().getTimeInMillis()) {
+                    mDateInputLayout.setError(getString(R.string.invalid_date));
+                    mTimeInputLayout.setError(" ");
+                    isDataValid = false;
                 }
             }
-            if (membersCount < Constants.MIN_MEMBERS) {
-                isDataValid = false;
-                Toast.makeText(getContext(), String.format(getString(R.string.min_members_error_msg), Constants.MIN_MEMBERS), Toast.LENGTH_SHORT).show();
-            }
-        }
 
-        //noinspection unchecked
-        mQuestions = (ArrayList<Question>) mQuestionsLayout.getData();
-        if (mQuestions == null) {
-            isDataValid = false;
+            if (mTitle.length() == 0) {
+                mTitleInputLayout.setError(getString(R.string.fui_required_field));
+                isDataValid = false;
+            }
+
+            //noinspection unchecked
+            mMembers = (ArrayList<Member>) mMembersLayout.getData();
+            if (mMembers == null) {
+                isDataValid = false;
+            } else {
+                int membersCount = 0;
+                for (Member member : mMembers) {
+                    if (!TextUtils.isEmpty(member.getEmail())) {
+                        membersCount++;
+                    }
+                }
+                if (membersCount < Constants.MIN_MEMBERS) {
+                    isDataValid = false;
+                    Toast.makeText(getContext(), String.format(getString(R.string.min_members_error_msg), Constants.MIN_MEMBERS), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            //noinspection unchecked
+            mQuestions = (ArrayList<Question>) mQuestionsLayout.getData();
+            if (mQuestions == null) {
+                isDataValid = false;
+            }
+        } else { //survey vote
+            mQuestions = (ArrayList<Question>) mQuestionsLayout.getData();
+            if (mQuestions == null) {
+                isDataValid = false;
+            }
         }
 
         return isDataValid;
@@ -546,6 +557,34 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                     getActivity().finish();
                 } else {
                     mOnSurveyChangedListener.onSurveyCreated(surveyKey);
+                }
+            }
+        }
+    }
+
+    private void vote() {
+        if (isDataValid()) {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (firebaseUser != null) {
+                FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
+                DatabaseReference answerDatabaseReference = firebaseDatabase.getReference().child(ANSWERS_KEY);
+                DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child(ANSWERS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail()));
+
+                Map<String, Integer> answers = new HashMap<>();
+                for (int questionIndex = 0; questionIndex < mQuestions.size(); questionIndex++) {
+                    answers.put(Integer.toString(questionIndex), mQuestions.get(questionIndex).getSelectedOption());
+                }
+
+                DatabaseReference answer = answerDatabaseReference.child(mSurveyKey).push();
+                answer.setValue(answers);
+                userDatabaseReference.child(mSurveyKey).setValue(answer.getKey());
+
+                Toast.makeText(getContext(), R.string.voted, Toast.LENGTH_SHORT).show();
+
+                if (mOnSurveyChangedListener == null) {
+                    getActivity().finish();
+                } else {
+                    mOnSurveyChangedListener.onSurveyVoted(mSurveyKey, mSurveyType);
                 }
             }
         }
