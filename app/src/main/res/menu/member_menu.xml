@@ -5,5 +5,6 @@
     <item
         android:id="@+id/vote_menu"
         android:title="@string/vote"
+        android:visible="false"
         app:showAsAction="always"/>
 </menu>

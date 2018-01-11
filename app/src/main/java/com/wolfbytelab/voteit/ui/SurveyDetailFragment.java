@@ -77,6 +77,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private OnSurveyChangedListener mOnSurveyChangedListener;
     private String mSurveyKey;
     private Survey.Type mSurveyType;
+    private String mAnswer;
 
     @BindView(R.id.title)
     TextInputEditText mTitle;
@@ -176,20 +177,55 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     public void onResume() {
         super.onResume();
         if (!isAddMode()) {
-            FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
-            mSurveyDatabaseReference = firebaseDatabase.getReference();
-            mSurveyEventListener = mSurveyDatabaseReference.child(SURVEYS_KEY).child(mSurveyKey).addValueEventListener(new SimpleValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot surveySnapshot) {
-                    mSurvey = surveySnapshot.getValue(Survey.class);
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                    if (mSurvey != null) {
-                        mSurvey.key = surveySnapshot.getKey();
+            if (firebaseUser != null) {
+                FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
+                mSurveyDatabaseReference = firebaseDatabase.getReference();
 
-                        initView();
+                // read user survey
+                mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).child(mSurveyKey).addListenerForSingleValueEvent(new SimpleValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists() && dataSnapshot.getValue() instanceof String) {
+                            // check if survey was answered by current user
+                            mAnswer = (String) dataSnapshot.getValue();
+                        }
+
+                        // read survey data
+                        mSurveyEventListener = mSurveyDatabaseReference.child(SURVEYS_KEY).child(mSurveyKey).addValueEventListener(new SimpleValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot surveySnapshot) {
+                                mSurvey = surveySnapshot.getValue(Survey.class);
+
+                                if (mSurvey != null) {
+                                    mSurvey.key = surveySnapshot.getKey();
+
+                                    // in case the survey was answered
+                                    if (!TextUtils.isEmpty(mAnswer)) {
+                                        mSurveyDatabaseReference.child(ANSWERS_KEY).child(mSurveyKey).child(mAnswer).addListenerForSingleValueEvent(new SimpleValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                ArrayList<Long> answers = (ArrayList) dataSnapshot.getValue();
+
+                                                for (int questionIndex = 0; questionIndex < mSurvey.questions.size(); questionIndex++) {
+                                                    mSurvey.questions.get(questionIndex).setAnswered(true);
+                                                    mSurvey.questions.get(questionIndex).setSelectedOption(answers.get(questionIndex).intValue());
+                                                }
+
+                                                initView();
+                                            }
+                                        });
+                                    } else {
+                                        initView();
+                                    }
+                                }
+                            }
+                        });
                     }
-                }
-            });
+                });
+            }
+
 
             mSurveyDatabaseReference.child(MEMBERS_KEY).child(mSurveyKey).addListenerForSingleValueEvent(new SimpleValueEventListener() {
                 @Override
@@ -292,6 +328,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                     }
                 });
             }
+
+            getActivity().invalidateOptionsMenu();
         }
     }
 
@@ -316,6 +354,16 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
         outState.putBoolean(STATE_TIME_PICKER_SHOWN, mHasTimePickerShown);
         outState.putLong(STATE_END_DATE, mEndDate);
         outState.putSerializable(STATE_SURVEY_MEMBERS, mSurveyMembers);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        if (mSurvey != null) {
+            MenuItem vote = menu.findItem(R.id.vote_menu);
+            if (vote != null) {
+                vote.setVisible(TextUtils.isEmpty(mAnswer));
+            }
+        }
     }
 
     @Override

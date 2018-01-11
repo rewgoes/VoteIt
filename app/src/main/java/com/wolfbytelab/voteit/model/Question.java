@@ -42,6 +42,7 @@ public class Question extends Editable {
 
     @Exclude
     private boolean hasFocus;
+
     @Exclude
     private int selectionPos;
 
@@ -71,6 +72,10 @@ public class Question extends Editable {
 
     public void setOptions(ArrayList<Option> options) {
         this.options = options;
+    }
+
+    public void setSelectedOption(int selectedOption) {
+        this.selectedOption = selectedOption;
     }
 
     @Exclude
