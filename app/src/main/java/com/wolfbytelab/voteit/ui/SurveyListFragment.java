@@ -167,7 +167,13 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
             mSurveyPerUserListener = mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addChildEventListener(new SimpleChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot surveyKeySnapshot, String s) {
-                    SimpleValueEventListener simpleValueEventListener = new SimpleValueEventListener() {
+                    Bundle extras = new Bundle();
+                    Object answerValue = surveyKeySnapshot.getValue();
+                    if (answerValue instanceof String) {
+                        extras.putString("answerId", (String) surveyKeySnapshot.getValue());
+                    }
+
+                    SimpleValueEventListener simpleValueEventListener = new SimpleValueEventListener(extras) {
                         @Override
                         public void onDataChange(DataSnapshot surveySnapshot) {
                             surveyCount--;
@@ -175,6 +181,10 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
 
                             if (survey != null) {
                                 survey.key = surveySnapshot.getKey();
+
+                                if (mExtras != null) {
+                                    survey.answer = mExtras.getString("answerId");
+                                }
 
                                 if (TextUtils.equals(survey.owner, firebaseUser.getUid())) {
                                     survey.type = Survey.Type.OWNER;

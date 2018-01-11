@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.google.firebase.database.Exclude;
 import com.wolfbytelab.voteit.util.DateUtils;
 
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ public class Survey implements Parcelable {
 
     public long startDate;
     public long endDate = DateUtils.DATE_NOT_SET;
+
+    @Exclude
+    public String answer = null;
 
     public Type type;
 

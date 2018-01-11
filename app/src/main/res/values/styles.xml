@@ -27,4 +27,12 @@
         <item name="cardUseCompatPadding">true</item>
     </style>
 
+    <style name="SurveyLabel" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/label_text_color</item>
+        <item name="android:textSize">@dimen/survey_label_text_size</item>
+    </style>
+
 </resources>

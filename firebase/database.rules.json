@@ -41,11 +41,6 @@
     "answers": {
       ".read": "auth != null",
       ".write": "auth != null"
-    },
-
-    "answers_per_user": {
-      ".read": "auth != null",
-      ".write": "auth != null"
     }
   }
 }

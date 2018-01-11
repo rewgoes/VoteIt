@@ -14,7 +14,6 @@ public class FirebaseUtils {
     public static final String NAME_KEY = "name";
     public static final String USERS_KEY = "users";
     public static final String ANSWERS_KEY = "answers";
-    public static final String ANSWERS_PER_USER_KEY = "answers_per_user";
 
     public static FirebaseDatabase getDatabase() {
         if (mDatabase == null) {

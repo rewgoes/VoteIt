@@ -35,4 +35,6 @@
     <string name="min_questions_error_msg">There must be at least %d question</string>
     <string name="min_members_error_msg">There must be at least %d member</string>
     <string name="voted">Voted</string>
+    <string name="answered_label">Answered</string>
+    <string name="new_survey_label">New</string>
 </resources>

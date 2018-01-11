@@ -8,5 +8,8 @@
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#757575</color>
     <color name="icons">#FFFFFF</color>
+    <color name="label_text_color">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
+    <color name="new_label_color">#61bb61</color>
+    <color name="answered_label_color">#4444ff</color>
 </resources>

@@ -67,6 +67,23 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="12 Sep"/>
 
+    <Button
+        android:id="@+id/survey_label"
+        style="@style/SurveyLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/survey_label_height"
+        android:layout_marginBottom="@dimen/activity_margin"
+        android:layout_marginEnd="@dimen/activity_margin"
+        android:background="@drawable/survey_status_label_new"
+        android:clickable="false"
+        android:focusable="false"
+        android:minWidth="@dimen/survey_label_min_width"
+        android:paddingEnd="@dimen/survey_label_text_margin"
+        android:paddingStart="@dimen/survey_label_text_margin"
+        android:text="Bla"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <View
         android:layout_width="0dp"
         android:layout_height="@dimen/divider_thickness"

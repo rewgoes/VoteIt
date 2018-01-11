@@ -1,9 +1,11 @@
 package com.wolfbytelab.voteit.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.wolfbytelab.voteit.R;
@@ -44,6 +46,14 @@ public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyView
         holder.description.setText(survey.description);
 //        holder.owner.setText(survey.owner.name);
 //        holder.date.setText(DateUtils.getFormattedDate(mContext, survey.startDate));
+
+        if (TextUtils.isEmpty(survey.answer)) { //new
+            holder.surveyLabel.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.survey_status_label_new));
+            holder.surveyLabel.setText(R.string.new_survey_label);
+        } else {
+            holder.surveyLabel.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.survey_status_label_answered));
+            holder.surveyLabel.setText(R.string.answered_label);
+        }
     }
 
     @Override
@@ -74,6 +84,8 @@ public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyView
         TextView owner;
         @BindView(R.id.date)
         TextView date;
+        @BindView(R.id.survey_label)
+        Button surveyLabel;
 
         SurveyViewHolder(View itemView) {
             super(itemView);

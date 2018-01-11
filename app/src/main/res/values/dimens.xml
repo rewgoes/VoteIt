@@ -8,4 +8,8 @@
     <dimen name="divider_thickness">1dp</dimen>
 
     <dimen name="list_item_margin">4dp</dimen>
+    <dimen name="survey_label_min_width">50dp</dimen>
+    <dimen name="survey_label_height">23dp</dimen>
+    <dimen name="survey_label_text_size">12dp</dimen>
+    <dimen name="survey_label_text_margin">5dp</dimen>
 </resources>

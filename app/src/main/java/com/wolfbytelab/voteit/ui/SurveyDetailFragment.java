@@ -52,7 +52,6 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 
 import static com.wolfbytelab.voteit.util.FirebaseUtils.ANSWERS_KEY;
-import static com.wolfbytelab.voteit.util.FirebaseUtils.ANSWERS_PER_USER_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.MEMBERS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
@@ -547,7 +546,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                         memberDatabaseReference.child(encodedEmail).setValue(true);
 
                         DatabaseReference invitePerUserDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(encodedEmail);
-                        invitePerUserDatabaseReference.child(surveyKey).setValue(true);
+                        invitePerUserDatabaseReference.child(surveyKey).setValue(false);
                     }
                 }
 
@@ -568,7 +567,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             if (firebaseUser != null) {
                 FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
                 DatabaseReference answerDatabaseReference = firebaseDatabase.getReference().child(ANSWERS_KEY);
-                DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child(ANSWERS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail()));
+                DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).child(mSurveyKey);
 
                 Map<String, Integer> answers = new HashMap<>();
                 for (int questionIndex = 0; questionIndex < mQuestions.size(); questionIndex++) {
@@ -577,7 +576,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
                 DatabaseReference answer = answerDatabaseReference.child(mSurveyKey).push();
                 answer.setValue(answers);
-                userDatabaseReference.child(mSurveyKey).setValue(answer.getKey());
+                userDatabaseReference.setValue(answer.getKey());
 
                 Toast.makeText(getContext(), R.string.voted, Toast.LENGTH_SHORT).show();
 
