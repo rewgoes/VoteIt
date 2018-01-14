@@ -39,6 +39,7 @@ import com.wolfbytelab.voteit.ui.editor.SectionView;
 import com.wolfbytelab.voteit.util.Constants;
 import com.wolfbytelab.voteit.util.DateUtils;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
+import com.wolfbytelab.voteit.util.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -202,7 +203,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                                     mSurvey.key = surveySnapshot.getKey();
 
                                     initMemberLayout();
-                                    
+
                                     // in case the survey was answered
                                     if (!TextUtils.isEmpty(mAnswer)) {
                                         mSurveyDatabaseReference.child(ANSWERS_KEY).child(mSurveyKey).child(mAnswer).addListenerForSingleValueEvent(new SimpleValueEventListener() {
@@ -275,9 +276,10 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 if (TextUtils.isEmpty(mSurvey.description)) {
                     mDescriptionInputLayout.setVisibility(View.GONE);
                 } else {
-                    mDescription.setText(mSurvey.description);
                     mDescription.setEnabled(false);
                     mDescription.setFocusable(false);
+                    ViewUtils.wrapTextInView(mDescription, 3);
+                    mDescription.setText(mSurvey.description);
                 }
 
                 if (mSurvey.endDate == DateUtils.DATE_NOT_SET) {
