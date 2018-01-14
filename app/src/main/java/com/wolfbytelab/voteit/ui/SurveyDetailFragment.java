@@ -343,6 +343,14 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             }
         }
         mMembers = null;
+
+        if (mQuestions != null) {
+            for (Question question : mQuestions) {
+                question.setParent(null);
+            }
+        }
+        mQuestions = null;
+
         super.onDestroyView();
     }
 
