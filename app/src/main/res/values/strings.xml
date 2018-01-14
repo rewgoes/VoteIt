@@ -37,4 +37,5 @@
     <string name="voted">Voted</string>
     <string name="answered_label">Answered</string>
     <string name="new_survey_label">New</string>
+    <string name="ended_survey_label">Ended</string>
 </resources>

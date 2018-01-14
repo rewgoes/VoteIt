@@ -4,30 +4,23 @@
   "rules": {
     "surveys": {
       "$survey_id": {
-        ".read": "root.child('members/'+$survey_id+'/'+root.child('users/'+auth.uid+'/encoded_email').val()).exists()",
-        ".write": "!data.exists() || (auth != null && data.child('owner').val() == auth.uid)"
-      }
-    },
-      
-    "members": {
-      "$survey_id": {
-        ".read": "root.child('members/'+$survey_id+'/'+root.child('users/'+auth.uid+'/encoded_email').val()).exists()",
-        ".write": "!newData.exists() && root.child('surveys/'+$survey_id+'/owner').val() == auth.uid",
-        "$user_encoded_email": {
-          ".validate": "root.child('surveys/'+$survey_id).exists()",
-          ".write": "root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email || root.child('surveys/'+$survey_id+'/owner').val() == auth.uid" //improve this
+        ".read": "root.child('surveys/'+$survey_id+'/members/'+root.child('users/'+auth.uid+'/encoded_email').val()).exists()",
+        ".write": "!data.exists() || (auth != null && data.child('owner').val() == auth.uid)",
+        "answers": {
+          ".read": "auth != null",
+          ".write": "auth != null"
         }
       }
     },
-      
+
     "users": {
       "$user_id": {
         ".validate": "$user_id === auth.uid",
         ".read": "auth != null",
-      	".write": "$user_id === auth.uid"
+        ".write": "$user_id === auth.uid"
       }
     },
-    
+
     "surveys_per_user": {
       "$user_encoded_email": {
         ".read": "root.child('users/'+auth.uid+'/encoded_email').val() == $user_encoded_email",
@@ -39,6 +32,11 @@
     },
 
     "answers": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    "answers_per_user": {
       ".read": "auth != null",
       ".write": "auth != null"
     }

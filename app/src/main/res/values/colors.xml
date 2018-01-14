@@ -12,4 +12,5 @@
     <color name="divider">#BDBDBD</color>
     <color name="new_label_color">#61bb61</color>
     <color name="answered_label_color">#4444ff</color>
+    <color name="ended_label_color">#bb6161</color>
 </resources>

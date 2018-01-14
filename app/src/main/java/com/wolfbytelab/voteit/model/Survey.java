@@ -8,6 +8,7 @@ import com.google.firebase.database.Exclude;
 import com.wolfbytelab.voteit.util.DateUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Survey implements Parcelable {
 
@@ -16,8 +17,9 @@ public class Survey implements Parcelable {
     public String description;
 
     public String owner;
-    public ArrayList<User> members;
+    public HashMap<String, Boolean> members;
     public ArrayList<Question> questions;
+    public HashMap<String, Boolean> answers;
 
     public long startDate;
     public long endDate = DateUtils.DATE_NOT_SET;

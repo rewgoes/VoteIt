@@ -47,7 +47,10 @@ public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyView
 //        holder.owner.setText(survey.owner.name);
 //        holder.date.setText(DateUtils.getFormattedDate(mContext, survey.startDate));
 
-        if (TextUtils.isEmpty(survey.answer)) { //new
+        if (survey.answers != null && survey.members != null && survey.answers.size() == survey.members.size()) {
+            holder.surveyLabel.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.survey_status_label_ended));
+            holder.surveyLabel.setText(R.string.ended_survey_label);
+        } else if (TextUtils.isEmpty(survey.answer)) { //new
             holder.surveyLabel.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.survey_status_label_new));
             holder.surveyLabel.setText(R.string.new_survey_label);
         } else {

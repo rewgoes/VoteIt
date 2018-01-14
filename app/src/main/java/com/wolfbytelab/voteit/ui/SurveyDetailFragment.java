@@ -201,6 +201,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                                 if (mSurvey != null) {
                                     mSurvey.key = surveySnapshot.getKey();
 
+                                    initMemberLayout();
+                                    
                                     // in case the survey was answered
                                     if (!TextUtils.isEmpty(mAnswer)) {
                                         mSurveyDatabaseReference.child(ANSWERS_KEY).child(mSurveyKey).child(mAnswer).addListenerForSingleValueEvent(new SimpleValueEventListener() {
@@ -225,28 +227,24 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                     }
                 });
             }
+        }
+    }
 
+    private void initMemberLayout() {
+        membersCount = mSurvey.members.size();
 
-            mSurveyDatabaseReference.child(MEMBERS_KEY).child(mSurveyKey).addListenerForSingleValueEvent(new SimpleValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    membersCount = dataSnapshot.getChildrenCount();
+        mNotEditableMembersLayout.enableLayoutTransition(false);
 
-                    mNotEditableMembersLayout.enableLayoutTransition(false);
+        for (String email : mSurvey.members.keySet()) {
+            if (!mSurveyMembers.containsKey(email)) {
+                mSurveyMembers.put(email, mSurvey.members.get(email));
 
-                    for (Map.Entry<String, Boolean> entry : ((HashMap<String, Boolean>) dataSnapshot.getValue()).entrySet()) {
-                        if (!mSurveyMembers.containsKey(entry.getKey())) {
-                            mSurveyMembers.put(entry.getKey(), entry.getValue());
+                Member member = new Member();
+                member.setEmail(FirebaseUtils.decodeFirebaseKey(email));
+                member.setEditable(false);
 
-                            Member member = new Member();
-                            member.setEmail(FirebaseUtils.decodeFirebaseKey(entry.getKey()));
-                            member.setEditable(false);
-
-                            mNotEditableMembersLayout.addEditorView(member);
-                        }
-                    }
-                }
-            });
+                mNotEditableMembersLayout.addEditorView(member);
+            }
         }
     }
 
@@ -407,7 +405,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             map.put(SURVEYS_PER_USER_KEY + "/" + user + "/" + mSurveyKey, new HashMap<>().put(mSurveyKey, null));
         }
 
-        map.put(MEMBERS_KEY + "/" + mSurveyKey, null);
         map.put(SURVEYS_KEY + "/" + mSurveyKey, null);
 
         mSurveyDatabaseReference.updateChildren(map, new DatabaseReference.CompletionListener() {
@@ -582,7 +579,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
                 String surveyKey = surveyDatabaseReference.push().getKey();
 
-                DatabaseReference memberDatabaseReference = firebaseDatabase.getReference().child(MEMBERS_KEY).child(surveyKey);
+                DatabaseReference memberDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_KEY).child(surveyKey).child(MEMBERS_KEY);
 
                 surveyDatabaseReference.child(surveyKey).setValue(survey);
                 userDatabaseReference.child(surveyKey).setValue(true);
@@ -615,6 +612,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             if (firebaseUser != null) {
                 FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
                 DatabaseReference answerDatabaseReference = firebaseDatabase.getReference().child(ANSWERS_KEY);
+                DatabaseReference surveyDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_KEY).child(mSurveyKey).child(ANSWERS_KEY);
                 DatabaseReference userDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).child(mSurveyKey);
 
                 Map<String, Integer> answers = new HashMap<>();
@@ -625,6 +623,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 DatabaseReference answer = answerDatabaseReference.child(mSurveyKey).push();
                 answer.setValue(answers);
                 userDatabaseReference.setValue(answer.getKey());
+
+                surveyDatabaseReference.child(answer.getKey()).setValue(true);
 
                 Toast.makeText(getContext(), R.string.voted, Toast.LENGTH_SHORT).show();
 
