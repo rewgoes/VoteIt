@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
@@ -42,6 +43,8 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
 
     OnSurveyClickListener mCallback;
     private Unbinder mUnbinder;
+    private DatabaseReference mSurveyPerUserDataRef;
+    private ArrayList<DatabaseReference> mSurveysDataRefs;
 
     interface OnSurveyClickListener {
         void onSurveySelected(String surveyKey, Survey.Type surveyType);
@@ -58,7 +61,7 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
     @BindView(R.id.empty_layout)
     View mEmptyLayout;
 
-    private DatabaseReference mSurveyDatabaseReference;
+    private DatabaseReference mDatabaseReference;
     private SurveyAdapter mSurveyAdapter;
     private ArrayList<Survey> mSurveys;
     private Parcelable mSavedRecyclerLayoutState;
@@ -73,7 +76,7 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
         mUnbinder = ButterKnife.bind(this, view);
 
         FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
-        mSurveyDatabaseReference = firebaseDatabase.getReference();
+        mDatabaseReference = firebaseDatabase.getReference();
 
         mSurveys = new ArrayList<>();
 
@@ -134,14 +137,19 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
     @Override
     public void onPause() {
         super.onPause();
-        if (mSurveyPerUserListener != null) {
-            mSurveyDatabaseReference.removeEventListener(mSurveyPerUserListener);
+        Timber.d("onPause");
+        if (mSurveyPerUserDataRef != null && mSurveyPerUserListener != null) {
+            mSurveyPerUserDataRef.removeEventListener(mSurveyPerUserListener);
+            mSurveyPerUserListener = null;
+            mSurveyPerUserDataRef = null;
         }
 
-        if (mSurveysListener != null) {
-            for (ValueEventListener surveyListener : mSurveysListener) {
-                mSurveyDatabaseReference.removeEventListener(surveyListener);
+        if (mSurveysDataRefs != null && mSurveysListener != null && mSurveysListener.size() == mSurveysDataRefs.size()) {
+            for (int i = 0; i < mSurveysDataRefs.size(); i++) {
+                mSurveysDataRefs.get(i).removeEventListener(mSurveysListener.get(i));
             }
+            mSurveysListener = null;
+            mSurveysDataRefs = null;
         }
     }
 
@@ -156,15 +164,17 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
 
         if (firebaseUser != null) {
             mSurveysListener = new ArrayList<>();
+            mSurveysDataRefs = new ArrayList<>();
 
-            mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addListenerForSingleValueEvent(new SimpleValueEventListener() {
+            mDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addListenerForSingleValueEvent(new SimpleValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     surveyCount = dataSnapshot.getChildrenCount();
                     initView();
                 }
             });
-            mSurveyPerUserListener = mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).addChildEventListener(new SimpleChildEventListener() {
+            mSurveyPerUserDataRef =  mDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail()));
+            mSurveyPerUserListener = mSurveyPerUserDataRef.addChildEventListener(new SimpleChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot surveyKeySnapshot, String s) {
                     Bundle extras = new Bundle();
@@ -222,8 +232,10 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                         }
                     };
 
+                    DatabaseReference surveyDataRef = mDatabaseReference.child(SURVEYS_KEY).child(surveyKeySnapshot.getKey());
                     mSurveysListener.add(simpleValueEventListener);
-                    mSurveyDatabaseReference.child(SURVEYS_KEY).child(surveyKeySnapshot.getKey()).addValueEventListener(simpleValueEventListener);
+                    mSurveysDataRefs.add(surveyDataRef);
+                    surveyDataRef.addValueEventListener(simpleValueEventListener);
                 }
 
                 @Override

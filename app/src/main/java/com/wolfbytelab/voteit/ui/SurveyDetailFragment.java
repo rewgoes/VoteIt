@@ -120,7 +120,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private TimePickerDialog mTimePickerDialog;
     private Unbinder mUnbinder;
     private DatabaseReference mSurveyDatabaseReference;
-    private ValueEventListener mSurveyEventListener;
 
     private Survey mSurvey;
 
@@ -194,7 +193,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                         }
 
                         // read survey data
-                        mSurveyEventListener = mSurveyDatabaseReference.child(SURVEYS_KEY).child(mSurveyKey).addValueEventListener(new SimpleValueEventListener() {
+                        mSurveyDatabaseReference.child(SURVEYS_KEY).child(mSurveyKey).addListenerForSingleValueEvent(new SimpleValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot surveySnapshot) {
                                 mSurvey = surveySnapshot.getValue(Survey.class);
@@ -246,14 +245,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
                 mNotEditableMembersLayout.addEditorView(member);
             }
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mSurveyEventListener != null) {
-            mSurveyDatabaseReference.removeEventListener(mSurveyEventListener);
         }
     }
 
