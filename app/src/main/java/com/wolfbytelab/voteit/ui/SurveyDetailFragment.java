@@ -80,6 +80,11 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private Survey.Type mSurveyType;
     private String mAnswer;
 
+    @BindView(R.id.survey_detail)
+    View mSurveyDetailView;
+    @BindView(R.id.progress_bar)
+    View mProgressBarView;
+
     @BindView(R.id.title)
     TextInputEditText mTitle;
     @BindView(R.id.title_input_layout)
@@ -167,10 +172,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
         mDateInputLayout.setHintAnimationEnabled(false);
         mTimeInputLayout.setHintAnimationEnabled(false);
         mDescriptionInputLayout.setHintAnimationEnabled(false);
-    }
-
-    private void enableEditableInputLayoutAnimation() {
-        mDescriptionInputLayout.setHintAnimationEnabled(true);
     }
 
     @Override
@@ -293,8 +294,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
                 mDescriptionInputLayout.setCounterEnabled(false);
                 mTitleInputLayout.setCounterEnabled(false);
-
-                enableEditableInputLayoutAnimation();
             } else {
                 Calendar calendar = Calendar.getInstance();
                 DateUtils.startCalendar(calendar, mEndDate);
@@ -321,6 +320,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             }
 
             getActivity().invalidateOptionsMenu();
+            mProgressBarView.setVisibility(View.GONE);
+            mSurveyDetailView.setVisibility(View.VISIBLE);
         }
     }
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
     <ScrollView
         android:id="@+id/survey_detail"
@@ -12,8 +12,9 @@
         android:clipToPadding="false"
         android:paddingBottom="@dimen/activity_margin"
         android:paddingTop="@dimen/activity_margin"
+        android:visibility="gone"
         tools:context="com.wolfbytelab.voteit.ui.SurveyDetailActivity"
-        tools:visibility="visible">
+        tools:setVisibility="visible">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -39,7 +40,7 @@
                     android:hint="@string/title"
                     android:inputType="text"
                     android:maxLength="@integer/survey_title_max_length"
-                    android:maxLines="1" />
+                    android:maxLines="1"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -60,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/description"
                     android:inputType="text"
-                    android:maxLength="@integer/description_max_length" />
+                    android:maxLength="@integer/description_max_length"/>
             </android.support.design.widget.TextInputLayout>
 
             <include
@@ -70,14 +71,14 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/description_input_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/description_input_layout"/>
 
             <View
                 android:id="@+id/focus_holder"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:focusable="true"
-                android:focusableInTouchMode="true" />
+                android:focusableInTouchMode="true"/>
 
             <TextView
                 android:id="@+id/members_header"
@@ -87,7 +88,7 @@
                 android:text="@string/members"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/date_time_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/date_time_layout"/>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/members_card_view"
@@ -104,14 +105,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone"
-                    app:childrenLayout="@layout/member_item" />
+                    app:childrenLayout="@layout/member_item"/>
 
                 <com.wolfbytelab.voteit.ui.editor.SectionView
                     android:id="@+id/members"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:childrenLayout="@layout/member_item" />
+                    app:childrenLayout="@layout/member_item"/>
 
             </android.support.v7.widget.CardView>
 
@@ -123,7 +124,7 @@
                 android:text="@string/questions"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 app:layout_constraintStart_toStartOf="@+id/members_card_view"
-                app:layout_constraintTop_toBottomOf="@+id/members_card_view" />
+                app:layout_constraintTop_toBottomOf="@+id/members_card_view"/>
 
             <com.wolfbytelab.voteit.ui.editor.SectionView
                 android:id="@+id/questions"
@@ -133,7 +134,7 @@
                 app:childrenLayout="@layout/question_item"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/question_header"
-                app:layout_constraintTop_toBottomOf="@+id/question_header" />
+                app:layout_constraintTop_toBottomOf="@+id/question_header"/>
 
             <TextView
                 android:id="@+id/add_question"
@@ -148,23 +149,16 @@
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@id/questions"
                 app:layout_constraintTop_toBottomOf="@id/questions"
-                tools:visibility="visible" />
+                tools:visibility="visible"/>
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
-    <include
-        android:id="@+id/empty_no_surveys_layout"
-        layout="@layout/empty_survey_list_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <include
-        android:id="@+id/empty_no_survey_selected_layout"
-        layout="@layout/no_survey_selected_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        tools:setVisibility="gone"/>
 
 </FrameLayout>
