@@ -135,7 +135,6 @@ public class Question extends Editable {
         mView = view;
 
         TextInputEditText titleView = mView.findViewById(R.id.question_title);
-        titleView.setText(title);
 
         if (isEditable()) {
             if (!isValid) {
@@ -212,6 +211,7 @@ public class Question extends Editable {
         } else {
             titleView.setEnabled(false);
             ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setCounterEnabled(false);
+            ((TextInputLayout) mView.findViewById(R.id.question_title_textinput)).setHintAnimationEnabled(false);
 
             RadioGroup radioGroup = mView.findViewById(R.id.options_radio_group);
 
@@ -240,6 +240,8 @@ public class Question extends Editable {
 
             radioGroup.setVisibility(View.VISIBLE);
         }
+
+        titleView.setText(title);
     }
 
     @Override
