@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_height"
     android:clickable="true"
+    android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical">
 
@@ -80,7 +81,6 @@
         android:minWidth="@dimen/survey_label_min_width"
         android:paddingEnd="@dimen/survey_label_text_margin"
         android:paddingStart="@dimen/survey_label_text_margin"
-        android:text="Bla"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

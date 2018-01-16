@@ -2,7 +2,6 @@
 <resources>
     <dimen name="activity_margin">16dp</dimen>
     <dimen name="list_item_height">100dp</dimen>
-    <dimen name="survey_status_icon_size">50dp</dimen>
     <dimen name="recycler_view_last_item_bottom_padding">88dp</dimen> <!-- 56dp + 2 * 16dp -->
 
     <dimen name="divider_thickness">1dp</dimen>
@@ -12,4 +11,10 @@
     <dimen name="survey_label_height">23dp</dimen>
     <dimen name="survey_label_text_size">12dp</dimen>
     <dimen name="survey_label_text_margin">5dp</dimen>
+    <dimen name="remove_member_size">30dp</dimen>
+    <dimen name="remove_option_size">20dp</dimen>
+    <dimen name="remove_question_size">20dp</dimen>
+    <dimen name="question_view_bottom_margin">8dp</dimen>
+    <dimen name="header_text_view_margin">8dp</dimen>
+    <dimen name="floating_button_margin">16dp</dimen>
 </resources>

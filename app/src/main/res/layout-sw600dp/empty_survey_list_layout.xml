@@ -11,7 +11,7 @@
         android:layout_gravity="center"
         android:paddingEnd="@dimen/activity_margin"
         android:paddingStart="@dimen/activity_margin"
-        android:text="Surveys that you participate will be listed here"
+        android:text="@string/surveys_will_be_listed_here"
         android:textAlignment="center"/>
 
 </FrameLayout>

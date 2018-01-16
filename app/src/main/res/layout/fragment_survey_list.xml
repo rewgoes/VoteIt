@@ -5,26 +5,27 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
-        android:visibility="gone"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/recycler_view_last_item_bottom_padding"/>
+        android:paddingBottom="@dimen/recycler_view_last_item_bottom_padding"
+        android:visibility="gone"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:visibility="gone"
         android:id="@+id/add_survey_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/floating_button_margin"
         android:clickable="true"
-        android:src="@drawable/ic_add_white_24px"/>
+        android:focusable="true"
+        android:src="@drawable/ic_add_white_24px"
+        android:visibility="gone"/>
 
     <include
-        android:visibility="gone"
         android:id="@+id/empty_layout"
-        layout="@layout/empty_survey_list_layout" />
+        layout="@layout/empty_survey_list_layout"
+        android:visibility="gone"/>
 
 </FrameLayout>

@@ -9,7 +9,7 @@
         android:id="@+id/end_date_input_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/header_text_view_margin"
         app:layout_constraintEnd_toStartOf="@+id/end_time_input_layout"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent">
@@ -32,7 +32,7 @@
         android:id="@+id/end_time_input_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/header_text_view_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/end_date_input_layout">

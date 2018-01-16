@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- https://www.materialpalette.com/brown/teal -->
-    <color name="colorPrimaryLight">#D7CCC8</color>
     <color name="colorPrimary">#795548</color>
     <color name="colorPrimaryDark">#5D4037</color>
     <color name="colorAccent">#009688</color>
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#757575</color>
-    <color name="icons">#FFFFFF</color>
     <color name="label_text_color">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
     <color name="new_label_color">#61bb61</color>

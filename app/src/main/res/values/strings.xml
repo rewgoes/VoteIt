@@ -19,8 +19,6 @@
     <string name="clear_date">Clear date</string>
     <string name="invalid_date">Invalid date</string>
     <string name="survey_created">Survey created</string>
-    <string name="join">Join</string>
-    <string name="edit">Edit</string>
     <string name="vote">Vote</string>
     <string name="delete">Delete</string>
     <string name="questions">Questions</string>
@@ -38,4 +36,7 @@
     <string name="answered_label">Answered</string>
     <string name="new_survey_label">New</string>
     <string name="ended_survey_label">Ended</string>
+    <string name="no_surveys_yet">No surveys yet!</string>
+    <string name="create_survey">Create survey</string>
+    <string name="surveys_will_be_listed_here">Surveys that you participate will be listed here</string>
 </resources>

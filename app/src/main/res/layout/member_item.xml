@@ -31,8 +31,8 @@
 
     <ImageView
         android:id="@+id/remove_member"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/remove_member_size"
+        android:layout_height="@dimen/remove_member_size"
         android:contentDescription="@string/remove_member"
         android:src="@drawable/ic_clear_black_24px"
         android:visibility="invisible"
