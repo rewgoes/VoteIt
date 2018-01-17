@@ -408,6 +408,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
         }
 
         map.put(SURVEYS_KEY + "/" + mSurveyKey, null);
+        map.put(ANSWERS_KEY + "/" + mSurveyKey, null);
 
         mSurveyDatabaseReference.updateChildren(map, new DatabaseReference.CompletionListener() {
             @Override
