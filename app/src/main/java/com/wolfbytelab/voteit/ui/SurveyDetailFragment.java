@@ -41,6 +41,7 @@ import com.wolfbytelab.voteit.util.DateUtils;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
 import com.wolfbytelab.voteit.util.ViewUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -204,23 +205,66 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
 
                                     initMemberLayout();
 
-                                    // in case the survey was answered
-                                    if (!TextUtils.isEmpty(mAnswer)) {
-                                        mSurveyDatabaseReference.child(ANSWERS_KEY).child(mSurveyKey).child(mAnswer).addListenerForSingleValueEvent(new SimpleValueEventListener() {
+                                    boolean isEnded = mSurvey.members != null && mSurvey.answers != null && mSurvey.members.size() == mSurvey.answers.size();
+                                    if (isEnded) {
+                                        mSurveyDatabaseReference.child(ANSWERS_KEY).child(mSurveyKey).addListenerForSingleValueEvent(new SimpleValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                                ArrayList<Long> answers = (ArrayList) dataSnapshot.getValue();
+                                                HashMap<String, ArrayList<Long>> answers = (HashMap<String, ArrayList<Long>>) dataSnapshot.getValue();
+                                                ArrayList<int[]> answerCount = new ArrayList<>();
 
-                                                for (int questionIndex = 0; questionIndex < mSurvey.questions.size(); questionIndex++) {
-                                                    mSurvey.questions.get(questionIndex).setAnswered(true);
-                                                    mSurvey.questions.get(questionIndex).setSelectedOption(answers.get(questionIndex).intValue());
+                                                for (Question question : mSurvey.questions) {
+                                                    answerCount.add(new int[question.getOptions().size()]);
                                                 }
+
+                                                int[] mostAnsweredCount = new int[mSurvey.questions.size()];
+                                                for (Map.Entry<String, ArrayList<Long>> answer : answers.entrySet()) {
+                                                    for (int questionIndex = 0; questionIndex < answer.getValue().size(); questionIndex++) {
+                                                        answerCount.get(questionIndex)[answer.getValue().get(questionIndex).intValue()]++;
+                                                        if (mostAnsweredCount[questionIndex] < answerCount.get(questionIndex)[answer.getValue().get(questionIndex).intValue()]) {
+                                                            mostAnsweredCount[questionIndex] = answerCount.get(questionIndex)[answer.getValue().get(questionIndex).intValue()];
+                                                        }
+                                                    }
+
+                                                    if (answer.getKey().equals(mAnswer)) {
+                                                        for (int questionIndex = 0; questionIndex < mSurvey.questions.size(); questionIndex++) {
+                                                            mSurvey.questions.get(questionIndex).setAnswered(true);
+                                                            mSurvey.questions.get(questionIndex).setSelectedOption(answer.getValue().get(questionIndex).intValue());
+                                                        }
+                                                    }
+                                                }
+
+                                                for (int questionIndex = 0; questionIndex < answerCount.size(); questionIndex++) {
+                                                    for (int optionIndex = 0; optionIndex < answerCount.get(questionIndex).length; optionIndex++) {
+                                                        if (answerCount.get(questionIndex)[optionIndex] == mostAnsweredCount[questionIndex]) {
+                                                            mSurvey.questions.get(questionIndex).getOptions().get(optionIndex).setMostSelectedOption(true);
+                                                        }
+                                                    }
+                                                }
+
 
                                                 initView();
                                             }
                                         });
                                     } else {
-                                        initView();
+                                        // in case the survey was answered
+                                        if (!TextUtils.isEmpty(mAnswer)) {
+                                            mSurveyDatabaseReference.child(ANSWERS_KEY).child(mSurveyKey).child(mAnswer).addListenerForSingleValueEvent(new SimpleValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    ArrayList<Long> answers = (ArrayList) dataSnapshot.getValue();
+
+                                                    for (int questionIndex = 0; questionIndex < mSurvey.questions.size(); questionIndex++) {
+                                                        mSurvey.questions.get(questionIndex).setAnswered(true);
+                                                        mSurvey.questions.get(questionIndex).setSelectedOption(answers.get(questionIndex).intValue());
+                                                    }
+
+                                                    initView();
+                                                }
+                                            });
+                                        } else {
+                                            initView();
+                                        }
                                     }
                                 }
                             }

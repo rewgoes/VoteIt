@@ -30,6 +30,7 @@ public class Option extends Editable {
     private boolean hasFocus;
     @Exclude
     private int selectionPos;
+    private boolean mMostSelectedOption;
 
     public Option() {
     }
@@ -169,5 +170,13 @@ public class Option extends Editable {
                 emailView.setSelection(selectionPos);
             }
         });
+    }
+
+    public void setMostSelectedOption(boolean mostSelectedOption) {
+        mMostSelectedOption = mostSelectedOption;
+    }
+
+    public boolean isMostSelectedOption() {
+        return mMostSelectedOption;
     }
 }

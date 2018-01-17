@@ -227,6 +227,10 @@ public class Question extends Editable {
                     if (isAnswered) {
                         radioButton.setEnabled(false);
                     }
+                    if (options.get(index).isMostSelectedOption()) {
+                        //TODO: improve style for most selected answer
+                        radioButton.setTextColor(mView.getContext().getResources().getColor(R.color.new_label_color));
+                    }
                     radioGroup.addView(radioButton);
                 }
             }
