@@ -28,6 +28,7 @@ import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -173,7 +174,15 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                     initView();
                 }
             });
-            mSurveyPerUserDataRef =  mDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail()));
+
+            final HashSet<Integer> surveyIndexes = new HashSet<>();
+            if (mSurveys != null) {
+                for (int i = 0; i < mSurveys.size(); i++) {
+                    surveyIndexes.add(i);
+                }
+            }
+
+            mSurveyPerUserDataRef = mDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail()));
             mSurveyPerUserListener = mSurveyPerUserDataRef.addChildEventListener(new SimpleChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot surveyKeySnapshot, String s) {
@@ -205,6 +214,7 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                                 int position = mSurveys.indexOf(survey);
 
                                 if (position != -1) {
+                                    surveyIndexes.remove(position);
                                     mSurveys.remove(position);
                                     mSurveys.add(position, survey);
                                     mSurveyAdapter.notifyItemChanged(position);
@@ -227,6 +237,15 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                                 if (position != -1) {
                                     mSurveys.remove(position);
                                     mSurveyAdapter.notifyItemRemoved(position);
+                                }
+                            }
+
+                            if (surveyCount == 0) {
+                                for (int index : surveyIndexes) {
+                                    if (mSurveys != null && mSurveys.size() > index) {
+                                        mSurveys.remove(index);
+                                        mSurveyAdapter.notifyItemRemoved(index);
+                                    }
                                 }
                             }
                         }
