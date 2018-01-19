@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.LayoutParams;
 import android.widget.Toast;
 
 import com.google.firebase.database.Exclude;
@@ -217,7 +218,11 @@ public class Question extends Editable {
 
             if (radioGroup.getChildCount() == 0) {
                 for (int index = 0; index < options.size(); index++) {
+                    LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+                    int margin = mView.getContext().getResources().getDimensionPixelSize(R.dimen.question_option_margin);
+                    params.setMargins(0, margin, 0, margin);
                     RadioButton radioButton = new AppCompatRadioButton(mView.getContext());
+                    radioButton.setLayoutParams(params);
                     radioButton.setSaveEnabled(false);
                     radioButton.setId(index);
                     if (index == selectedOption) {
@@ -228,8 +233,8 @@ public class Question extends Editable {
                         radioButton.setEnabled(false);
                     }
                     if (options.get(index).isMostSelectedOption()) {
-                        //TODO: improve style for most selected answer
-                        radioButton.setTextColor(mView.getContext().getResources().getColor(R.color.new_label_color));
+                        radioButton.setBackground(mView.getContext().getResources().getDrawable(R.drawable.most_voted_answer));
+                        radioButton.setTextColor(mView.getContext().getResources().getColor(R.color.most_voted_text_color));
                     }
                     radioGroup.addView(radioButton);
                 }

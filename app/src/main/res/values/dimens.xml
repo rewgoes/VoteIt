@@ -17,4 +17,7 @@
     <dimen name="question_view_bottom_margin">8dp</dimen>
     <dimen name="header_text_view_margin">8dp</dimen>
     <dimen name="floating_button_margin">16dp</dimen>
+    <dimen name="question_option_margin">2dp</dimen>
+    <dimen name="most_voted_radius">15dp</dimen>
+    <dimen name="most_voted_border_width">2px</dimen>
 </resources>
