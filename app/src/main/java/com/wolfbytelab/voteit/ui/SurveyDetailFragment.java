@@ -218,26 +218,29 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                                                 }
 
                                                 int[] mostAnsweredCount = new int[mSurvey.questions.size()];
-                                                for (Map.Entry<String, ArrayList<Long>> answer : answers.entrySet()) {
-                                                    for (int questionIndex = 0; questionIndex < answer.getValue().size(); questionIndex++) {
-                                                        answerCount.get(questionIndex)[answer.getValue().get(questionIndex).intValue()]++;
-                                                        if (mostAnsweredCount[questionIndex] < answerCount.get(questionIndex)[answer.getValue().get(questionIndex).intValue()]) {
-                                                            mostAnsweredCount[questionIndex] = answerCount.get(questionIndex)[answer.getValue().get(questionIndex).intValue()];
+
+                                                if (answers != null) {
+                                                    for (Map.Entry<String, ArrayList<Long>> answer : answers.entrySet()) {
+                                                        for (int questionIndex = 0; questionIndex < answer.getValue().size(); questionIndex++) {
+                                                            answerCount.get(questionIndex)[answer.getValue().get(questionIndex).intValue()]++;
+                                                            if (mostAnsweredCount[questionIndex] < answerCount.get(questionIndex)[answer.getValue().get(questionIndex).intValue()]) {
+                                                                mostAnsweredCount[questionIndex] = answerCount.get(questionIndex)[answer.getValue().get(questionIndex).intValue()];
+                                                            }
+                                                        }
+
+                                                        if (answer.getKey().equals(mAnswer)) {
+                                                            for (int questionIndex = 0; questionIndex < mSurvey.questions.size(); questionIndex++) {
+                                                                mSurvey.questions.get(questionIndex).setAnswered(true);
+                                                                mSurvey.questions.get(questionIndex).setSelectedOption(answer.getValue().get(questionIndex).intValue());
+                                                            }
                                                         }
                                                     }
 
-                                                    if (answer.getKey().equals(mAnswer)) {
-                                                        for (int questionIndex = 0; questionIndex < mSurvey.questions.size(); questionIndex++) {
-                                                            mSurvey.questions.get(questionIndex).setAnswered(true);
-                                                            mSurvey.questions.get(questionIndex).setSelectedOption(answer.getValue().get(questionIndex).intValue());
-                                                        }
-                                                    }
-                                                }
-
-                                                for (int questionIndex = 0; questionIndex < answerCount.size(); questionIndex++) {
-                                                    for (int optionIndex = 0; optionIndex < answerCount.get(questionIndex).length; optionIndex++) {
-                                                        if (answerCount.get(questionIndex)[optionIndex] == mostAnsweredCount[questionIndex]) {
-                                                            mSurvey.questions.get(questionIndex).getOptions().get(optionIndex).setMostSelectedOption(true);
+                                                    for (int questionIndex = 0; questionIndex < answerCount.size(); questionIndex++) {
+                                                        for (int optionIndex = 0; optionIndex < answerCount.get(questionIndex).length; optionIndex++) {
+                                                            if (answerCount.get(questionIndex)[optionIndex] == mostAnsweredCount[questionIndex]) {
+                                                                mSurvey.questions.get(questionIndex).getOptions().get(optionIndex).setMostSelectedOption(true);
+                                                            }
                                                         }
                                                     }
                                                 }
