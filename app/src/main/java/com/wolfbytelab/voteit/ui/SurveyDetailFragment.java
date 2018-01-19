@@ -622,6 +622,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 survey.description = mDescription.getText().toString();
                 survey.owner = firebaseUser.getUid();
                 survey.startDate = Calendar.getInstance().getTimeInMillis();
+                survey.ownerEmail = firebaseUser.getEmail();
                 if (mEndDate != DateUtils.DATE_NOT_SET) {
                     survey.endDate = mEndDate;
                 }

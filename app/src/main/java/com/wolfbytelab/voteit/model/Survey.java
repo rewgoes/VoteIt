@@ -17,6 +17,7 @@ public class Survey implements Parcelable {
     public String description;
 
     public String owner;
+    public String ownerEmail;
     public HashMap<String, Boolean> members;
     public ArrayList<Question> questions;
     public HashMap<String, Boolean> answers;
