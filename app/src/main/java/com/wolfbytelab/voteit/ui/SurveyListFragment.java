@@ -28,7 +28,6 @@ import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import butterknife.BindView;
@@ -40,7 +39,6 @@ import timber.log.Timber;
 
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
-import static com.wolfbytelab.voteit.util.FirebaseUtils.USERS_KEY;
 
 public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItemClickListener {
 
@@ -213,36 +211,25 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                                     survey.type = Survey.Type.MEMBER;
                                 }
 
-                                final Survey finalSurvey = survey;
-                                mDatabaseReference.child(USERS_KEY).child(survey.owner).addListenerForSingleValueEvent(new SimpleValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        HashMap<String, Object> user = (HashMap<String, Object>) dataSnapshot.getValue();
-                                        if (user != null && user.containsKey("email")) {
-                                            finalSurvey.ownerEmail = (String) user.get("email");
-                                        }
+                                int position = mSurveys.indexOf(survey);
 
-                                        int position = mSurveys.indexOf(finalSurvey);
-
-                                        if (position != -1) {
-                                            surveyIndexes.remove(position);
-                                            mSurveys.remove(position);
-                                            mSurveys.add(position, finalSurvey);
-                                            mSurveyAdapter.notifyItemChanged(position);
-                                        } else {
-                                            mSurveys.add(finalSurvey);
-                                            if (surveyCount == 0) {
-                                                mSurveyAdapter.notifyDataSetChanged();
-                                                if (mSavedRecyclerLayoutState != null) {
-                                                    mRecyclerView.getLayoutManager().onRestoreInstanceState(mSavedRecyclerLayoutState);
-                                                    mSavedRecyclerLayoutState = null;
-                                                }
-                                            } else if (surveyCount < 0) {
-                                                mSurveyAdapter.notifyItemInserted(mSurveys.size() - 1);
-                                            }
+                                if (position != -1) {
+                                    surveyIndexes.remove(position);
+                                    mSurveys.remove(position);
+                                    mSurveys.add(position, survey);
+                                    mSurveyAdapter.notifyItemChanged(position);
+                                } else {
+                                    mSurveys.add(survey);
+                                    if (surveyCount == 0) {
+                                        mSurveyAdapter.notifyDataSetChanged();
+                                        if (mSavedRecyclerLayoutState != null) {
+                                            mRecyclerView.getLayoutManager().onRestoreInstanceState(mSavedRecyclerLayoutState);
+                                            mSavedRecyclerLayoutState = null;
                                         }
+                                    } else if (surveyCount < 0) {
+                                        mSurveyAdapter.notifyItemInserted(mSurveys.size() - 1);
                                     }
-                                });
+                                }
                             } else {
                                 survey = new Survey();
                                 survey.key = surveySnapshot.getKey();

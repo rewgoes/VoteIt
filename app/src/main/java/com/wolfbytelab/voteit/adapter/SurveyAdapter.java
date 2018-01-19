@@ -44,8 +44,7 @@ public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyView
         Survey survey = mSurveys.get(position);
         holder.title.setText(survey.title);
         holder.description.setText(survey.description);
-
-        holder.owner.setText(survey.ownerEmail);
+//        holder.owner.setText(survey.owner.name);
 //        holder.date.setText(DateUtils.getFormattedDate(mContext, survey.startDate));
 
         if (survey.answers != null && survey.members != null && survey.answers.size() == survey.members.size()) {
