@@ -29,6 +29,9 @@ public class Survey implements Parcelable {
 
     public Type type;
 
+    @Exclude
+    public String ownerEmail;
+
     public enum Type {
         OWNER,
         MEMBER
