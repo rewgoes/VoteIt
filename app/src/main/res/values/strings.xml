@@ -40,4 +40,6 @@
     <string name="create_survey">Create survey</string>
     <string name="surveys_will_be_listed_here">Surveys that you participate will be listed here</string>
     <string name="surveys">Surveys</string>
+    <string name="survey_unavailable">Survey unavailable</string>
+    <string name="survey_unavailable_message">The survey you were looking for was deleted</string>
 </resources>

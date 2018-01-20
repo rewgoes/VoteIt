@@ -2,11 +2,13 @@ package com.wolfbytelab.voteit.ui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -29,7 +31,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.listener.SimpleValueEventListener;
 import com.wolfbytelab.voteit.model.Member;
@@ -42,7 +43,6 @@ import com.wolfbytelab.voteit.util.FirebaseUtils;
 import com.wolfbytelab.voteit.util.PreferenceUtils;
 import com.wolfbytelab.voteit.util.ViewUtils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -192,9 +192,13 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 mSurveyDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail())).child(mSurveyKey).addListenerForSingleValueEvent(new SimpleValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists() && dataSnapshot.getValue() instanceof String) {
-                            // check if survey was answered by current user
-                            mAnswer = (String) dataSnapshot.getValue();
+                        if (dataSnapshot.exists()) {
+                            if (dataSnapshot.getValue() instanceof String) {
+                                // check if survey was answered by current user
+                                mAnswer = (String) dataSnapshot.getValue();
+                            }
+                        } else {
+                            initView();
                         }
 
                         // read survey data
@@ -312,38 +316,61 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private void initView() {
         if (getActivity() != null) {
             if (!isAddMode()) {
-                mTitle.setEnabled(false);
-                mTitle.setFocusable(false);
-                mTitle.setText(mSurvey.title);
-                if (TextUtils.isEmpty(mSurvey.description)) {
-                    mDescriptionInputLayout.setVisibility(View.GONE);
+                if (mSurvey == null) {
+                    mSurveyDetailView.setVisibility(View.GONE);
+                    mProgressBarView.setVisibility(View.GONE);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle(getString(R.string.survey_unavailable));
+                    builder.setMessage(getString(R.string.survey_unavailable_message));
+
+                    String positiveText = getString(android.R.string.ok);
+                    builder.setPositiveButton(positiveText,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getActivity().finish();
+                                }
+                            });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.setCancelable(false);
+                    dialog.show();
+                    return;
                 } else {
-                    mDescription.setEnabled(false);
-                    mDescription.setFocusable(false);
-                    ViewUtils.wrapTextInView(mDescription, 3);
-                    mDescription.setText(mSurvey.description);
-                }
+                    mTitle.setEnabled(false);
+                    mTitle.setFocusable(false);
+                    mTitle.setText(mSurvey.title);
+                    if (TextUtils.isEmpty(mSurvey.description)) {
+                        mDescriptionInputLayout.setVisibility(View.GONE);
+                    } else {
+                        mDescription.setEnabled(false);
+                        mDescription.setFocusable(false);
+                        ViewUtils.wrapTextInView(mDescription, 3);
+                        mDescription.setText(mSurvey.description);
+                    }
 
-                if (mSurvey.endDate == DateUtils.DATE_NOT_SET) {
-                    mDateTimeLayoutGroup.setVisibility(View.GONE);
-                } else {
-                    mEndDate = mSurvey.endDate;
-                    fillDate();
-                }
+                    if (mSurvey.endDate == DateUtils.DATE_NOT_SET) {
+                        mDateTimeLayoutGroup.setVisibility(View.GONE);
+                    } else {
+                        mEndDate = mSurvey.endDate;
+                        fillDate();
+                    }
 
-                mQuestionsLayout.enableLayoutTransition(false);
+                    mQuestionsLayout.enableLayoutTransition(false);
 
-                if (mSurvey != null) {
-                    if (mQuestionsLayout.getSize() == 0) {
-                        for (Question question : mSurvey.questions) {
-                            question.setEditable(false);
-                            mQuestionsLayout.addEditorView(question);
+                    if (mSurvey != null) {
+                        if (mQuestionsLayout.getSize() == 0) {
+                            for (Question question : mSurvey.questions) {
+                                question.setEditable(false);
+                                mQuestionsLayout.addEditorView(question);
+                            }
                         }
                     }
-                }
 
-                mDescriptionInputLayout.setCounterEnabled(false);
-                mTitleInputLayout.setCounterEnabled(false);
+                    mDescriptionInputLayout.setCounterEnabled(false);
+                    mTitleInputLayout.setCounterEnabled(false);
+                }
             } else {
                 Calendar calendar = Calendar.getInstance();
                 DateUtils.startCalendar(calendar, mEndDate);

@@ -61,7 +61,6 @@ public class NotificationService extends JobService {
                     }
                 }
             };
-            databaseReference.keepSynced(true);
             databaseReference.addListenerForSingleValueEvent(valueEventListener);
         } else {
             NotificationUtils.cancelNotificationJob(this);
