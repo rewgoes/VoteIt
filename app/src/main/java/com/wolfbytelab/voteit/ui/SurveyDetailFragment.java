@@ -372,6 +372,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                     mTitleInputLayout.setCounterEnabled(false);
                 }
             } else {
+                mDateTimeLayoutGroup.setVisibility(View.GONE);
                 Calendar calendar = Calendar.getInstance();
                 DateUtils.startCalendar(calendar, mEndDate);
 

@@ -14,12 +14,6 @@ public class DateUtils {
 
         String dateString;
 
-        //TODO: decide how to parse a date
-        //android.text.format.DateFormat.getDateFormat(context)
-        //android.text.format.DateFormat.getTimeFormat(context)
-        //android.text.format.DateFormat.is24HourFormat(this)
-        //DateFormat df = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
-
         if (showTodayTime && android.text.format.DateUtils.isToday(date)) {
             DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(context);
             dateString = timeFormat.format(new Date(date));

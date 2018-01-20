@@ -53,7 +53,6 @@ public class SignInActivity extends AppCompatActivity {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 } else {
-                    //TODO: handle error cases, such as no connectivity. Currently, listener is in loop
                     // User is signed out
                     Timber.d("onAuthStateChanged:signed_out");
                     startActivityForResult(

@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
             mTwoPane = true;
 
             if (savedInstanceState == null) {
-                //TODO: show first survey or empty screen
                 SurveyDetailFragment surveyDetailFragment = new SurveyDetailFragment();
                 surveyDetailFragment.setOnSurveyCreateListener(this);
 
