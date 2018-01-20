@@ -39,4 +39,5 @@
     <string name="no_surveys_yet">No surveys yet!</string>
     <string name="create_survey">Create survey</string>
     <string name="surveys_will_be_listed_here">Surveys that you participate will be listed here</string>
+    <string name="surveys">Surveys</string>
 </resources>

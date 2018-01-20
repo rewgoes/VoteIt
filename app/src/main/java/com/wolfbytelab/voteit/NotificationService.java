@@ -1,5 +1,7 @@
 package com.wolfbytelab.voteit;
 
+import android.text.TextUtils;
+
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.google.firebase.auth.FirebaseAuth;
@@ -8,6 +10,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wolfbytelab.voteit.listener.SimpleValueEventListener;
+import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
 import com.wolfbytelab.voteit.util.NotificationUtils;
 import com.wolfbytelab.voteit.util.PreferenceUtils;
@@ -41,10 +44,19 @@ public class NotificationService extends JobService {
                         Set<String> oldSurveys = PreferenceUtils.getSurveyList(NotificationService.this);
                         surveys.removeAll(oldSurveys);
 
-                        for (String survey : surveys) {
-                            Timber.d("New survey: " + survey);
-                            PreferenceUtils.editSurveyList(NotificationService.this, ADD, survey);
-                            // TODO: notify user about new survey
+                        for (String surveyKey : surveys) {
+                            Timber.d("New survey: " + surveyKey);
+                            PreferenceUtils.editSurveyList(NotificationService.this, ADD, surveyKey);
+                            firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(surveyKey).addListenerForSingleValueEvent(new SimpleValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Survey survey = (Survey) dataSnapshot.getValue();
+                                    survey.type = TextUtils.equals(survey.owner, firebaseUser.getUid()) ? Survey.Type.OWNER : Survey.Type.MEMBER;
+                                    if (survey != null) {
+                                        NotificationUtils.notifyUserAboutSurvey(NotificationService.this, survey);
+                                    }
+                                }
+                            });
                         }
                     }
                 }
@@ -52,7 +64,6 @@ public class NotificationService extends JobService {
             databaseReference.keepSynced(true);
             databaseReference.addListenerForSingleValueEvent(valueEventListener);
         } else {
-            //TODO: notify user sign out
             NotificationUtils.cancelNotificationJob(this);
         }
         return true;
