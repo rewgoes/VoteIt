@@ -32,7 +32,7 @@ public class NotificationUtils {
 
     private static final String SURVEYS_NOTIFICATION_CHANNEL_ID = "survey_notification_channeid";
 
-    private static final int NOTIFICATION_INTERVAL_MINUTES = 1;
+    private static final int NOTIFICATION_INTERVAL_MINUTES = 15;
     private static final int NOTIFICATION_INTERVAL_SECONDS = (int) (TimeUnit.MINUTES.toSeconds(NOTIFICATION_INTERVAL_MINUTES));
     private static final int SYNC_FLEXTIME_SECONDS = NOTIFICATION_INTERVAL_SECONDS;
 

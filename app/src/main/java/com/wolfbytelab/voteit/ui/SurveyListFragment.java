@@ -291,6 +291,10 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                         mSurveys.remove(position);
                         mSurveyAdapter.notifyItemRemoved(position);
                     }
+                    if (mSurveys.size() == 0) {
+                        surveyCount = 0;
+                        initView();
+                    }
 
                     if (oldSurveyList.contains(survey.key)) {
                         PreferenceUtils.editSurveyList(getContext(), REMOVE, survey.key);
