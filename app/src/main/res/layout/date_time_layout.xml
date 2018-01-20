@@ -62,8 +62,8 @@
         android:text="@string/clear_date"
         android:textAllCaps="true"
         android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@id/end_time_input_layout"
-        app:layout_constraintTop_toBottomOf="@id/end_time_input_layout"
+        app:layout_constraintEnd_toEndOf="@+id/end_time_input_layout"
+        app:layout_constraintTop_toBottomOf="@+id/end_time_input_layout"
         tools:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>

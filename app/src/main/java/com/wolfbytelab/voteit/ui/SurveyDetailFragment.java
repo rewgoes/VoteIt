@@ -69,7 +69,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     private static final String STATE_END_DATE = "state_end_date";
     private static final String STATE_SURVEY_TYPE = "state_survey_type";
     private static final String STATE_SURVEY_MEMBERS = "state_survey_members";
-    private long membersCount;
 
     interface OnSurveyChangedListener {
         void onSurveyCreated(String surveyKey);
@@ -286,8 +285,6 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     }
 
     private void initMemberLayout() {
-        membersCount = mSurvey.members.size();
-
         mNotEditableMembersLayout.enableLayoutTransition(false);
 
         for (String email : mSurvey.members.keySet()) {
