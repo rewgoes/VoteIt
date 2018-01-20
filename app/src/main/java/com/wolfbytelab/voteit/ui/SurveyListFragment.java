@@ -26,9 +26,11 @@ import com.wolfbytelab.voteit.listener.SimpleChildEventListener;
 import com.wolfbytelab.voteit.listener.SimpleValueEventListener;
 import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
+import com.wolfbytelab.voteit.util.PreferenceUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +41,9 @@ import timber.log.Timber;
 
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
+import static com.wolfbytelab.voteit.util.PreferenceUtils.EditSurveyAction.ADD;
+import static com.wolfbytelab.voteit.util.PreferenceUtils.EditSurveyAction.CLEAN;
+import static com.wolfbytelab.voteit.util.PreferenceUtils.EditSurveyAction.REMOVE;
 
 public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItemClickListener {
 
@@ -172,6 +177,10 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     surveyCount = dataSnapshot.getChildrenCount();
                     initView();
+
+                    if (surveyCount == 0) {
+                        PreferenceUtils.editSurveyList(getContext(), CLEAN, null);
+                    }
                 }
             });
 
@@ -182,6 +191,8 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                 }
             }
 
+            final Set<String> oldSurveyList = new HashSet<>(PreferenceUtils.getSurveyList(getContext()));
+
             mSurveyPerUserDataRef = mDatabaseReference.child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail()));
             mSurveyPerUserListener = mSurveyPerUserDataRef.addChildEventListener(new SimpleChildEventListener() {
                 @Override
@@ -190,6 +201,12 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                     Object answerValue = surveyKeySnapshot.getValue();
                     if (answerValue instanceof String) {
                         extras.putString("answerId", (String) surveyKeySnapshot.getValue());
+                    }
+
+                    if (!oldSurveyList.contains(surveyKeySnapshot.getKey())) {
+                        PreferenceUtils.editSurveyList(getContext(), ADD, surveyKeySnapshot.getKey());
+                    } else {
+                        oldSurveyList.remove(surveyKeySnapshot.getKey());
                     }
 
                     SimpleValueEventListener simpleValueEventListener = new SimpleValueEventListener(extras) {
@@ -238,6 +255,10 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                                     mSurveys.remove(position);
                                     mSurveyAdapter.notifyItemRemoved(position);
                                 }
+                                if (oldSurveyList.contains(survey.key)) {
+                                    PreferenceUtils.editSurveyList(getContext(), REMOVE, survey.key);
+                                    oldSurveyList.remove(survey.key);
+                                }
                             }
 
                             if (surveyCount == 0) {
@@ -246,6 +267,10 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                                         mSurveys.remove(index);
                                         mSurveyAdapter.notifyItemRemoved(index);
                                     }
+                                }
+
+                                for (String oldSurveyId : oldSurveyList) {
+                                    PreferenceUtils.editSurveyList(getContext(), REMOVE, oldSurveyId);
                                 }
                             }
                         }
@@ -265,6 +290,10 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
                     if (position != -1) {
                         mSurveys.remove(position);
                         mSurveyAdapter.notifyItemRemoved(position);
+                    }
+
+                    if (oldSurveyList.contains(survey.key)) {
+                        PreferenceUtils.editSurveyList(getContext(), REMOVE, survey.key);
                     }
                 }
             });

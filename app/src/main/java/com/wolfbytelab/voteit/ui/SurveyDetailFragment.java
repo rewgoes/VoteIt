@@ -39,6 +39,7 @@ import com.wolfbytelab.voteit.ui.editor.SectionView;
 import com.wolfbytelab.voteit.util.Constants;
 import com.wolfbytelab.voteit.util.DateUtils;
 import com.wolfbytelab.voteit.util.FirebaseUtils;
+import com.wolfbytelab.voteit.util.PreferenceUtils;
 import com.wolfbytelab.voteit.util.ViewUtils;
 
 import java.lang.reflect.Array;
@@ -57,6 +58,8 @@ import static com.wolfbytelab.voteit.util.FirebaseUtils.ANSWERS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.MEMBERS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
+import static com.wolfbytelab.voteit.util.PreferenceUtils.EditSurveyAction.ADD;
+import static com.wolfbytelab.voteit.util.PreferenceUtils.EditSurveyAction.REMOVE;
 
 public class SurveyDetailFragment extends Fragment implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
@@ -461,6 +464,7 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError == null) {
+                    PreferenceUtils.editSurveyList(getContext(), REMOVE, mSurveyKey);
                     Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
                     if (mOnSurveyChangedListener == null) {
                         getActivity().finish();
@@ -629,6 +633,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                 survey.questions = mQuestions;
 
                 String surveyKey = surveyDatabaseReference.push().getKey();
+
+                PreferenceUtils.editSurveyList(getContext(), ADD, surveyKey);
 
                 DatabaseReference memberDatabaseReference = firebaseDatabase.getReference().child(SURVEYS_KEY).child(surveyKey).child(MEMBERS_KEY);
 

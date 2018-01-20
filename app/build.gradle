@@ -41,6 +41,8 @@ dependencies {
 
     compile "com.firebaseui:firebase-ui-auth:$firebase_ui_version"
 
+    compile "com.firebase:firebase-jobdispatcher:$firebase_job_dispatcher_version"
+
     debugCompile "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
 }

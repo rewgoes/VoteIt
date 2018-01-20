@@ -15,8 +15,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.wolfbytelab.voteit.R;
 import com.wolfbytelab.voteit.model.Survey;
 import com.wolfbytelab.voteit.util.Constants;
+import com.wolfbytelab.voteit.util.NotificationUtils;
+import com.wolfbytelab.voteit.util.PreferenceUtils;
 
 import timber.log.Timber;
+
+import static com.wolfbytelab.voteit.util.PreferenceUtils.EditSurveyAction.CLEAN;
 
 public class MainActivity extends AppCompatActivity implements SurveyListFragment.OnSurveyClickListener,
         SurveyDetailFragment.OnSurveyChangedListener {
@@ -38,11 +42,15 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
             finish();
         }
 
+        NotificationUtils.scheduleNotificationJob(this);
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user == null) {
+                    NotificationUtils.cancelNotificationJob(MainActivity.this);
+                    PreferenceUtils.editSurveyList(MainActivity.this, CLEAN, null);
                     // User is signed out
                     Timber.d("onAuthStateChanged:signed_out");
                     Intent intent = new Intent(MainActivity.this, SignInActivity.class);
