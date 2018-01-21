@@ -20,6 +20,7 @@ import java.util.Set;
 
 import timber.log.Timber;
 
+import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_KEY;
 import static com.wolfbytelab.voteit.util.FirebaseUtils.SURVEYS_PER_USER_KEY;
 import static com.wolfbytelab.voteit.util.PreferenceUtils.EditSurveyAction.ADD;
 
@@ -30,7 +31,8 @@ public class NotificationService extends JobService {
     DatabaseReference databaseReference;
 
     @Override
-    public boolean onStartJob(JobParameters job) {
+    public boolean onStartJob(final JobParameters job) {
+        Timber.d("notify: onStartJob");
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
             databaseReference = firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(FirebaseUtils.encodeAsFirebaseKey(firebaseUser.getEmail()));
@@ -40,29 +42,45 @@ public class NotificationService extends JobService {
                     HashMap<String, Object> surveysValues = (HashMap<String, Object>) dataSnapshot.getValue();
 
                     if (surveysValues != null) {
-                        Set<String> surveys = surveysValues.keySet();
+                        final Set<String> surveys = surveysValues.keySet();
                         Set<String> oldSurveys = PreferenceUtils.getSurveyList(NotificationService.this);
                         surveys.removeAll(oldSurveys);
 
+                        if (surveys.size() == 0) {
+                            jobFinished(job, false);
+                        }
+
                         for (String surveyKey : surveys) {
-                            Timber.d("New survey: " + surveyKey);
+                            Timber.d("notify: New survey: " + surveyKey);
                             PreferenceUtils.editSurveyList(NotificationService.this, ADD, surveyKey);
-                            firebaseDatabase.getReference().child(SURVEYS_PER_USER_KEY).child(surveyKey).addListenerForSingleValueEvent(new SimpleValueEventListener() {
+                            firebaseDatabase.getReference().child(SURVEYS_KEY).child(surveyKey).addListenerForSingleValueEvent(new SimpleValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    Survey survey = (Survey) dataSnapshot.getValue();
+                                    HashMap<String, Object> surveyValues = (HashMap<String, Object>) dataSnapshot.getValue();
+                                    Survey survey = new Survey();
+                                    survey.key = dataSnapshot.getKey();
+                                    survey.title = (String) surveyValues.get("title");
+                                    survey.owner = (String) surveyValues.get("owner");
                                     survey.type = TextUtils.equals(survey.owner, firebaseUser.getUid()) ? Survey.Type.OWNER : Survey.Type.MEMBER;
                                     if (survey != null) {
                                         NotificationUtils.notifyUserAboutSurvey(NotificationService.this, survey);
                                     }
+                                    surveys.remove(survey.key);
+                                    if (surveys.size() == 0) {
+                                        jobFinished(job, false);
+                                    }
                                 }
                             });
                         }
+                    } else {
+                        jobFinished(job, false);
                     }
                 }
             };
+            databaseReference.keepSynced(true);
             databaseReference.addListenerForSingleValueEvent(valueEventListener);
         } else {
+            jobFinished(job, false);
             NotificationUtils.cancelNotificationJob(this);
         }
         return true;
