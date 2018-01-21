@@ -716,6 +716,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
                     mOnSurveyChangedListener.onSurveyVoted(mSurveyKey, mSurveyType);
                 }
             }
+        } else {
+            Toast.makeText(getContext(), R.string.answer_all_question, Toast.LENGTH_SHORT).show();
         }
     }
 
