@@ -490,14 +490,14 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError == null) {
                     PreferenceUtils.editSurveyList(getContext(), REMOVE, mSurveyKey);
-                    Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.deleted), Toast.LENGTH_SHORT).show();
                     if (mOnSurveyChangedListener == null) {
                         getActivity().finish();
                     } else {
                         mOnSurveyChangedListener.onSurveyDeleted();
                     }
                 } else {
-                    Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.failed_to_delete, Toast.LENGTH_SHORT).show();
                     Timber.d(databaseError.getMessage());
                 }
             }

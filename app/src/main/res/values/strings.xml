@@ -43,4 +43,6 @@
     <string name="survey_unavailable_message">The survey you were looking for was deleted</string>
     <string name="my_surveys">My surveys</string>
     <string name="answer_all_question">You must answer all questions</string>
+    <string name="failed_to_delete">Failed do delete</string>
+    <string name="deleted">Deleted</string>
 </resources>
