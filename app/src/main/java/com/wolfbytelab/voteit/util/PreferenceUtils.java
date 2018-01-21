@@ -39,7 +39,7 @@ public class PreferenceUtils {
 
     public static Set<String> getSurveyList(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getStringSet(KEY_SURVEY_LIST, new HashSet<String>());
+        return new HashSet<>(prefs.getStringSet(KEY_SURVEY_LIST, new HashSet<String>()));
     }
 
 }
