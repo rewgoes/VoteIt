@@ -6,8 +6,10 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +68,8 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
     FloatingActionButton mAddSurveyFab;
     @BindView(R.id.empty_layout)
     View mEmptyLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     private DatabaseReference mDatabaseReference;
     private SurveyAdapter mSurveyAdapter;
@@ -80,6 +84,8 @@ public class SurveyListFragment extends Fragment implements SurveyAdapter.OnItem
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_survey_list, container, false);
         mUnbinder = ButterKnife.bind(this, view);
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
 
         FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
         mDatabaseReference = firebaseDatabase.getReference();

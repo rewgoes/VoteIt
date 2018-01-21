@@ -9,6 +9,8 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -118,6 +120,8 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     SectionView mQuestionsLayout;
     @BindView(R.id.add_question)
     View mAddQuestionView;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     private ArrayList<Member> mMembers;
     private ArrayList<Question> mQuestions;
@@ -137,10 +141,11 @@ public class SurveyDetailFragment extends Fragment implements DatePickerDialog.O
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_survey_detail, container, false);
+        mUnbinder = ButterKnife.bind(this, rootView);
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
 
         setHasOptionsMenu(true);
-
-        mUnbinder = ButterKnife.bind(this, rootView);
 
         if (savedInstanceState == null) {
             if (isAddMode()) {
