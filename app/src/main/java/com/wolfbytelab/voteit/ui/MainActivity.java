@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity implements SurveyListFragmen
             Intent intent = new Intent(this, SignInActivity.class);
             startActivity(intent);
             finish();
+        } else {
+            NotificationUtils.scheduleNotificationJob(this);
         }
-
-        NotificationUtils.scheduleNotificationJob(this);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override

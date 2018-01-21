@@ -41,4 +41,5 @@
     <string name="surveys">Surveys</string>
     <string name="survey_unavailable">Survey unavailable</string>
     <string name="survey_unavailable_message">The survey you were looking for was deleted</string>
+    <string name="my_surveys">My surveys</string>
 </resources>

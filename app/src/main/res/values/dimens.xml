@@ -21,4 +21,5 @@
     <dimen name="most_voted_radius">15dp</dimen>
     <dimen name="most_voted_border_width">2px</dimen>
     <dimen name="survey_status_label_radius">10dp</dimen>
+    <dimen name="divider_margin">5dp</dimen>
 </resources>
